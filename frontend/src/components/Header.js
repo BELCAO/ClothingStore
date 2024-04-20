@@ -8,8 +8,8 @@ const Header = () => {
         <div className="row">
           <div className="col-md-2 col-sm-2">
             <div className="logo">
-              <Link to="/Home">
-                <img src="images/logo.png" alt="FlatShop" />
+              <Link to="/">
+                <img src="images/logo2.png" alt="FlatShop" />
               </Link>
             </div>
           </div>
@@ -188,7 +188,7 @@ const Header = () => {
                 <ul className="nav navbar-nav">
                   <li className="dropdown">
                     <Link
-                      to="/Home"
+                      to="/"
                       className="dropdown-toggle"
                       data-toggle="dropdown"
                     >

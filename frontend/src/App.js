@@ -10,10 +10,10 @@ import Footer from "./components/Footer";
 function App() {
   return (
     <div className="App">
-      <div className="wrapper">
+      <div id="home" className="wrapper">
         <Header />
         <Routes>
-          <Route path="/Home" element={<Home />} />
+          <Route path="/" element={<Home />} />
           <Route path="/Productgird" element={<Productgird />} />
           <Route path="/Productlist" element={<Productlist />} />
           <Route path="/Details" element={<Details />} />
