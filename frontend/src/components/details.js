@@ -3,7 +3,7 @@ import React from "react";
 const Details = () => {
   return (
     <>
-      <div class="clearfix"></div>
+      <div className="clearfix"></div>
       <div className="container_fullwidth">
         <div className="container">
           <div className="row">
@@ -873,7 +873,7 @@ const Details = () => {
           </div>
         </div>
       </div>
-      <div class="clearfix"></div>
+      <div className="clearfix"></div>
     </>
   );
 };
