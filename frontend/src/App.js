@@ -1,11 +1,27 @@
-
-import './App.css';
-import Home from './components/Home';
-
-
+import { Routes, Route } from "react-router-dom";
+import React from "react";
+import Header from "./components/Header";
+import Home from "./components/Home";
+import Productgird from "./components/Productgird";
+import Productlist from "./components/Productlist";
+import Details from "./components/details";
+import Contact from "./components/Contact";
+import Footer from "./components/Footer";
 function App() {
   return (
-   <Home/>
-  ); 
+    <div className="App">
+      <div className="wrapper">
+        <Header />
+        <Routes>
+          <Route path="/Home" element={<Home />} />
+          <Route path="/Productgird" element={<Productgird />} />
+          <Route path="/Productlist" element={<Productlist />} />
+          <Route path="/Details" element={<Details />} />
+          <Route path="/Contact" element={<Contact />} />
+        </Routes>
+        <Footer />
+      </div>
+    </div>
+  );
 }
 export default App;
