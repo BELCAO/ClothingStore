@@ -10,6 +10,7 @@ import Footer from "./components/Footer";
 import Cart from "./components/Cart";
 import Checkout from "./components/Checkout";
 import Checkout2 from "./components/Checkout2";
+import SignUp from "./components/SignUp";
 function App() {
   return (
     <div className="App">
@@ -24,6 +25,7 @@ function App() {
           <Route path="/Cart" element={<Cart />} />
           <Route path="/Checkout" element={<Checkout />} />
           <Route path="/Checkout2" element={<Checkout2 />} />
+          <Route path="/SignUp" element={<SignUp />} />
         </Routes>
         <Footer />
       </div>

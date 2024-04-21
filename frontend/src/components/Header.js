@@ -9,7 +9,7 @@ const Header = () => {
           <div className="col-md-2 col-sm-2">
             <div className="logo">
               <Link to="/">
-                <img src="images/logo2.png" alt="FlatShop" />
+                <img src="images/logo3.png" alt="FlatShop" />
               </Link>
             </div>
           </div>
@@ -76,14 +76,14 @@ const Header = () => {
                 <div className="col-md-3">
                   <ul className="usermenu">
                     <li>
-                      <a href="checkout.html" className="log">
+                      <Link to="/SignUp" className="log">
                         Login
-                      </a>
+                      </Link>
                     </li>
                     <li>
-                      <a href="checkout2.html" className="reg">
+                      <Link to="/Checkout2" className="reg">
                         Register
-                      </a>
+                      </Link>
                     </li>
                   </ul>
                 </div>
