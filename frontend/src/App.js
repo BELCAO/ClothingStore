@@ -11,6 +11,7 @@ import Cart from "./components/Cart";
 import Checkout from "./components/Checkout";
 import Checkout2 from "./components/Checkout2";
 import SignUp from "./components/SignUp";
+import SignIn from "./components/SignIn";
 function App() {
   return (
     <div className="App">
@@ -26,6 +27,7 @@ function App() {
           <Route path="/Checkout" element={<Checkout />} />
           <Route path="/Checkout2" element={<Checkout2 />} />
           <Route path="/SignUp" element={<SignUp />} />
+          <Route path="/SignIn" element={<SignIn />} />
         </Routes>
         <Footer />
       </div>
