@@ -1,6 +1,7 @@
 import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { Link } from "react-router-dom";
 const SignupSchema = Yup.object().shape({
   email: Yup.string()
     .email("Email không hợp lệ")
@@ -17,8 +18,7 @@ const SignUp = () => {
   return (
     <>
       <div className="clearfix"></div>
-      <div id="home" className="container_fullwidth">
-        <div className="container">
+      <div className="container">
           <div className="row">
             <div className="col-md-6">
               <image src="images/logo.png" alt="" />
@@ -104,13 +104,12 @@ const SignUp = () => {
                   </Formik>
                 </div>
                 <div className="card-footer text-muted text-center">
-                  Already have an account? <a href="#">Sign In</a>
+                  Already have an account? <Link to="/SignIn">Sign In</Link>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
       <div className="clearfix"></div>
     </>
   );
