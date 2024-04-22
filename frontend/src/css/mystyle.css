@@ -1,9 +1,5 @@
-.background_gradient {
-    background-image: linear-gradient(90deg, #6e0560, #2b4680);
-    height: 100%;
-  }
+
   .logo {
-    width: 100%;
     height: auto;
   }
 
@@ -62,3 +58,35 @@
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   }
+
+  .margin-auto {
+    margin: auto;
+  }
+  .display-flex {
+    display: flex;
+    height: 700px;
+  }
+
+  .custom-error-message {
+    color: red;
+    font-size: 12px;
+  }
+
+  .title {
+    font-weight: bold;
+    font-size: 40px;
+    margin: 20px auto;
+  }
+  .is-invalid {
+    border-color: red !important;
+    border-width: 1px !important;
+  }
+  .form-group > label {
+    font-size: 16px;
+    margin-bottom: 5px;
+  }
+  .form-control:focus {
+    border-color: #80bdff !important; /* Màu border khi chạm vào trường */
+    box-shadow: 0 0 0.2rem rgba(0, 123, 255, 0.25) !important; /* Hiệu ứng box-shadow khi chạm vào trường */
+  }
+  
