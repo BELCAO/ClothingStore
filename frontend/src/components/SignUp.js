@@ -1,7 +1,8 @@
-import React from "react";
+import { Link } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { Link } from "react-router-dom";
+import ".././css/mystyle.css";
+
 const SignupSchema = Yup.object().shape({
   email: Yup.string()
     .email("Email không hợp lệ")
@@ -10,22 +11,37 @@ const SignupSchema = Yup.object().shape({
     .min(6, "Mật khẩu phải có ít nhất 6 ký tự")
     .required("Mật khẩu không được để trống"),
   phoneNumber: Yup.string()
-    .matches(/^[0-9]+$/, "Số điện thoại không hợp lệ")
+    .matches(/^[0-9]+$/, "Số điện thoại phải là số")
+    .min(10, "Số điện thoại không hợp lệ")
     .required("Số điện thoại không được để trống"),
 });
 
 const SignUp = () => {
+
+  const handleSubmit = (values, { setSubmitting }) => {
+    // Xử lý form và in ra console
+    console.log("Dữ liệu form:", values);
+
+    // Điều hướng sang trang mới
+
+    // Đặt trạng thái submitting về false sau một khoảng thời gian
+    setTimeout(() => {
+      alert(JSON.stringify(values, null, 2));
+      setSubmitting(false);
+    }, 400);
+  };
   return (
     <>
       <div className="clearfix"></div>
       <div className="container">
-          <div className="row">
-            <div className="col-md-6">
-              <image src="images/logo.png" alt="" />
-            </div>
-            <div className="col-md-6">
+        <div className="row display-flex">
+          <div className="col-md-6 margin-auto">
+            <img className="logo" src="./images/logo3.png" alt="" />
+          </div>
+          <div className="col-md-6">
+            <div className="sing-up_container">
               <div className="card">
-                <h5 className="card-header text-center">Sign Up</h5>
+                <h2 className="card-header text-center title">Sign Up</h2>
                 <div className="card-body">
                   <Formik
                     initialValues={{
@@ -34,14 +50,9 @@ const SignUp = () => {
                       phoneNumber: "",
                     }}
                     validationSchema={SignupSchema}
-                    onSubmit={(values, { setSubmitting }) => {
-                      setTimeout(() => {
-                        alert(JSON.stringify(values, null, 2));
-                        setSubmitting(false);
-                      }, 400);
-                    }}
+                    onSubmit={handleSubmit}
                   >
-                    {({ isSubmitting, errors, touched }) => (
+                    {({ isValid, isSubmitting, errors, touched }) => (
                       <Form>
                         <div className="form-group">
                           <label>Email:</label>
@@ -55,7 +66,7 @@ const SignUp = () => {
                           <ErrorMessage
                             name="email"
                             component="div"
-                            className="invalid-feedback"
+                            className="invalid-feedback custom-error-message"
                           />
                         </div>
                         <div className="form-group">
@@ -72,7 +83,7 @@ const SignUp = () => {
                           <ErrorMessage
                             name="password"
                             component="div"
-                            className="invalid-feedback"
+                            className="invalid-feedback custom-error-message"
                           />
                         </div>
                         <div className="form-group">
@@ -89,13 +100,13 @@ const SignUp = () => {
                           <ErrorMessage
                             name="phoneNumber"
                             component="div"
-                            className="invalid-feedback"
+                            className="invalid-feedback custom-error-message"
                           />
                         </div>
                         <button
                           type="submit"
                           className="btn btn-primary btn-block"
-                          disabled={isSubmitting}
+                          disabled={!isValid || isSubmitting}
                         >
                           Sign Up
                         </button>
@@ -103,13 +114,23 @@ const SignUp = () => {
                     )}
                   </Formik>
                 </div>
-                <div className="card-footer text-muted text-center">
-                  Already have an account? <Link to="/SignIn">Sign In</Link>
+                <div className="separator">
+                  <span>or</span>
+                </div>
+                <div className="login-with-google">
+                  <button>Sign up with Google</button>
+                </div>
+                <div className="have-account">
+                  <p>
+                    Do you have an account yet?{"    "}
+                    <Link to="/SignIn">Sign In</Link>
+                  </p>
                 </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
       <div className="clearfix"></div>
     </>
   );

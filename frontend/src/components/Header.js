@@ -76,13 +76,13 @@ const Header = () => {
                 <div className="col-md-3">
                   <ul className="usermenu">
                     <li>
-                      <Link to="/SignUp" className="log">
-                        Login
+                      <Link to="/SignIn" className="log">
+                        Sign In
                       </Link>
                     </li>
                     <li>
-                      <Link to="/Checkout2" className="reg">
-                        Register
+                      <Link to="/SignUp" className="reg">
+                        Sign Up
                       </Link>
                     </li>
                   </ul>
