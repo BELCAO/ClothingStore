@@ -1,3 +1,5 @@
+import React, {useState} from "react";
+import axios from 'axios';
 import { Link } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
@@ -12,20 +14,53 @@ const SignupSchema = Yup.object().shape({
     .required("Mật khẩu không được để trống"),
 });
 
-const SignIp = () => {
+const SignInForm = ({setToken}) => {
+  const[username, setUsername] = useState('');
+  const[password, setPassword] = useState('');
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await axios.post('http://localhost:8080/',{
+        username, password
+      });
+      const token = response.data.accessToken;
+      setToken(token);
+    }catch (error){
+      console.error('Sign In error:', error);
+    }
+  }
+};
+const SignIp = ({setToken}) => {
 
-  const handleSubmit = (values, { setSubmitting }) => {
-    // Xử lý form và in ra console
-    console.log("Dữ liệu form:", values);
+  // const handleSubmit = (values, { setSubmitting }) => {
+  //   // Xử lý form và in ra console
+  //   console.log("Dữ liệu form:", values);
 
-    // Điều hướng sang trang mới
+  //   // Điều hướng sang trang mới
 
-    // Đặt trạng thái submitting về false sau một khoảng thời gian
-    setTimeout(() => {
-      alert(JSON.stringify(values, null, 2));
-      setSubmitting(false);
-    }, 400);
-  };
+  //   // Đặt trạng thái submitting về false sau một khoảng thời gian
+  //   setTimeout(() => {
+  //     alert(JSON.stringify(values, null, 2));
+  //     setSubmitting(false);
+  //   }, 400);
+  // };
+  const[username, setUsername] = useState('');
+  const[password, setPassword] = useState('');
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await axios.post('http://localhost:8080/',{
+        username, password
+      });
+      const token = response.data.accessToken;
+      setToken(token);
+    }catch (error){
+      console.error('Sign In error:', error);
+    }
+  }
+
+
+
   return (
     <>
       <div className="clearfix"></div>
