@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import ".././css/mystyle.css";
+import axios from "axios";
 
 const SignupSchema = Yup.object().shape({
   email: Yup.string()
@@ -19,11 +20,13 @@ const SignupSchema = Yup.object().shape({
 const SignUp = () => {
 
   const handleSubmit = (values, { setSubmitting }) => {
-    // Xử lý form và in ra console
-    console.log("Dữ liệu form:", values);
-
-    // Điều hướng sang trang mới
-
+    axios.post('http://localhost:8080/account/create', values)
+    .then(response => {
+      console.log('Successfully created');
+    })
+    .catch(errors => {
+      console.log('Error creating account: ', errors)
+    })
     // Đặt trạng thái submitting về false sau một khoảng thời gian
     setTimeout(() => {
       alert(JSON.stringify(values, null, 2));
