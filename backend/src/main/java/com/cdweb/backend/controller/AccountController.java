@@ -1,5 +1,7 @@
 package com.cdweb.backend.controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,25 +21,28 @@ public class AccountController {
 	private AccountService accountService;
 	
 	@PostMapping("/")
-	public Account getAccountById(@RequestBody Long id) {
-		return accountService.getAccountById(id);
+	public Account getAccountById(@RequestBody Map<String, Long> data) {
+		return accountService.getAccountById(data.get("id"));
 	}
 	
 	@PostMapping("/create")
-	public Account createAccount(@RequestBody String entity) {
+	public Account createAccount(@RequestBody Map<String, String> data) {
 		Account account = new Account();
-		account.setEmail(entity);
+		account.setEmail(data.get("email"));
+		account.setName(data.get("name"));
+		account.setPhone(data.get("phone"));
 		return accountService.createAccount(account);
 	}
 	
-	@PostMapping("/existemail")
-	public boolean exitsByEmail(@RequestBody String email) {		
-		return accountService.exitAccountByEmail(email);
+	@PostMapping("/existsemail")
+	public boolean exitsByEmail(@RequestBody Map<String, String> data) {
+		System.out.println(data.get("email"));
+		return accountService.existsAccountByEmail(data.get("email"));
 	}
 	
-	@PostMapping("/existphone")
-	public boolean exitsByPhone(@RequestBody String phone) {
-		return accountService.exitAccountByPhone(phone);
+	@PostMapping("/existsphone")
+	public boolean exitsByPhone(@RequestBody Map<String, String> data) {
+		return accountService.existsAccountByPhone(data.get("phone"));
 	}
 	
 }
