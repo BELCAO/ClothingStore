@@ -31,12 +31,14 @@ public class AccountController {
 		account.setEmail(data.get("email"));
 		account.setName(data.get("name"));
 		account.setPhone(data.get("phone"));
+		account.setPassword(data.get("password"));
+//		System.out.println(account.toString());
 		return accountService.createAccount(account);
 	}
 	
 	@PostMapping("/existsemail")
 	public boolean exitsByEmail(@RequestBody Map<String, String> data) {
-		System.out.println(data.get("email"));
+//		System.out.println(data.get("email"));
 		return accountService.existsAccountByEmail(data.get("email"));
 	}
 	

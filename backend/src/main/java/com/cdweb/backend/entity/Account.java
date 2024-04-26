@@ -81,5 +81,9 @@ public class Account {
 		this.status = status;
 	}
 	
+	public String toString() {
+		return this.name+"_"+this.email+"_"+this.phone+"_"+this.password;
+	}
+	
 	
 }
