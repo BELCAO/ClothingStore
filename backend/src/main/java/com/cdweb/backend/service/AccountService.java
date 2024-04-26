@@ -16,10 +16,10 @@ public class AccountService {
 	public Account getAccountById(Long id) {
 		return accountRepository.findById(id).orElseThrow(() -> new RuntimeException("Account Not Found"));
 	}
-	public boolean exitAccountByEmail(String email) {
+	public boolean existsAccountByEmail(String email) {
 		return accountRepository.existsByEmail(email);
 	}
-	public boolean exitAccountByPhone(String phone) {
+	public boolean existsAccountByPhone(String phone) {
 		return accountRepository.existsByPhone(phone);
 	}
 
