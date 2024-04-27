@@ -1,14 +1,19 @@
 package com.cdweb.backend.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.service.annotation.GetExchange;
 
 import com.cdweb.backend.entity.Account;
 import com.cdweb.backend.service.AccountService;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -19,6 +24,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class AccountController {
 	@Autowired
 	private AccountService accountService;
+	
+	@GetMapping("/list")
+	public List<Account> getAllAccount(){
+		return accountService.getAllAccount();
+	}
 	
 	@PostMapping("/")
 	public Account getAccountById(@RequestBody Map<String, Long> data) {
@@ -31,14 +41,13 @@ public class AccountController {
 		account.setEmail(data.get("email"));
 		account.setName(data.get("name"));
 		account.setPhone(data.get("phone"));
-		account.setPassword(data.get("password"));
-//		System.out.println(account.toString());
+		PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+		account.setPassword(passwordEncoder.encode(data.get("password")));
 		return accountService.createAccount(account);
 	}
 	
 	@PostMapping("/existsemail")
 	public boolean exitsByEmail(@RequestBody Map<String, String> data) {
-//		System.out.println(data.get("email"));
 		return accountService.existsAccountByEmail(data.get("email"));
 	}
 	
