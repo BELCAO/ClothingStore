@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import axios from 'axios';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import ".././css/mystyle.css";
@@ -14,20 +14,30 @@ const SignupSchema = Yup.object().shape({
     .required("Mật khẩu không được để trống"),
 });
 
-const SignIp = () => {
+const SignIn = ({onTokenChange}) => {
+  const navigate = useNavigate();
+  const [token, setToken] = useState('');
 
-  const handleSubmit = (values, { setSubmitting }) => {
-    // Xử lý form và in ra console
-    console.log("Dữ liệu form:", values);
-
-    // Điều hướng sang trang mới
-
-    // Đặt trạng thái submitting về false sau một khoảng thời gian
-    setTimeout(() => {
-      alert(JSON.stringify(values, null, 2));
-      setSubmitting(false);
-    }, 400);
+  const saveToken = (token) => {
+    setToken(token);
+    onTokenChange(token);
   };
+
+  const handleSubmit = (values, actions) => {
+    axios.post("http://localhost:8080/auth/", values)
+    .then((response) => {
+      console.log(response)
+      saveToken(response.data)
+      actions.setSubmitting(false);
+      navigate("/")
+    })
+    .catch((error) => {
+      actions.setSubmitting(false);
+      actions.resetForm();
+      console.log("Error Sign in", error);
+    });
+  };
+
 
   return (
     <>
@@ -115,5 +125,6 @@ const SignIp = () => {
       <div className="clearfix"></div>
     </>
   );
+
 };
-export default SignIp;
+export default SignIn;

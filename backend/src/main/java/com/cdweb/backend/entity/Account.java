@@ -1,5 +1,6 @@
 package com.cdweb.backend.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,6 +12,7 @@ public class Account {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Long id;
 	String name;
+	@Column(unique = true)
 	String email;
 	String phone;
 	String avatar;
@@ -20,6 +22,9 @@ public class Account {
 	
 	public Account() {
 		super();
+		this.avatar = "avatar";
+		this.role = 0;
+		this.status = 1;
 	}
 	public Account(Long id, String name, String email, String phone, String avatar, String password, int role, int status) {
 		super();
@@ -79,6 +84,10 @@ public class Account {
 	}
 	public void setStatus(int status) {
 		this.status = status;
+	}
+	
+	public String toString() {
+		return this.name+"_"+this.email+"_"+this.phone+"_"+this.password;
 	}
 	
 	

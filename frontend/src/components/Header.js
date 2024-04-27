@@ -1,7 +1,27 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const Header = () => {
+const Header = ({token}) => {
+// if (token) {
+//   const tokenParts = token.split('.'); // Tách token thành các phần
+  
+//   if (tokenParts.length === 3) {
+//     const payload = JSON.parse(atob(tokenParts[1])); // Giải mã payload
+//     console.log('Payload:', payload);
+    
+//     // Lấy thông tin từ payload
+//     const userId = payload.userId;
+//     const username = payload.username;
+//     // Tiếp tục xử lý với thông tin từ token
+//   } else {
+//     console.error('Invalid token format');
+//     // Xử lý khi token không hợp lệ
+//   }
+// } else {
+//   console.error('Token not found');
+//   // Xử lý khi không tìm thấy token
+// }
+
   return (
     <div className="header">
       <div className="container">
@@ -99,7 +119,6 @@ const Header = () => {
                       className="search-input"
                       placeholder="Enter your search term..."
                       type="text"
-                      value=""
                       name="search"
                     />
                   </form>
@@ -163,7 +182,6 @@ const Header = () => {
                       </span>
                       <button
                         className="checkout"
-                        onClick="location.href='checkout.html'"
                       >
                         CheckOut
                       </button>
