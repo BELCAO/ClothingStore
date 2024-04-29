@@ -1,26 +1,45 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
-const Header = ({token}) => {
-// if (token) {
-//   const tokenParts = token.split('.'); // Tách token thành các phần
-  
-//   if (tokenParts.length === 3) {
-//     const payload = JSON.parse(atob(tokenParts[1])); // Giải mã payload
-//     console.log('Payload:', payload);
-    
-//     // Lấy thông tin từ payload
-//     const userId = payload.userId;
-//     const username = payload.username;
-//     // Tiếp tục xử lý với thông tin từ token
-//   } else {
-//     console.error('Invalid token format');
-//     // Xử lý khi token không hợp lệ
-//   }
-// } else {
-//   console.error('Token not found');
-//   // Xử lý khi không tìm thấy token
-// }
+
+
+const UserMenu = () => {
+  return (
+    <>
+      <ul className="usermenu">
+        <li>
+          <Link to="/SignIn" className="log">
+            Sign In
+          </Link>
+        </li>
+        <li>
+          <Link to="/SignUp" className="reg">
+            Sign Up
+          </Link>
+        </li>
+      </ul>
+    </>
+  );
+};
+const Account = () => {
+  return (
+    <>
+      <ul className="usermenu">
+        <li style={{display:"flex", flexDirection:"row-reverse"}}>
+          <img src="images/avatar_default.jpg" style={{widows:25, height:25, borderRadius:15}}/>
+          <Link to="/56" style={{margin:'auto', marginRight: 10}}>
+            Account
+          </Link>
+        </li>
+      </ul>
+    </>
+  );
+};
+
+const Header = () => {
+  const [isAuth, setIsAuth] = useState(false);
+  const token = useSelector(state => state.token);
 
   return (
     <div className="header">
@@ -94,18 +113,7 @@ const Header = ({token}) => {
                   </ul>
                 </div>
                 <div className="col-md-3">
-                  <ul className="usermenu">
-                    <li>
-                      <Link to="/SignIn" className="log">
-                        Sign In
-                      </Link>
-                    </li>
-                    <li>
-                      <Link to="/SignUp" className="reg">
-                        Sign Up
-                      </Link>
-                    </li>
-                  </ul>
+                  {token != null ? <Account/> : <UserMenu/>}
                 </div>
               </div>
             </div>
@@ -180,11 +188,7 @@ const Header = ({token}) => {
                       <span className="total">
                         Total <strong>$60.00</strong>
                       </span>
-                      <button
-                        className="checkout"
-                      >
-                        CheckOut
-                      </button>
+                      <button className="checkout">CheckOut</button>
                     </li>
                   </ul>
                 </li>

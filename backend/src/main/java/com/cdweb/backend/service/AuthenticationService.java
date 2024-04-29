@@ -59,7 +59,6 @@ public class AuthenticationService {
 			jwsObject.sign(new MACSigner(signKey));
 			return jwsObject.serialize();
 		} catch (JOSEException e) {
-			System.out.println("ggggggggg");
 			throw new RuntimeException(e);
 		}
 	}
