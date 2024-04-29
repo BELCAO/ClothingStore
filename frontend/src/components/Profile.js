@@ -1,54 +1,93 @@
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useState, useEffect } from "react";
+import ".././css/profileStyle.css";
+import { deleteToken } from "../js/redux/actions";
+import { useDispatch } from "react-redux";
 
 const Profile = () => {
-  const { uerID } = useParams();
+  const { accountID } = useParams();
   const token = useSelector((state) => state.token);
-  console.log("Token: " + token);
-  const InforNull = () => {
-    return <div style={{ margin: "auto", width: "fit-Content" }}>NUll</div>;
-  };
-  const InforAccount = () => {
-    if (token != null) {
+  const [accountInfor, setAccountInfor] = useState(null);
+  const [loading, setLoadings] = useState(false);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    console.log("loading data...");
+    if (token) {
+      setLoadings(true);
       axios
-        .get("http://localhost:8080/account/56", {
+        .get(`http://localhost:8080/account/${accountID}`, {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((response) => {
-          console.log(response.data);
-          return (
-            <div style={{ margin: "auto", width: "fit-Content" }}>
-              <img
-                className="logo"
-                src="images/avatar_default.jpg"
-                alt=""
-                style={{ marginRight: 50 }}
-              />
-              <h1>Account ID: {response.data.id} </h1>
-              <h1>Account Name: {response.data.name}</h1>
-              <h1>Account Email: {response.data.email}</h1>
-              <h1>Account Phone: {response.data.phone}</h1>
-              <h1>Account Avatar: {response.data.avatar}</h1>
-              <h1>Account Role: {response.data.role}</h1>
-              <h1>Account Status: {response.data.status}</h1>
-            </div>
-          );
+          setAccountInfor(response.data);
+          setLoadings(false);
         })
         .catch((error) => {
           console.log("Không load được thông tin tài khoản", error);
+          setLoadings(false);
         });
+    }else{
+        navigate("/SignIn")
+    }
+  }, [token]);
+  const renderContent = () => {
+    if (loading) {
+      console.log("render content laoding");
+      return (
+        <div style={{ margin: "auto", width: "fit-Content" }}>Loading...</div>
+      );
     } else {
-      console.log("chưa đăng nhập");
+      console.log("render content loaded");
+      if (accountInfor) {
+        return (
+          <div>
+            <h1>Account ID: {accountInfor.id} </h1>
+            <h1>Account Name: {accountInfor.name}</h1>
+            <h1>Account Email: {accountInfor.email}</h1>
+            <h1>Account Phone: {accountInfor.phone}</h1>
+            <h1>Account Avatar: {accountInfor.avatar}</h1>
+            <h1>Account Role: {accountInfor.role}</h1>
+            <h1>Account Status: {accountInfor.status}</h1>
+          </div>
+        );
+      }
     }
   };
+
+  const logOut = () => {
+    dispatch(deleteToken());
+  };
+
   return (
     <>
       <div className="clearfix"></div>
       <div className="container">
         <div className="row display-flex">
-          <div className="col-md-12 margin-auto">
-            {token != null ? <InforAccount /> : <InforNull />}
+          <div className="col-md-4">
+            {/* {token ? renderContent():"NULL"} */}
+            <div className="profile-menu">
+              <img
+                className="avatar-profile"
+                src="images/avatar_default.jpg"
+                alt="No image"
+              />
+              <div className="item-menu">My Profile</div>
+              <div className="item-menu">Liked Products</div>
+              <div className="item-menu">Orders</div>
+              <div className="item-menu">Change Password</div>
+              <div onClick={logOut} className="item-menu">
+                Log Out
+              </div>
+            </div>
+          </div>
+          <div className="col-md-8">
+            <div className="infor-content content">
+              {token ? renderContent() : navigate("/")}
+            </div>
           </div>
         </div>
       </div>

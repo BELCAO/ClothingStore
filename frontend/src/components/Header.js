@@ -38,9 +38,7 @@ const Account = () => {
 };
 
 const Header = () => {
-  const [isAuth, setIsAuth] = useState(false);
   const token = useSelector(state => state.token);
-
   return (
     <div className="header">
       <div className="container">

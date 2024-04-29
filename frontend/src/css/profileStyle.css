@@ -1,0 +1,27 @@
+.profile-menu {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+.avatar-profile {
+    width: 60%;
+    border-radius: 10%;
+    margin: 20px 0px;
+}
+
+.item-menu {
+    font-size: 20px;
+    font-weight: 400;
+    color: rgb(238, 238, 238);
+    padding: 10px 20px;
+    margin-top: 20px;
+    border-top:2px solid rgb(49, 49, 49);
+}
+
+.content {
+    margin-top: 40px;
+    padding: 20px;
+    background-color: aliceblue;
+    border-radius: 20px;
+    height: 500px;
+}
