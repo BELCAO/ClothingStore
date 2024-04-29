@@ -8,12 +8,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.service.annotation.GetExchange;
 
 import com.cdweb.backend.entity.Account;
 import com.cdweb.backend.service.AccountService;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -30,9 +30,9 @@ public class AccountController {
 		return accountService.getAllAccount();
 	}
 	
-	@PostMapping("/")
-	public Account getAccountById(@RequestBody Map<String, Long> data) {
-		return accountService.getAccountById(data.get("id"));
+	@GetMapping("/{accountID}")
+	public Account getAccountById(@PathVariable Long accountID) {
+		return accountService.getAccountById(accountID);
 	}
 	
 	@PostMapping("/create")

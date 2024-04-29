@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import axios from 'axios';
 import { Link, useNavigate } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import ".././css/mystyle.css";
+import { saveToken } from ".././js/redux/actions";
+import { useDispatch } from "react-redux";
 
 const SignupSchema = Yup.object().shape({
   email: Yup.string()
@@ -14,20 +16,15 @@ const SignupSchema = Yup.object().shape({
     .required("Mật khẩu không được để trống"),
 });
 
-const SignIn = ({onTokenChange}) => {
+const SignIn = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [token, setToken] = useState('');
-
-  const saveToken = (token) => {
-    setToken(token);
-    onTokenChange(token);
-  };
 
   const handleSubmit = (values, actions) => {
     axios.post("http://localhost:8080/auth/", values)
     .then((response) => {
-      console.log(response)
       saveToken(response.data)
+      dispatch(saveToken(response.data))
       actions.setSubmitting(false);
       navigate("/")
     })
