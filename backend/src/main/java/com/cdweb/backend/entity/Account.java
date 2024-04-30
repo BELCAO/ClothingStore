@@ -1,5 +1,7 @@
 package com.cdweb.backend.entity;
 
+import java.util.Set;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,16 +19,13 @@ public class Account {
 	String phone;
 	String avatar;
 	String password;
-	int role;
+	Set<String> roles;
 	int status;
 	
 	public Account() {
 		super();
-		this.avatar = "avatar";
-		this.role = 0;
-		this.status = 1;
 	}
-	public Account(Long id, String name, String email, String phone, String avatar, String password, int role, int status) {
+	public Account(Long id, String name, String email, String phone, String avatar, String password, Set<String> roles, int status) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -34,7 +33,7 @@ public class Account {
 		this.phone = phone;
 		this.avatar = avatar;
 		this.password = password;
-		this.role = role;
+		this.roles = roles;
 		this.status = status;
 	}
 	public Long getId() {
@@ -73,11 +72,11 @@ public class Account {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public int getRole() {
-		return role;
+	public Set<String> getRole() {
+		return roles;
 	}
-	public void setRole(int role) {
-		this.role = role;
+	public void setRole(Set<String> roles) {
+		this.roles = roles;
 	}
 	public int getStatus() {
 		return status;
