@@ -4,6 +4,8 @@ import * as Yup from "yup";
 import ".././css/mystyle.css";
 import axios from "axios";
 import { useState } from "react";
+import { saveToken } from ".././js/redux/actions";
+import { useDispatch } from "react-redux";
 
 const SignupSchema = Yup.object().shape({
   name: Yup.string().required("Vui lòng nhập tên của bạn"),
@@ -26,6 +28,7 @@ const SignUp = () => {
   const [showCheckEmail, setShowCheckEmail] = useState(true);
   const [email, setEmail] = useState();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
 
   const toggleCheckEmail = () => {
@@ -39,7 +42,15 @@ const SignUp = () => {
       .post("http://localhost:8080/account/create", data)
       .then((response) => {
         console.log("Successfully created");
-        navigate("/")
+        axios.post("http://localhost:8080/auth/", data)
+        .then((response) => {
+          // saveToken(response.data)
+          dispatch(saveToken(response.data))
+          navigate("/")
+        })
+        .catch((error) => {
+          console.log("Error Sign in", error);
+        });
       })
       .catch((errors) => {
         console.log("Error creating account: ", errors);

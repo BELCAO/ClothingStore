@@ -7,7 +7,6 @@ import { deleteToken } from "../js/redux/actions";
 import { useDispatch } from "react-redux";
 
 const Profile = () => {
-  const { accountID } = useParams();
   const token = useSelector((state) => state.token);
   const [accountInfor, setAccountInfor] = useState(null);
   const [loading, setLoadings] = useState(false);
@@ -19,7 +18,7 @@ const Profile = () => {
     if (token) {
       setLoadings(true);
       axios
-        .get(`http://localhost:8080/account/${accountID}`, {
+        .get(`http://localhost:8080/account/myprofile`, {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((response) => {
@@ -30,8 +29,8 @@ const Profile = () => {
           console.log("Không load được thông tin tài khoản", error);
           setLoadings(false);
         });
-    }else{
-        navigate("/SignIn")
+    } else {
+      navigate("/SignIn");
     }
   }, [token]);
   const renderContent = () => {
@@ -60,6 +59,7 @@ const Profile = () => {
 
   const logOut = () => {
     dispatch(deleteToken());
+    navigate("/");
   };
 
   return (
@@ -75,12 +75,12 @@ const Profile = () => {
                 src="images/avatar_default.jpg"
                 alt="No image"
               />
-              <div className="item-menu">My Profile</div>
-              <div className="item-menu">Liked Products</div>
-              <div className="item-menu">Orders</div>
-              <div className="item-menu">Change Password</div>
-              <div onClick={logOut} className="item-menu">
-                Log Out
+              <div className="item-menu-list">
+                <div className="item-menu">My Profile</div>
+                <div className="item-menu">Liked Products</div>
+                <div className="item-menu">Orders</div>
+                <div className="item-menu">Change Password</div>
+                <div className="item-menu" onClick={logOut} >Log Out</div>
               </div>
             </div>
           </div>

@@ -29,12 +29,13 @@ public class AuthenticationService {
 	private  String signKey;
 	@Autowired
 	private AccountRepository accountRepository;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 	
 	
 	public String authentication(String email, String password) {
 		Account account = accountRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Account Not Found"));
-		PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
-		boolean authentication =  passwordEncoder.matches(password, account.getPassword());
+		boolean authentication = passwordEncoder.matches(password, account.getPassword());
 		if(!authentication) {
 			throw new RuntimeException();
 		}

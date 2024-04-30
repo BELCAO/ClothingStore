@@ -30,15 +30,15 @@ public class AccountController {
 	
 	@GetMapping("/list")
 	public List<Account> getAllAccount(){
-		var authentication = SecurityContextHolder.getContext().getAuthentication();
-		System.out.println("email: " + authentication.getName());
-		authentication.getAuthorities().forEach(gra -> System.out.println(gra.getAuthority()));
+//		var authentication = SecurityContextHolder.getContext().getAuthentication();
+//		System.out.println("email: " + authentication.getName());
+//		authentication.getAuthorities().forEach(gra -> System.out.println(gra.getAuthority()));
 		return accountService.getAllAccount();
 	}
 	
-	@GetMapping("/{accountID}")
-	public Account getAccountById(@PathVariable Long accountID) {
-		return accountService.getAccountById(accountID);
+	@GetMapping("/myprofile")
+	public Account getMyProfile() {
+		return accountService.getAccountByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
 	}
 	
 	@PostMapping("/create")
