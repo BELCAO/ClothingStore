@@ -4,7 +4,7 @@
     padding: 20px;
 }
 .avatar-profile {
-    width: 60%;
+    width: 70%;
     border-radius: 10%;
     margin: 20px 0px;
 }
@@ -12,10 +12,21 @@
 .item-menu {
     font-size: 20px;
     font-weight: 400;
-    color: rgb(238, 238, 238);
+    color: rgb(216, 216, 216);
     padding: 10px 20px;
     margin-top: 20px;
     border-top:2px solid rgb(49, 49, 49);
+    width: 100%;
+    cursor: pointer;
+}
+.item-menu:hover {
+    background-color: rgba(199, 199, 199, 0.3);
+    border-radius: 10px;
+    border-top:2px solid rgba(199, 199, 199, 0);
+    color: rgb(255, 255, 255);
+}
+.item-menu-list {
+    width: 70%;
 }
 
 .content {

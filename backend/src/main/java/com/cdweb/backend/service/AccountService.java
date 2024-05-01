@@ -22,6 +22,9 @@ public class AccountService {
 	public Account getAccountById(Long id) {
 		return accountRepository.findById(id).orElseThrow(() -> new RuntimeException("Account Not Found"));
 	}
+	public Account getAccountByEmail(String email) {
+		return accountRepository.getByEmail(email);
+	}
 	public boolean existsAccountByEmail(String email) {
 		return accountRepository.existsByEmail(email);
 	}

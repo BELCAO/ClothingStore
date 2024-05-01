@@ -23,7 +23,7 @@ const SignIn = () => {
   const handleSubmit = (values, actions) => {
     axios.post("http://localhost:8080/auth/", values)
     .then((response) => {
-      saveToken(response.data)
+      // saveToken(response.data)
       dispatch(saveToken(response.data))
       actions.setSubmitting(false);
       navigate("/")

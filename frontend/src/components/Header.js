@@ -26,10 +26,10 @@ const Account = () => {
   return (
     <>
       <ul className="usermenu">
-        <li style={{display:"flex", flexDirection:"row-reverse"}}>
-          <img src="images/avatar_default.jpg" style={{widows:25, height:25, borderRadius:15}}/>
-          <Link to="/56" style={{margin:'auto', marginRight: 10}}>
-            Account
+        <li>
+          <Link to="/Profile" style={{display: "flex", flexDirection:"row"}}>
+            <div style={{margin:"auto"}}>Account</div>
+            <img src="images/avatar_default.jpg" style={{widows:25, height:25, borderRadius:15, marginLeft:10}}/>
           </Link>
         </li>
       </ul>
