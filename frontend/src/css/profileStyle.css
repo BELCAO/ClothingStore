@@ -36,3 +36,14 @@
     border-radius: 20px;
     height: 500px;
 }
+
+.form-control:disabled{
+    cursor: default;
+}
+.btn-list{
+    display: flex;
+    padding: 10px 0px;
+}
+.btn-list button {
+    margin: 0px 10px !important;
+}
