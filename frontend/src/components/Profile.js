@@ -1,13 +1,11 @@
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import ".././css/profileStyle.css";
-import { deleteToken } from "../js/redux/actions";
-import { useDispatch } from "react-redux";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-
+import { useDispatch, useSelector } from "react-redux";
+import { saveToken, deleteToken } from "../js/redux/actions";
 const UpdateProfileSchema = Yup.object().shape({
   email: Yup.string()
     .email("Vui lòng nhập đúng định dạng email")
@@ -20,7 +18,7 @@ const UpdateProfileSchema = Yup.object().shape({
 });
 
 const Profile = () => {
-  const token = useSelector((state) => state.token);
+  const token = useSelector(state => state.token);
   const [accountInfor, setAccountInfor] = useState(null);
   const [loading, setLoadings] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -28,7 +26,8 @@ const Profile = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (token) {
+    console.log("Token top pae: " + token );
+    if (token != null) {
       setLoadings(true);
       axios
         .get(`http://localhost:8080/account/myprofile`, {
@@ -42,9 +41,7 @@ const Profile = () => {
           console.log("Không load được thông tin tài khoản", error);
           setLoadings(false);
         });
-    } else {
-      navigate("/SignIn");
-    }
+    } 
   }, [token]);
   const renderContent = () => {
     if (loading) {
@@ -58,17 +55,15 @@ const Profile = () => {
         return (
           <>
             <Formik
-              initialValues={
-                {
-                  name: accountInfor.name,
-                  email: accountInfor.email,
-                  phone: accountInfor.phone,
-                }
-              }
+              initialValues={{
+                name: accountInfor.name,
+                email: accountInfor.email,
+                phoneNumber: accountInfor.phone,
+              }}
               validationSchema={UpdateProfileSchema}
               onSubmit={updateProfile}
             >
-              {({ isValid, isSubmitting, errors, touched }) => (
+              {({ isValid, isSubmitting, errors, touched, resetForm }) => (
                 <Form>
                   <div className="form-group">
                     <label>Email:</label>
@@ -91,6 +86,7 @@ const Profile = () => {
                     <Field
                       name="name"
                       type="text"
+                      disabled={!isEditing}
                       className={`form-control ${
                         errors.name && touched.name ? "is-invalid" : ""
                       }`}
@@ -106,6 +102,7 @@ const Profile = () => {
                     <Field
                       name="phoneNumber"
                       type="text"
+                      disabled={!isEditing}
                       className={`form-control ${
                         errors.email && touched.email ? "is-invalid" : ""
                       }`}
@@ -116,19 +113,38 @@ const Profile = () => {
                       className="invalid-feedback custom-error-message"
                     />
                   </div>
-                  <button type="submit" className="btn btn-primary btn-block" disabled={!isValid || isSubmitting || !isEditing}>Save</button>
-                  <button type="button" className="btn btn-primary btn-block" onClick={renderContent} disabled={!isEditing}>Canel</button>
-                  <button type="button" className="btn btn-primary btn-block" onClick={() =>{setIsEditing(true)}}>Edit</button>
+                  <div className="btn-list"> 
+                    <button
+                      type="submit"
+                      className="btn btn-primary btn-block"
+                      disabled={!isValid || isSubmitting || !isEditing}
+                    >
+                      Save
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-primary btn-block"
+                      disabled={!isEditing}
+                      onClick={() => {
+                        resetForm();
+                        setIsEditing(false);
+                      }}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-primary btn-block"
+                      onClick={() => {
+                        setIsEditing(true);
+                      }}
+                    >
+                      Edit
+                    </button>
+                  </div>
                 </Form>
               )}
             </Formik>
-            {/* <h1>Account ID: {accountInfor.id} </h1>
-            <h1>Account Name: {accountInfor.name}</h1>
-            <h1>Account Email: {accountInfor.email}</h1>
-            <h1>Account Phone: {accountInfor.phone}</h1>
-            <h1>Account Avatar: {accountInfor.avatar}</h1>
-            <h1>Account Role: {accountInfor.role}</h1>
-            <h1>Account Status: {accountInfor.status}</h1> */}
           </>
         );
       }
@@ -140,7 +156,19 @@ const Profile = () => {
     navigate("/");
   };
 
-  const updateProfile = () => {};
+  const updateProfile = (values) => {
+    axios
+    .post(`http://localhost:8080/account/updateMyInfo`,values, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((response) => {
+      setIsEditing(false);
+      dispatch(saveToken(response.data));
+    })
+    .catch((error) => {
+      console.log("Không lưu được", error);
+    });
+  };
 
   return (
     <>
@@ -166,9 +194,7 @@ const Profile = () => {
             </div>
           </div>
           <div className="col-md-8">
-            <div className="infor-content content">
-              {renderContent()}
-            </div>
+            <div className="infor-content content">{renderContent()}</div>
           </div>
         </div>
       </div>

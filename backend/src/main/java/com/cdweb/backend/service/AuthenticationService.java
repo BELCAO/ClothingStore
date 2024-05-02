@@ -42,11 +42,14 @@ public class AuthenticationService {
 		return generateToken(account);
 	}
 	
+	public String againAuthentication(Account account) {
+		return generateToken(account);
+	}
 	
 	private String generateToken(Account account) {
 		JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
 		JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
-				.subject(account.getEmail())
+				.subject(Long.toString(account.getId()))
 				.issuer("cdw.com")
 				.issueTime(new Date())
 				.expirationTime(new Date(
