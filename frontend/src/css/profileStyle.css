@@ -29,12 +29,13 @@
     width: 70%;
 }
 
-.content {
+.infor-content {
     margin-top: 40px;
     padding: 20px;
     background-color: aliceblue;
     border-radius: 20px;
     height: 500px;
+    flex: 1;
 }
 
 .form-control:disabled{
@@ -46,4 +47,9 @@
 }
 .btn-list button {
     margin: 0px 10px !important;
+}
+
+.content {
+    background-color: aliceblue;
+    display: flex;
 }

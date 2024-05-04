@@ -21,7 +21,7 @@ public class SecurityConfig {
 	@Value("${signer.key}")
 	private String signerKey;
 	
-	private final String[] PUBLIC_ENDPOINTS = {"/auth/","/account/create", "/account/existsemail"};
+	private final String[] PUBLIC_ENDPOINTS = {"/auth/","/account/create", "/account/existsemail", "/api/avatar", "D:/111/image/d20ad1e9-f83c-49df-9b5f-3429e61297f8_favicon3.png"};
     @Bean
     SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
 		httpSecurity.authorizeHttpRequests(request -> request	
