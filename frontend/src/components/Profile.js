@@ -6,6 +6,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import { saveToken, deleteToken } from "../js/redux/actions";
+import UploadAvatar from "./UploadAvatar";
 const UpdateProfileSchema = Yup.object().shape({
   email: Yup.string()
     .email("Vui lòng nhập đúng định dạng email")
@@ -18,7 +19,7 @@ const UpdateProfileSchema = Yup.object().shape({
 });
 
 const Profile = () => {
-  const token = useSelector(state => state.token);
+  const token = useSelector((state) => state.token);
   const [accountInfor, setAccountInfor] = useState(null);
   const [loading, setLoadings] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -26,7 +27,7 @@ const Profile = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log("Token top pae: " + token );
+    console.log("Token top pae: " + token);
     if (token != null) {
       setLoadings(true);
       axios
@@ -41,7 +42,7 @@ const Profile = () => {
           console.log("Không load được thông tin tài khoản", error);
           setLoadings(false);
         });
-    } 
+    }
   }, [token]);
   const renderContent = () => {
     if (loading) {
@@ -113,7 +114,7 @@ const Profile = () => {
                       className="invalid-feedback custom-error-message"
                     />
                   </div>
-                  <div className="btn-list"> 
+                  <div className="btn-list">
                     <button
                       type="submit"
                       className="btn btn-primary btn-block"
@@ -158,18 +159,20 @@ const Profile = () => {
 
   const updateProfile = (values) => {
     axios
-    .post(`http://localhost:8080/account/updateMyInfo`,values, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    .then((response) => {
-      setIsEditing(false);
-      dispatch(saveToken(response.data));
-    })
-    .catch((error) => {
-      console.log("Không lưu được", error);
-    });
+      .post(`http://localhost:8080/account/updateMyInfo`, values, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        setIsEditing(false);
+        dispatch(saveToken(response.data));
+      })
+      .catch((error) => {
+        console.log("Không lưu được", error);
+      });
   };
-
+  const handleFileChange = (e) => {
+    console.log(e.target.files[0]);
+  };
   return (
     <>
       <div className="clearfix"></div>
@@ -194,7 +197,10 @@ const Profile = () => {
             </div>
           </div>
           <div className="col-md-8">
-            <div className="infor-content content">{renderContent()}</div>
+            <div className="content">
+              <div className="infor-content">{renderContent()}</div>
+              <UploadAvatar className="avatar" />
+            </div>
           </div>
         </div>
       </div>
