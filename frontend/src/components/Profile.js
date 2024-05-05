@@ -65,7 +65,7 @@ const Profile = () => {
               onSubmit={updateProfile}
             >
               {({ isValid, isSubmitting, errors, touched, resetForm }) => (
-                <Form>
+                <Form className="form-info">
                   <div className="form-group">
                     <label>Email:</label>
                     <Field
@@ -146,6 +146,8 @@ const Profile = () => {
                 </Form>
               )}
             </Formik>
+            <span style={{width:20}}></span>
+            <UploadAvatar urlAvatar = {"http://localhost:8080/images/avatars/"+accountInfor.avatar} />
           </>
         );
       }
@@ -199,7 +201,6 @@ const Profile = () => {
           <div className="col-md-8">
             <div className="content">
               <div className="infor-content">{renderContent()}</div>
-              <UploadAvatar className="avatar" />
             </div>
           </div>
         </div>

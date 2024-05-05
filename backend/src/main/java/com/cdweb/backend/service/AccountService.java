@@ -37,6 +37,16 @@ public class AccountService {
 	public Account getAccountById(Long id) {
 		return accountRepository.findById(id).orElseThrow(() -> new RuntimeException("Account Not Found"));
 	}
+	
+	public Account updateAvatar(Long accountID, String avatarName) {
+		Optional<Account> optional = accountRepository.findById(accountID);
+		if(optional.isPresent()) {
+			Account account = optional.get();
+			account.setAvatar(avatarName);
+			return accountRepository.save(account);
+		}
+		throw new RuntimeException("No update avatar");
+	}
 	public Account getAccountByEmail(String email) {
 		return accountRepository.getByEmail(email);
 	}
