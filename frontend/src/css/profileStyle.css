@@ -35,7 +35,7 @@
     background-color: aliceblue;
     border-radius: 20px;
     height: 500px;
-    flex: 1;
+    display: flex;
 }
 
 .form-control:disabled{
@@ -51,5 +51,7 @@
 
 .content {
     background-color: aliceblue;
-    display: flex;
+}
+.form-info {
+    flex: 3;
 }

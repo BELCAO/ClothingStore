@@ -3,21 +3,18 @@ package com.cdweb.backend.controller;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.cdweb.backend.entity.Account;
 import com.cdweb.backend.enums.Role;
 import com.cdweb.backend.service.AccountService;
 import com.cdweb.backend.service.AuthenticationService;
-
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -43,7 +40,11 @@ public class AccountController {
 	public Account getMyProfile() {
 		return accountService.getAccountById(Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName()));
 	}
-	
+	@GetMapping("/myavatar")
+	public ResponseEntity<String> getMyAvatar() {
+		Account account = accountService.getAccountById(Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName()));
+		return ResponseEntity.ok().body(account.getAvatar());
+	}
 	@PostMapping("/updateMyInfo")
 	public String updateMyInfo(@RequestBody Map<String, String> data) {
 		Long accountId = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
