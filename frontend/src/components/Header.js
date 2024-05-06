@@ -1,8 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-
-
+import { useState } from "react";
+import axios from "axios";
 
 const UserMenu = () => {
   return (
@@ -22,14 +22,22 @@ const UserMenu = () => {
     </>
   );
 };
-const Account = () => {
+const Account = (prop) => {
   return (
     <>
       <ul className="usermenu">
         <li>
-          <Link to="/Profile" style={{display: "flex", flexDirection:"row"}}>
-            <div style={{margin:"auto"}}>Account</div>
-            <img src="images/avatar_default.jpg" style={{widows:25, height:25, borderRadius:15, marginLeft:10}}/>
+          <Link to="/Profile" style={{ display: "flex", flexDirection: "row" }}>
+            <div style={{ margin: "auto" }}>Account</div>
+            <img
+              src={process.env.REACT_APP_HOST_API_URL + "images/avatar?imgPath=" + prop.imgPath}
+              style={{
+                widows: 25,
+                height: 25,
+                borderRadius: 15,
+                marginLeft: 10,
+              }}
+            />
           </Link>
         </li>
       </ul>
@@ -38,7 +46,28 @@ const Account = () => {
 };
 
 const Header = () => {
-  const token = useSelector(state => state.token);
+  const token = useSelector((state) => state.token);
+  const [urlAvatar, setAvatarUrl] = useState("");
+
+
+  const render = () => {
+    if(token) {
+      axios
+      .get(`${process.env.REACT_APP_HOST_API_URL}account/myavatar`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        setAvatarUrl(response.data);
+      })
+      .catch((error) => {
+        console.log("khong load duoc anh_" + error);
+        console.log(token);
+      });
+      return <Account imgPath={urlAvatar} />;
+    }else{
+      return <UserMenu />
+    }
+  }
   return (
     <div className="header">
       <div className="container">
@@ -111,7 +140,7 @@ const Header = () => {
                   </ul>
                 </div>
                 <div className="col-md-3">
-                  {token != null ? <Account/> : <UserMenu/>}
+                  {render()}
                 </div>
               </div>
             </div>

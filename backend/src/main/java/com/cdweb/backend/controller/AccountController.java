@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -39,7 +40,11 @@ public class AccountController {
 	public Account getMyProfile() {
 		return accountService.getAccountById(Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName()));
 	}
-	
+	@GetMapping("/myavatar")
+	public ResponseEntity<String> getMyAvatar() {
+		Account account = accountService.getAccountById(Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName()));
+		return ResponseEntity.ok().body(account.getAvatar());
+	}
 	@PostMapping("/updateMyInfo")
 	public String updateMyInfo(@RequestBody Map<String, String> data) {
 		Long accountId = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());

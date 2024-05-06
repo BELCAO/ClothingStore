@@ -6,7 +6,7 @@ import {useSelector } from "react-redux";
 
 const UploadAvatar = (prop) => {
   const [selectedFile, setSelectedFile] = useState(null);
-  const [avatarUrl, setAvatarUrl] = useState(prop.urlAvatar);
+  const [avatarUrl, setAvatarUrl] = useState(process.env.REACT_APP_HOST_API_URL+"images/avatar?imgPath="+prop.urlAvatar);
   const token = useSelector((state) => state.token);
 
 
@@ -31,7 +31,7 @@ const UploadAvatar = (prop) => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/avatar",
+        `${process.env.REACT_APP_HOST_API_URL}images/loadavatar`,
         formData,
         {
           headers: {

@@ -1,8 +1,9 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Redirect } from "react-router-dom";
 import React from "react";
-import { Provider } from 'react-redux';
+import { Provider, useSelector } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistor } from './js/redux/store';
+
 
 import Header from "./components/Header";
 import Home from "./components/Home";
