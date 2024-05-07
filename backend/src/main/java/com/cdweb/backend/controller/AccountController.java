@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cdweb.backend.entity.Account;
 import com.cdweb.backend.enums.Role;
 import com.cdweb.backend.service.AccountService;
-import com.cdweb.backend.service.AuthenticationService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,8 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class AccountController {
 	@Autowired
 	private AccountService accountService;
-	@Autowired
-	private AuthenticationService authenticationService;
+
 	
 	@GetMapping("/list")
 	public List<Account> getAllAccount(){
@@ -46,10 +44,9 @@ public class AccountController {
 		return ResponseEntity.ok().body(account.getAvatar());
 	}
 	@PostMapping("/updateMyInfo")
-	public String updateMyInfo(@RequestBody Map<String, String> data) {
+	public ResponseEntity<Account> updateMyInfo(@RequestBody Map<String, String> data) {
 		Long accountId = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
-		Account updateAccount =  accountService.updateAccount(accountId, data);
-		return authenticationService.againAuthentication(updateAccount);
+		return ResponseEntity.ok().body(accountService.updateAccount(accountId, data));
 	}
 	
 	@PostMapping("/create")

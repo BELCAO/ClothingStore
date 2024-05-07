@@ -1,14 +1,18 @@
 import React, { useState } from "react";
 import axios from "axios";
 import ".././css/chooseimagestyle.css";
-import {useSelector } from "react-redux";
-
+import { useSelector, useDispatch } from "react-redux";
+import { saveAvatarUrl } from "../js/redux/actions";
 
 const UploadAvatar = (prop) => {
   const [selectedFile, setSelectedFile] = useState(null);
-  const [avatarUrl, setAvatarUrl] = useState(process.env.REACT_APP_HOST_API_URL+"images/avatar?imgPath="+prop.urlAvatar);
+  const [avatarUrl, setAvatarUrl] = useState(
+    process.env.REACT_APP_HOST_API_URL +
+      "images/avatar?imgPath=" +
+      prop.avatarUrl
+  );
   const token = useSelector((state) => state.token);
-
+  const dispatch = useDispatch();
 
   const handleFileChange = (e) => {
     setSelectedFile(e.target.files[0]);
@@ -28,25 +32,18 @@ const UploadAvatar = (prop) => {
 
     const formData = new FormData();
     formData.append("avatar", selectedFile);
-
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_HOST_API_URL}images/loadavatar`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-             Authorization: `Bearer ${token}` ,
-          },
-        }
-      );
-
-      console.log("Đường dẫn ảnh đại diện mới:", response.data.avatarUrl);
-      // Cập nhật giao diện người dùng với ảnh đại diện mới
-    } catch (error) {
+    console.log(token);
+    axios.post(`${process.env.REACT_APP_HOST_API_URL}images/loadavatar`,formData,{
+      headers: {Authorization: `Bearer ${token}`},
+    })
+    .then((response) => {
+      dispatch(saveAvatarUrl(response.data.avatarUrl));
+    })
+    .catch((error) => {
       console.error("Lỗi khi tải lên ảnh:", error);
       alert("Đã xảy ra lỗi khi tải lên ảnh");
-    }
+    });
+    
   };
 
   return (
@@ -60,7 +57,9 @@ const UploadAvatar = (prop) => {
         />
         <img className="avatar" src={avatarUrl} alt="Avatar" />
       </div>
-      <button className="btn-load" onClick={handleUpload}>Tải lên</button>
+      <button className="btn-load" onClick={handleUpload}>
+        Upload
+      </button>
     </div>
   );
 };

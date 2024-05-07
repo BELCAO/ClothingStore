@@ -1,7 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
+import { deleteToken, saveAvatarUrl } from "../js/redux/actions";
 import axios from "axios";
 
 const UserMenu = () => {
@@ -34,8 +35,10 @@ const Account = (prop) => {
               style={{
                 widows: 25,
                 height: 25,
+                width: 25,
                 borderRadius: 15,
                 marginLeft: 10,
+                objectFit: "cover"
               }}
             />
           </Link>
@@ -47,7 +50,9 @@ const Account = (prop) => {
 
 const Header = () => {
   const token = useSelector((state) => state.token);
-  const [urlAvatar, setAvatarUrl] = useState("");
+  const avatarUrl = useSelector((state) => state.avatarUrl);
+  const dispatch = useDispatch();
+
 
 
   const render = () => {
@@ -57,13 +62,14 @@ const Header = () => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        setAvatarUrl(response.data);
+        dispatch(saveAvatarUrl(response.data));
       })
       .catch((error) => {
+        if(error.response.status === 401) dispatch(deleteToken());
         console.log("khong load duoc anh_" + error);
         console.log(token);
       });
-      return <Account imgPath={urlAvatar} />;
+      if(avatarUrl) return <Account imgPath={avatarUrl} />;
     }else{
       return <UserMenu />
     }

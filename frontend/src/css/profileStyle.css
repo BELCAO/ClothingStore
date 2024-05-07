@@ -3,10 +3,19 @@
     flex-direction: column;
     padding: 20px;
 }
-.avatar-profile {
+
+.avatar-profile-frame {
     width: 70%;
-    border-radius: 10%;
+    padding-top: 70%;
+    position: relative;
     margin: 20px 0px;
+}
+.avatar-profile {
+    height: 100%;
+    position: absolute;
+    top: 0;
+    object-fit: cover;
+    border-radius: 10%;
 }
 
 .item-menu {
@@ -29,13 +38,13 @@
     width: 70%;
 }
 
-.infor-content {
+.content {
     margin-top: 40px;
     padding: 20px;
-    background-color: aliceblue;
-    border-radius: 20px;
     height: 500px;
     display: flex;
+    background-color: aliceblue;
+    border-radius: 20px;
 }
 
 .form-control:disabled{
@@ -47,10 +56,6 @@
 }
 .btn-list button {
     margin: 0px 10px !important;
-}
-
-.content {
-    background-color: aliceblue;
 }
 .form-info {
     flex: 3;
