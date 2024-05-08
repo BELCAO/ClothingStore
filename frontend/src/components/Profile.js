@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteToken } from "../js/redux/actions";
+import { deleteAvatarUrl, deleteToken, deleteUserName } from "../js/redux/actions";
 import UploadAvatar from "./UploadAvatar";
 
 const UpdateProfileSchema = Yup.object().shape({
@@ -22,6 +22,7 @@ const UpdateProfileSchema = Yup.object().shape({
 const Profile = () => {
   const token = useSelector((state) => state.token);
   const avatarUrl = useSelector((state) => state.avatarUrl);
+  const userName = useSelector((state) => state.userName);
   const [accountInfor, setAccountInfor] = useState();
   const [isEditing, setIsEditing] = useState(false);
   const navigate = useNavigate();
@@ -49,7 +50,6 @@ const Profile = () => {
       }
     }
   }, [token]);
-
 
   // const renderContent = () => {
   //   console.log("reder content");
@@ -214,8 +214,6 @@ const Profile = () => {
   //   }
   // };
 
-
-
   const updateProfile = (values) => {
     console.log("cập nhật thông tin");
     axios
@@ -237,6 +235,8 @@ const Profile = () => {
 
   const logOut = () => {
     dispatch(deleteToken());
+    dispatch(deleteUserName());
+    dispatch(deleteAvatarUrl());
     navigate("/");
   };
 
@@ -396,163 +396,154 @@ const Profile = () => {
   // };
 
   const renderImageProfile = () => {
-    if (avatarUrl){
+    if (userName && avatarUrl) {
       return (
-        <img
-        className="avatar-profile"
-        src={
-          process.env.REACT_APP_HOST_API_URL +
-          "images/avatar?imgPath=" +
-          avatarUrl
-        }
-        alt="No image"
-      />
-      )
+        <div className="profile-info">
+          <div className="avatar-profile-frame">
+            <img
+              className="avatar-profile"
+              src={
+                process.env.REACT_APP_HOST_API_URL +
+                "images/avatar?imgPath=" +
+                avatarUrl
+              }
+              alt="No image"
+            />
+          </div>
+          <p className="userName">{userName}</p>
+        </div>
+      );
     }
   };
-  
+
   const renderInforForm = () => {
-    if (accountInfor){
+    if (accountInfor) {
       return (
         <>
-        <Formik
-          initialValues={{
-            name: accountInfor.name,
-            email: accountInfor.email,
-            phoneNumber: accountInfor.phone,
-          }}
-          validationSchema={UpdateProfileSchema}
-          onSubmit={updateProfile}
-        >
-          {({
-            isValid,
-            isSubmitting,
-            errors,
-            touched,
-            resetForm,
-          }) => (
-            <Form className="form-info">
-              <div className="form-group">
-                <label>Email:</label>
-                <Field
-                  name="email"
-                  type="email"
-                  disabled={!isEditing}
-                  className={`form-control ${
-                    errors.email && touched.email
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                />
-                <ErrorMessage
-                  name="email"
-                  component="div"
-                  className="invalid-feedback custom-error-message"
-                />
-              </div>
-              <div className="form-group">
-                <label>Name:</label>
-                <Field
-                  name="name"
-                  type="text"
-                  disabled={!isEditing}
-                  className={`form-control ${
-                    errors.name && touched.name ? "is-invalid" : ""
-                  }`}
-                />
-                <ErrorMessage
-                  name="name"
-                  component="div"
-                  className="invalid-feedback custom-error-message"
-                />
-              </div>
-              <div className="form-group">
-                <label>Phone Number:</label>
-                <Field
-                  name="phoneNumber"
-                  type="text"
-                  disabled={!isEditing}
-                  className={`form-control ${
-                    errors.email && touched.email
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                />
-                <ErrorMessage
-                  name="phoneNumber"
-                  component="div"
-                  className="invalid-feedback custom-error-message"
-                />
-              </div>
-              <div className="btn-list">
-                <button
-                  type="submit"
-                  className="btn btn-primary btn-block"
-                  disabled={!isValid || isSubmitting || !isEditing}
-                >
-                  Save
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-primary btn-block"
-                  disabled={!isEditing}
-                  onClick={() => {
-                    resetForm();
-                    setIsEditing(false);
-                  }}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-primary btn-block"
-                  onClick={() => {
-                    setIsEditing(true);
-                  }}
-                >
-                  Edit
-                </button>
-              </div>
-            </Form>
-          )}
-        </Formik>
-        <span style={{ width: 20 }}></span>
-        <UploadAvatar avatarUrl={accountInfor.avatar} />
-      </>
-      )
+          <Formik
+            initialValues={{
+              name: accountInfor.name,
+              email: accountInfor.email,
+              phoneNumber: accountInfor.phone,
+            }}
+            validationSchema={UpdateProfileSchema}
+            onSubmit={updateProfile}
+          >
+            {({ isValid, isSubmitting, errors, touched, resetForm }) => (
+              <Form className="form-info">
+                <div className="form-group">
+                  <label>Email:</label>
+                  <Field
+                    name="email"
+                    type="email"
+                    disabled={!isEditing}
+                    className={`form-control ${
+                      errors.email && touched.email ? "is-invalid" : ""
+                    }`}
+                  />
+                  <ErrorMessage
+                    name="email"
+                    component="div"
+                    className="invalid-feedback custom-error-message"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Name:</label>
+                  <Field
+                    name="name"
+                    type="text"
+                    disabled={!isEditing}
+                    className={`form-control ${
+                      errors.name && touched.name ? "is-invalid" : ""
+                    }`}
+                  />
+                  <ErrorMessage
+                    name="name"
+                    component="div"
+                    className="invalid-feedback custom-error-message"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Phone Number:</label>
+                  <Field
+                    name="phoneNumber"
+                    type="text"
+                    disabled={!isEditing}
+                    className={`form-control ${
+                      errors.email && touched.email ? "is-invalid" : ""
+                    }`}
+                  />
+                  <ErrorMessage
+                    name="phoneNumber"
+                    component="div"
+                    className="invalid-feedback custom-error-message"
+                  />
+                </div>
+                <div className="btn-list">
+                  <button
+                    type="submit"
+                    className="btn btn-primary btn-block"
+                    disabled={!isValid || isSubmitting || !isEditing}
+                  >
+                    Save
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-primary btn-block"
+                    disabled={!isEditing}
+                    onClick={() => {
+                      resetForm();
+                      setIsEditing(false);
+                    }}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-primary btn-block"
+                    onClick={() => {
+                      setIsEditing(true);
+                    }}
+                  >
+                    Edit
+                  </button>
+                </div>
+              </Form>
+            )}
+          </Formik>
+          <span style={{ width: 20 }}></span>
+          <UploadAvatar avatarUrl={accountInfor.avatar} />
+        </>
+      );
     }
   };
 
   return (
     <>
-              <div className="clearfix"></div>
-          <div className="container">
-            <div className="row display-flex">
-              <div className="col-md-4">
-                <div className="profile-menu">
-                  <div className="avatar-profile-frame">
-                    {renderImageProfile()}
-                  </div>
-                  <div className="item-menu-list">
-                    <div className="item-menu">My Profile</div>
-                    <div className="item-menu">Liked Products</div>
-                    <div className="item-menu">Orders</div>
-                    <div className="item-menu">Change Password</div>
-                    <div className="item-menu" onClick={logOut}>
-                      Log Out
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-8">
-                <div className="content">
-                  {renderInforForm()}
+      <div className="clearfix"></div>
+      <div className="container">
+        <div className="row" style={{ padding: 20 - 0 }}>
+          <div className="col-md-2">
+            <div className="profile-menu">
+              {renderImageProfile()}
+              <div className="item-menu-list">
+                <div className="item-menu">My Profile</div>
+                <div className="item-menu">Liked Products</div>
+                <div className="item-menu">Orders</div>
+                <div className="item-menu">Change Password</div>
+                <div className="item-menu" onClick={logOut}>
+                  Log Out
                 </div>
               </div>
             </div>
           </div>
-          <div className="clearfix"></div>
+          <div className="col-md-10">
+            <div className="content">{renderInforForm()}</div>
+          </div>
+        </div>
+      </div>
+      <div className="clearfix"></div>
     </>
-  )
+  );
 };
 export default Profile;

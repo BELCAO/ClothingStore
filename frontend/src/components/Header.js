@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
-import { deleteToken, saveAvatarUrl } from "../js/redux/actions";
+// import { userName, avatarUrl } from "../js/redux/actions";
 import axios from "axios";
 
 const UserMenu = () => {
@@ -29,7 +29,7 @@ const Account = (prop) => {
       <ul className="usermenu">
         <li>
           <Link to="/Profile" style={{ display: "flex", flexDirection: "row" }}>
-            <div style={{ margin: "auto" }}>Account</div>
+            <div style={{ margin: "auto" }}>{prop.name}</div>
             <img
               src={process.env.REACT_APP_HOST_API_URL + "images/avatar?imgPath=" + prop.imgPath}
               style={{
@@ -51,25 +51,12 @@ const Account = (prop) => {
 const Header = () => {
   const token = useSelector((state) => state.token);
   const avatarUrl = useSelector((state) => state.avatarUrl);
+  const userName = useSelector((state) => state.userName);
   const dispatch = useDispatch();
-
-
 
   const render = () => {
     if(token) {
-      axios
-      .get(`${process.env.REACT_APP_HOST_API_URL}account/myavatar`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((response) => {
-        dispatch(saveAvatarUrl(response.data));
-      })
-      .catch((error) => {
-        if(error.response.status === 401) dispatch(deleteToken());
-        console.log("khong load duoc anh_" + error);
-        console.log(token);
-      });
-      if(avatarUrl) return <Account imgPath={avatarUrl} />;
+      if(userName && avatarUrl) return <Account imgPath={avatarUrl} name={userName} />;
     }else{
       return <UserMenu />
     }

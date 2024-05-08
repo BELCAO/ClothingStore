@@ -1,28 +1,27 @@
 .profile-menu {
     display: flex;
     flex-direction: column;
-    padding: 20px;
 }
 
 .avatar-profile-frame {
-    width: 70%;
-    padding-top: 70%;
+    width: 30%;
+    padding-top: 30%;
+    height: 0px;
     position: relative;
-    margin: 20px 0px;
 }
 .avatar-profile {
     height: 100%;
     position: absolute;
     top: 0;
     object-fit: cover;
-    border-radius: 10%;
+    border-radius: 50%;
 }
 
 .item-menu {
-    font-size: 20px;
+    font-size: 14px;
     font-weight: 400;
     color: rgb(216, 216, 216);
-    padding: 10px 20px;
+    padding: 10px 0px;
     margin-top: 20px;
     border-top:2px solid rgb(49, 49, 49);
     width: 100%;
@@ -35,13 +34,11 @@
     color: rgb(255, 255, 255);
 }
 .item-menu-list {
-    width: 70%;
+    width: 90%;
 }
 
 .content {
-    margin-top: 40px;
     padding: 20px;
-    height: 500px;
     display: flex;
     background-color: aliceblue;
     border-radius: 20px;
@@ -59,4 +56,21 @@
 }
 .form-info {
     flex: 3;
+}
+
+.form-info input {
+    font-size: 16px;
+}
+
+.profile-info {
+    display: flex;
+    width: 100%;
+}
+.userName {
+    margin: auto;
+    width: 60%;
+    word-wrap: break-word;
+    /* font-size: 14px; */
+    font-weight: 400;
+    color: aliceblue;
 }

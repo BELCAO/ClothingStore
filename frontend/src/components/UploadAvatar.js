@@ -12,6 +12,7 @@ const UploadAvatar = (prop) => {
       prop.avatarUrl
   );
   const token = useSelector((state) => state.token);
+  const userInfo = useSelector((state) => state.token);
   const dispatch = useDispatch();
 
   const handleFileChange = (e) => {
