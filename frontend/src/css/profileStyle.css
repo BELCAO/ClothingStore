@@ -1,19 +1,27 @@
 .profile-menu {
     display: flex;
     flex-direction: column;
-    padding: 20px;
+}
+
+.avatar-profile-frame {
+    width: 30%;
+    padding-top: 30%;
+    height: 0px;
+    position: relative;
 }
 .avatar-profile {
-    width: 70%;
-    border-radius: 10%;
-    margin: 20px 0px;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    object-fit: cover;
+    border-radius: 50%;
 }
 
 .item-menu {
-    font-size: 20px;
+    font-size: 14px;
     font-weight: 400;
     color: rgb(216, 216, 216);
-    padding: 10px 20px;
+    padding: 10px 0px;
     margin-top: 20px;
     border-top:2px solid rgb(49, 49, 49);
     width: 100%;
@@ -26,16 +34,14 @@
     color: rgb(255, 255, 255);
 }
 .item-menu-list {
-    width: 70%;
+    width: 90%;
 }
 
-.infor-content {
-    margin-top: 40px;
+.content {
     padding: 20px;
+    display: flex;
     background-color: aliceblue;
     border-radius: 20px;
-    height: 500px;
-    display: flex;
 }
 
 .form-control:disabled{
@@ -48,10 +54,23 @@
 .btn-list button {
     margin: 0px 10px !important;
 }
-
-.content {
-    background-color: aliceblue;
-}
 .form-info {
     flex: 3;
+}
+
+.form-info input {
+    font-size: 16px;
+}
+
+.profile-info {
+    display: flex;
+    width: 100%;
+}
+.userName {
+    margin: auto;
+    width: 60%;
+    word-wrap: break-word;
+    /* font-size: 14px; */
+    font-weight: 400;
+    color: aliceblue;
 }

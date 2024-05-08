@@ -5,7 +5,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import ".././css/mystyle.css";
 import { useDispatch } from "react-redux";
-import { saveToken } from "../js/redux/actions";
+import { saveAvatarUrl, saveToken, saveUserName } from "../js/redux/actions";
 const SignupSchema = Yup.object().shape({
   email: Yup.string()
     .email("Email không hợp lệ")
@@ -24,6 +24,16 @@ const SignIn = () => {
     .then((response) => {
       dispatch(saveToken(response.data));
       actions.setSubmitting(false);
+      axios.get(`${process.env.REACT_APP_HOST_API_URL}account/myprofile`,{
+        headers: {Authorization: `Bearer ${response.data}`}
+      })
+      .then((response) => {
+        dispatch(saveUserName(response.data.name));
+        dispatch(saveAvatarUrl(response.data.avatar));
+      })
+      .catch((error) =>{
+        console.log(error);
+      });
       navigate("/")
     })
     .catch((error) => {

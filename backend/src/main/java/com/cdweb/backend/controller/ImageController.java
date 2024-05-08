@@ -51,7 +51,7 @@ public class ImageController {
 	         return ResponseEntity.ok().body(Map.of("avatarUrl", avatarUrl));
 	     } catch (IOException e) {
 	         e.printStackTrace();
-	         return ResponseEntity.status(500).body("Lỗi khi tải lên ảnh");
+	         return ResponseEntity.status(500).body("Lỗi khi tải ảnh lên");
 	     }
 	 }
 	
