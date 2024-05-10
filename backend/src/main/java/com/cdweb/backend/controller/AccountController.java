@@ -41,7 +41,7 @@ public class AccountController {
 	@GetMapping("/myavatar")
 	public ResponseEntity<String> getMyAvatar() {
 		Account account = accountService.getAccountById(Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName()));
-		return ResponseEntity.ok().body(account.getAvatar());
+		return ResponseEntity.ok().body(account.getAvatarUrl());
 	}
 	@PostMapping("/updateMyInfo")
 	public ResponseEntity<Account> updateMyInfo(@RequestBody Map<String, String> data) {
@@ -55,11 +55,11 @@ public class AccountController {
 		account.setEmail(data.get("email"));
 		account.setName(data.get("name"));
 		account.setPhone(data.get("phone"));
-		account.setAvatar("Avatar");
+		account.setAvatarUrl("Avatar");
 		account.setStatus(1);
 		HashSet<String> roles = new HashSet<String>();
 		roles.add(Role.USER.name());
-		account.setRole(roles);
+		account.setRoles(roles);
 		PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
 		account.setPassword(passwordEncoder.encode(data.get("password")));
 		return accountService.createAccount(account);

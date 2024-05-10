@@ -1,5 +1,6 @@
 package com.cdweb.backend.service;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -30,6 +31,8 @@ public class AccountService {
 				account.setEmail(data.get("email"));
 				account.setName(data.get("name"));
 				account.setPhone(data.get("phoneNumber"));
+				account.setBirthday(Date.valueOf(data.get("birthday")));
+				account.setGender(data.get("gender"));
 				return accountRepository.save(account);
 			}
 		}
@@ -44,7 +47,7 @@ public class AccountService {
 		Optional<Account> optional = accountRepository.findById(accountID);
 		if(optional.isPresent()) {
 			Account account = optional.get();
-			account.setAvatar(avatarPath);
+			account.setAvatarUrl(avatarPath);
 			return accountRepository.save(account);
 		}
 		throw new RuntimeException("No update avatar");

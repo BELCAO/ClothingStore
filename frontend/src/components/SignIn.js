@@ -6,6 +6,7 @@ import * as Yup from "yup";
 import ".././css/mystyle.css";
 import { useDispatch } from "react-redux";
 import { saveAvatarUrl, saveToken, saveUserName } from "../js/redux/actions";
+
 const SignupSchema = Yup.object().shape({
   email: Yup.string()
     .email("Email không hợp lệ")
@@ -29,7 +30,7 @@ const SignIn = () => {
       })
       .then((response) => {
         dispatch(saveUserName(response.data.name));
-        dispatch(saveAvatarUrl(response.data.avatar));
+        dispatch(saveAvatarUrl(response.data.avatarUrl));
       })
       .catch((error) =>{
         console.log(error);

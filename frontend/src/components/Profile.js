@@ -5,7 +5,11 @@ import { useState, useEffect } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteAvatarUrl, deleteToken, deleteUserName } from "../js/redux/actions";
+import {
+  deleteAvatarUrl,
+  deleteToken,
+  deleteUserName,
+} from "../js/redux/actions";
 import UploadAvatar from "./UploadAvatar";
 
 const UpdateProfileSchema = Yup.object().shape({
@@ -17,6 +21,8 @@ const UpdateProfileSchema = Yup.object().shape({
     .matches(/^[0-9]+$/, "Số điện thoại phải là số")
     .min(10, "Số điện thoại không hợp lệ")
     .required("Vui lòng nhập số điện thoại của bạn"),
+  gender: Yup.string(),
+  birthday: Yup.date(),
 });
 
 const Profile = () => {
@@ -231,6 +237,8 @@ const Profile = () => {
       .catch((error) => {
         console.log("Không lưu được", error);
       });
+
+    console.log("");
   };
 
   const logOut = () => {
@@ -239,161 +247,6 @@ const Profile = () => {
     dispatch(deleteAvatarUrl());
     navigate("/");
   };
-
-  // const renderContent = () => {
-  //   console.log("reder content");
-  //   if (!accountInfor) {
-  //     console.log("render content laoding");
-  //     return (
-  //       <div style={{ margin: "auto", width: "fit-Content" }}>Loading...</div>
-  //     );
-  //   } else {
-  //     console.log("render content loaded");
-  //     return (
-  //       <>
-  //         <div className="clearfix"></div>
-  //         <div className="container">
-  //           <div className="row display-flex">
-  //             <div className="col-md-4">
-  //               <div className="profile-menu">
-  //                 <div className="avatar-profile-frame">
-  //                   <img
-  //                     className="avatar-profile"
-  //                     src={
-  //                       process.env.REACT_APP_HOST_API_URL +
-  //                       "images/avatar?imgPath=" +
-  //                       accountInfor.avatar
-  //                     }
-  //                     alt="No image"
-  //                   />
-  //                 </div>
-  //                 <div className="item-menu-list">
-  //                   <div className="item-menu">My Profile</div>
-  //                   <div className="item-menu">Liked Products</div>
-  //                   <div className="item-menu">Orders</div>
-  //                   <div className="item-menu">Change Password</div>
-  //                   <div className="item-menu" onClick={logOut}>
-  //                     Log Out
-  //                   </div>
-  //                 </div>
-  //               </div>
-  //             </div>
-  //             <div className="col-md-8">
-  //               <div className="content">
-  //                 <>
-  //                   <Formik
-  //                     initialValues={{
-  //                       name: accountInfor.name,
-  //                       email: accountInfor.email,
-  //                       phoneNumber: accountInfor.phone,
-  //                     }}
-  //                     validationSchema={UpdateProfileSchema}
-  //                     onSubmit={updateProfile}
-  //                   >
-  //                     {({
-  //                       isValid,
-  //                       isSubmitting,
-  //                       errors,
-  //                       touched,
-  //                       resetForm,
-  //                     }) => (
-  //                       <Form className="form-info">
-  //                         <div className="form-group">
-  //                           <label>Email:</label>
-  //                           <Field
-  //                             name="email"
-  //                             type="email"
-  //                             disabled={!isEditing}
-  //                             className={`form-control ${
-  //                               errors.email && touched.email
-  //                                 ? "is-invalid"
-  //                                 : ""
-  //                             }`}
-  //                           />
-  //                           <ErrorMessage
-  //                             name="email"
-  //                             component="div"
-  //                             className="invalid-feedback custom-error-message"
-  //                           />
-  //                         </div>
-  //                         <div className="form-group">
-  //                           <label>Name:</label>
-  //                           <Field
-  //                             name="name"
-  //                             type="text"
-  //                             disabled={!isEditing}
-  //                             className={`form-control ${
-  //                               errors.name && touched.name ? "is-invalid" : ""
-  //                             }`}
-  //                           />
-  //                           <ErrorMessage
-  //                             name="name"
-  //                             component="div"
-  //                             className="invalid-feedback custom-error-message"
-  //                           />
-  //                         </div>
-  //                         <div className="form-group">
-  //                           <label>Phone Number:</label>
-  //                           <Field
-  //                             name="phoneNumber"
-  //                             type="text"
-  //                             disabled={!isEditing}
-  //                             className={`form-control ${
-  //                               errors.email && touched.email
-  //                                 ? "is-invalid"
-  //                                 : ""
-  //                             }`}
-  //                           />
-  //                           <ErrorMessage
-  //                             name="phoneNumber"
-  //                             component="div"
-  //                             className="invalid-feedback custom-error-message"
-  //                           />
-  //                         </div>
-  //                         <div className="btn-list">
-  //                           <button
-  //                             type="submit"
-  //                             className="btn btn-primary btn-block"
-  //                             disabled={!isValid || isSubmitting || !isEditing}
-  //                           >
-  //                             Save
-  //                           </button>
-  //                           <button
-  //                             type="button"
-  //                             className="btn btn-primary btn-block"
-  //                             disabled={!isEditing}
-  //                             onClick={() => {
-  //                               resetForm();
-  //                               setIsEditing(false);
-  //                             }}
-  //                           >
-  //                             Cancel
-  //                           </button>
-  //                           <button
-  //                             type="button"
-  //                             className="btn btn-primary btn-block"
-  //                             onClick={() => {
-  //                               setIsEditing(true);
-  //                             }}
-  //                           >
-  //                             Edit
-  //                           </button>
-  //                         </div>
-  //                       </Form>
-  //                     )}
-  //                   </Formik>
-  //                   <span style={{ width: 20 }}></span>
-  //                   <UploadAvatar urlAvatar={accountInfor.avatar} />
-  //                 </>
-  //               </div>
-  //             </div>
-  //           </div>
-  //         </div>
-  //         <div className="clearfix"></div>
-  //       </>
-  //     );
-  //   }
-  // };
 
   const renderImageProfile = () => {
     if (userName && avatarUrl) {
@@ -425,11 +278,20 @@ const Profile = () => {
               name: accountInfor.name,
               email: accountInfor.email,
               phoneNumber: accountInfor.phone,
+              gender: accountInfor.gender,
+              birthday: accountInfor.birthday,
             }}
             validationSchema={UpdateProfileSchema}
             onSubmit={updateProfile}
           >
-            {({ isValid, isSubmitting, errors, touched, resetForm }) => (
+            {({
+              isValid,
+              isSubmitting,
+              setFieldValue,
+              errors,
+              touched,
+              resetForm,
+            }) => (
               <Form className="form-info">
                 <div className="form-group">
                   <label>Email:</label>
@@ -475,6 +337,71 @@ const Profile = () => {
                   />
                   <ErrorMessage
                     name="phoneNumber"
+                    component="div"
+                    className="invalid-feedback custom-error-message"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Gender:</label>
+                  <div className="gender-contains">
+                    <label>
+                      Nam:
+                      <Field
+                        name="gender"
+                        type="radio"
+                        value="male"
+                        disabled={!isEditing}
+                        className={`form-control ${
+                          errors.gender && touched.gender ? "is-invalid" : ""
+                        }`}
+                        onClick={() => setFieldValue("gender", "male")} // Set giá trị khi clicked
+                      />
+                    </label>
+                    <label>
+                      Nữ:
+                      <Field
+                        name="gender"
+                        type="radio"
+                        value="female"
+                        disabled={!isEditing}
+                        className={`form-control ${
+                          errors.gender && touched.gender ? "is-invalid" : ""
+                        }`}
+                        onClick={() => setFieldValue("gender", "female")} // Set giá trị khi clicked
+                      />
+                    </label>
+                    <label>
+                      Khác:
+                      <Field
+                        name="gender"
+                        type="radio"
+                        value="other"
+                        disabled={!isEditing}
+                        className={`form-control ${
+                          errors.gender && touched.gender ? "is-invalid" : ""
+                        }`}
+                        onClick={() => setFieldValue("gender", "other")} // Set giá trị khi clicked
+                      />
+                    </label>
+                  </div>
+                  <ErrorMessage
+                    name="gender"
+                    component="div"
+                    className="invalid-feedback custom-error-message"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Birthday:</label>
+                  <Field
+                    name="birthday"
+                    type="date"
+                    disabled={!isEditing}
+                    className={`form-control ${
+                      errors.birthday && touched.birthday ? "is-invalid" : ""
+                    }`}
+                  />
+                  <ErrorMessage
+                    name="birthday"
                     component="div"
                     className="invalid-feedback custom-error-message"
                   />

@@ -7,7 +7,6 @@ import java.util.StringJoiner;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -70,8 +69,8 @@ public class AuthenticationService {
 	
 	private String buildScope(Account account) {
 		StringJoiner stringJoiner = new StringJoiner(" ");
-		if(!CollectionUtils.isEmpty(account.getRole())) {
-			account.getRole().forEach(s -> stringJoiner.add(s));
+		if(!CollectionUtils.isEmpty(account.getRoles())) {
+			account.getRoles().forEach(s -> stringJoiner.add(s));
 		}
 		return stringJoiner.toString();
 	}

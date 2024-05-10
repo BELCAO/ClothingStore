@@ -8,29 +8,29 @@ const Home = () => {
 
   useEffect(() => {
     // Giả sử bạn lấy dữ liệu sản phẩm từ API hoặc nguồn dữ liệu khác
-    fetchProducts();
-    fetchFeaturedProducts();
+    // fetchProducts();
+    // fetchFeaturedProducts();
   }, []);
 
   const fetchProducts = async () => {
-    try {
-      // Gọi API hoặc lấy dữ liệu sản phẩm từ nguồn dữ liệu khác
-      const response = await fetch("http://localhost:8080/products");
-      const data = await response.json();
-      setProducts(data);
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    }
+    // try {
+    //   // Gọi API hoặc lấy dữ liệu sản phẩm từ nguồn dữ liệu khác
+    //   const response = await fetch("http://localhost:8080/products");
+    //   const data = await response.json();
+    //   setProducts(data);
+    // } catch (error) {
+    //   console.error("Error fetching products:", error);
+    // }
   };
   const fetchFeaturedProducts = async () => {
-    try {
-      // Gọi API hoặc lấy dữ liệu sản phẩm từ nguồn dữ liệu khác
-      const response = await fetch("http://localhost:8080/categories/1/products");
-      const data = await response.json();
-      setFeaturedProducts(data);
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    }
+    // try {
+    //   // Gọi API hoặc lấy dữ liệu sản phẩm từ nguồn dữ liệu khác
+    //   const response = await fetch("http://localhost:8080/categories/1/products");
+    //   const data = await response.json();
+    //   setFeaturedProducts(data);
+    // } catch (error) {
+    //   console.error("Error fetching products:", error);
+    // }
   };
 
   const handleProductClick = (product) => {

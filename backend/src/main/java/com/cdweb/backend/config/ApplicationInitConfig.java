@@ -26,11 +26,11 @@ public class ApplicationInitConfig {
 				account.setEmail("admin@gmail.com");
 				account.setName("Admin");
 				account.setPhone("");
-				account.setAvatar("Avatar");
+				account.setAvatarUrl("Avatar");
 				account.setStatus(1);
 				HashSet<String> roles = new HashSet<String>();
 				roles.add(Role.ADMIN.name());
-				account.setRole(roles);
+				account.setRoles(roles);
 				account.setPassword(passwordEncoder.encode("000000"));
 				accountService.createAccount(account);
 			}
