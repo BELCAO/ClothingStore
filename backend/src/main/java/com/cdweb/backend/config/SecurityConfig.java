@@ -21,14 +21,15 @@ public class SecurityConfig {
 	@Value("${signer.key}")
 	private String signerKey;
 	
-	private final String[] PUBLIC_ENDPOINTS = {"/auth/","/account/create", "/account/existsemail"};
+	private final String[] PUBLIC_ENDPOINTS = {"/auth/","/account/create", "/account/existsemail", "/product"};
     @Bean
     SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
 		httpSecurity.authorizeHttpRequests(request -> request	
 				.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
 				.requestMatchers(HttpMethod.GET, "/images/avatar").permitAll()
 				.requestMatchers(HttpMethod.GET, "account/list").hasAuthority("SCOPE_ADMIN")
-				.anyRequest().authenticated()
+				.anyRequest().permitAll()
+//				.authenticated()
 				);
 		httpSecurity.oauth2ResourceServer(oauth2 -> 
 		oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())));
