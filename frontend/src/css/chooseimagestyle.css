@@ -9,15 +9,6 @@
     display: inline-block;
     position: relative;
 }
-/* .avatar-frame {
-    height: 100%;
-    width: 100%;
-    border-radius: 10%;
-    position: absolute;
-    display: block;
-    top: 0;
-    overflow: hidden;
-} */
 .avatar {
     height: 100%;
     width: 100%;

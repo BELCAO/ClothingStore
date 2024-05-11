@@ -11,3 +11,4 @@ export const useDeleteData = () => {
   const dispatch = useDispatch();
   return useCallback(() => dispatch(deleteData()), [dispatch]);
 };
+

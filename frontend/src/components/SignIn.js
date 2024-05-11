@@ -5,7 +5,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import ".././css/mystyle.css";
 import { useDispatch } from "react-redux";
-import { saveAvatarUrl, saveToken, saveUserName } from "../js/redux/actions";
+import { saveUserInfo, saveToken } from "../js/redux/actions";
 
 const SignupSchema = Yup.object().shape({
   email: Yup.string()
@@ -29,8 +29,9 @@ const SignIn = () => {
         headers: {Authorization: `Bearer ${response.data}`}
       })
       .then((response) => {
-        dispatch(saveUserName(response.data.name));
-        dispatch(saveAvatarUrl(response.data.avatarUrl));
+        // dispatch(saveUserName(response.data.name));
+        // dispatch(saveAvatarUrl(response.data.avatarUrl));
+        dispatch(saveUserInfo({userName:response.data.name, avatarUrl:response.data.avatarUrl}))
       })
       .catch((error) =>{
         console.log(error);
