@@ -13,6 +13,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
+
+
 @Entity
 @Table(name = "products")
 public class ProductEntity {
@@ -33,9 +35,16 @@ public class ProductEntity {
     @Column(name = "image_url")
     private String imageUrl;
     
+    @Column(name = "status")
+    private int status;  //
+    @Column(name = "quantity")
+    private int quantity; 
+    
     @ElementCollection(fetch = FetchType.LAZY)
     @Column(name = "image_urls")
     private List<String> imageUrls;
+    
+    
 
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -102,5 +111,21 @@ public class ProductEntity {
     public void setCategory(CategoryEntity category) {
         this.category = category;
     }
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
+	public int getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
+	}
 }
 	 

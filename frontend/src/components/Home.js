@@ -17,20 +17,37 @@ const Home = () => {
       // Gọi API hoặc lấy dữ liệu sản phẩm từ nguồn dữ liệu khác
       const response = await fetch("http://localhost:8080/products");
       const data = await response.json();
-      setProducts(data);
+      if (data && Array.isArray(data.content)) {
+        setProducts(data.content);
+      } else {
+        console.error("Received data is not an array:", data);
+        setProducts([]);  // Thiết lập mảng rỗng nếu dữ liệu không phải mảng
+      }
     } catch (error) {
       console.error("Error fetching products:", error);
+      setProducts([]);  // Thiết lập mảng rỗng trong trường hợp lỗi
     }
   };
+
+  
   const fetchFeaturedProducts = async () => {
     try {
       // Gọi API hoặc lấy dữ liệu sản phẩm từ nguồn dữ liệu khác
-      const response = await fetch("http://localhost:8080/categories/1/products");
+      const response = await fetch("http://localhost:8080/categories/3/products");
       const data = await response.json();
-      setFeaturedProducts(data);
+      if (data && Array.isArray(data.content)) {
+        setFeaturedProducts(data.content);
+      } else {
+        console.error("Received data is not an array:", data);
+        setFeaturedProducts([]);  // Thiết lập mảng rỗng nếu dữ liệu không phải mảng
+      }
     } catch (error) {
       console.error("Error fetching products:", error);
+      setFeaturedProducts([]);  // Thiết lập mảng rỗng trong trường hợp lỗi
     }
+
+
+
   };
 
   const handleProductClick = (product) => {
