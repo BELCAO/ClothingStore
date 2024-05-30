@@ -15,6 +15,8 @@ public class ProductConverter {
 		entity.setName(dto.getName());
 		entity.setPrice(dto.getPrice());
 		entity.setImageUrls(dto.getImageUrls()); 
+		entity.setQuantity(dto.getQuantity());
+		entity.setStatus(dto.getStatus());
 		return entity;
 		
 	}
@@ -27,8 +29,11 @@ public class ProductConverter {
 		dto.setImageUrl(entity.getImageUrl());
 		dto.setName(entity.getName());
 		dto.setPrice(entity.getPrice());
+		dto.setQuantity(entity.getQuantity());
+		dto.setStatus(entity.getStatus());
 		   dto.setImageUrls(entity.getImageUrls()); 
 		   dto.setCategoryId(entity.getCategory().getCategoryId());
+		  
 		return dto;
 		
 	}
@@ -38,7 +43,9 @@ public class ProductConverter {
 		entity.setImageUrl(dto.getImageUrl());
 		entity.setName(dto.getName());
 		entity.setPrice(dto.getPrice());
-		   entity.setImageUrls(entity.getImageUrls()); 
+		entity.setImageUrls(dto.getImageUrls()); 
+		entity.setQuantity(dto.getQuantity());
+		entity.setStatus(dto.getStatus());
 		return entity;
 		
 	}
