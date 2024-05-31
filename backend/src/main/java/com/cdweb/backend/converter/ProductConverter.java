@@ -3,7 +3,6 @@ package com.cdweb.backend.converter;
 import org.springframework.stereotype.Component;
 
 import com.cdweb.backend.dto.ProductDTO;
-import com.cdweb.backend.entity.CategoryEntity;
 import com.cdweb.backend.entity.ProductEntity;
 
 @Component

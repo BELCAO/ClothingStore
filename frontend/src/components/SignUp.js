@@ -4,7 +4,7 @@ import * as Yup from "yup";
 import ".././css/mystyle.css";
 import axios from "axios";
 import { useState } from "react";
-import { saveToken } from ".././js/redux/actions";
+import { saveUserInfo, saveToken } from "../js/redux/actions";
 import { useDispatch } from "react-redux";
 
 const SignupSchema = Yup.object().shape({
@@ -39,13 +39,13 @@ const SignUp = () => {
     const data = {email: email, name: values.name, password: values.password, phone: values.phoneNumber}
     console.log(data)
     axios
-      .post("http://localhost:8080/account/create", data)
+      .post("http://localhost:8080/user/create", data)
       .then((response) => {
         console.log("Successfully created");
         axios.post("http://localhost:8080/auth/", data)
         .then((response) => {
-          // saveToken(response.data)
-          dispatch(saveToken(response.data))
+          dispatch(saveToken(response.data.token));
+          dispatch(saveUserInfo({userName:response.data.name, avatarUrl:response.data.avatarUrl}))
           navigate("/")
         })
         .catch((error) => {
@@ -65,7 +65,7 @@ const SignUp = () => {
 
   const existsEmail = (values, actions) => {
     axios
-      .post("http://localhost:8080/account/existsemail", values)
+      .post("http://localhost:8080/user/existsemail", values)
       .then((response) => {
         if (response.data) {
           actions.setFieldError("email", "Email đã được sử dụng");

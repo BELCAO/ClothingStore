@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import com.cdweb.backend.service.AccountService;
+import com.cdweb.backend.service.UserService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -29,7 +29,7 @@ public class ImageController {
 	 @Value("${avatar.dir.path}")
 	 private String uploadAvatarPath;
 	 @Autowired
-	 private AccountService accountService;
+	 private UserService accountService;
 
 	 @PostMapping("/loadavatar")
 	 public ResponseEntity<?> uploadAvatar(@RequestParam("avatar") MultipartFile avatar) {
