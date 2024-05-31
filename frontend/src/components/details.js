@@ -7,11 +7,15 @@ const Details = () => {
   const [product, setProduct] = useState(location.state?.product || null);
   const [currentImageUrl, setCurrentImageUrl] = useState(product?.imageUrl || "");
   const [hotProducts, setHotProducts] = useState([]);
+  const [quantity, setQuantity] = useState(1);  // New state for quantity
 
   useEffect(() => {
     if (!product) {
       fetchProductDetails(params.id);
+    } else {
+      setCurrentImageUrl(product.imageUrl);
     }
+
     const fetchHotProducts = async () => {
       try {
         const response = await fetch("http://localhost:8080/products");
@@ -20,7 +24,7 @@ const Details = () => {
           setHotProducts(data.content);
         } else {
           console.error("Received data is not an array:", data);
-          setHotProducts([]); 
+          setHotProducts([]);
         }
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -62,6 +66,29 @@ const Details = () => {
     const currentIndex = product.imageUrls.indexOf(currentImageUrl);
     if (currentIndex < product.imageUrls.length - 1) {
       setCurrentImageUrl(product.imageUrls[currentIndex + 1]);
+    }
+  };
+
+  const handleAddToCart = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/api/cart/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          accountId: 2, // Thay thế bằng accountId thực tế
+          productId: product.productId,
+          quantity: quantity,
+        }),
+      });
+      if (response.ok) {
+        alert("Sản phẩm đã được thêm vào giỏ hàng");
+      } else {
+        console.error("Failed to add product to cart");
+      }
+    } catch (error) {
+      console.error("Error adding product to cart:", error);
     }
   };
 
@@ -129,12 +156,14 @@ const Details = () => {
                   <div className="wided">
                     <div className="qty">
                       Qty &nbsp;&nbsp;:
-                      <select>
-                        <option>1</option>
+                      <select value={quantity} onChange={(e) => setQuantity(Number(e.target.value))}>
+                        {[...Array(10).keys()].map((n) => (
+                          <option key={n + 1} value={n + 1}>{n + 1}</option>
+                        ))}
                       </select>
                     </div>
                     <div className="button_group">
-                      <button className="button">Add To Cart</button>
+                      <button className="button" onClick={handleAddToCart}>Add To Cart</button>
                       <button className="button compare">
                         <i className="fa fa-exchange"> </i>
                       </button>
