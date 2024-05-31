@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 const UserMenu = () => {
   return (
@@ -50,7 +50,6 @@ const Header = () => {
   const token = useSelector((state) => state.token);
   const avatarUrl = useSelector((state) => state.avatarUrl);
   const userName = useSelector((state) => state.userName);
-
   const dispatch = useDispatch();
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -185,16 +184,20 @@ const Header = () => {
                       <div className="search-results">
                         {searchResults.map((product) => (
                           <div className="search-result-item" key={product.id}>
+                          <Link
+                            to={`/details/search`}
+                            state={{ product }}
+                            key={product.id}
+                            className="search-result-item"
+                          >
                             <div className="image">
                               <img src={product.imageUrl} alt={product.name} />
                             </div>
                             <div className="item-description">
                               <p className="name">{product.name}</p>
-                              <p className="price">
-                                {formatPrice(product.price)}
-                              </p>
+                              <p className="price">{formatPrice(product.price)}</p>
                             </div>
-                          </div>
+                          </Link>
                         ))}
                       </div>
                     )}
