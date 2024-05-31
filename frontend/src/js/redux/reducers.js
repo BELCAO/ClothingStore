@@ -5,6 +5,8 @@ import {
   DELETE_AVATAR_URL,
   SAVE_USER_NAME,
   DELETE_USER_NAME,
+  SAVE_USER_INFO,
+  DELETE_USER_INFO,
 } from "./actions";
 
 const initialState = {
@@ -45,6 +47,18 @@ const rootReducer = (state = initialState, action) => {
         ...state,
         userName: null,
       };
+    case SAVE_USER_INFO:
+      return {
+        ...state,
+        userName: action.payload.userName,
+        avatarUrl: action.payload.avatarUrl,
+      }
+    case DELETE_USER_INFO:
+      return {
+        ...state,
+        userName: null,
+        avatarUrl: null,
+      }
     default:
       return state;
   }

@@ -2,7 +2,6 @@
     display: flex;
     flex-direction: column;
 }
-
 .avatar-profile-frame {
     width: 30%;
     padding-top: 30%;
@@ -16,12 +15,11 @@
     object-fit: cover;
     border-radius: 50%;
 }
-
 .item-menu {
     font-size: 14px;
     font-weight: 400;
     color: rgb(216, 216, 216);
-    padding: 10px 0px;
+    padding: 10px 10px;
     margin-top: 20px;
     border-top:2px solid rgb(49, 49, 49);
     width: 100%;
@@ -36,32 +34,6 @@
 .item-menu-list {
     width: 90%;
 }
-
-.content {
-    padding: 20px;
-    display: flex;
-    background-color: aliceblue;
-    border-radius: 20px;
-}
-
-.form-control:disabled{
-    cursor: default;
-}
-.btn-list{
-    display: flex;
-    padding: 10px 0px;
-}
-.btn-list button {
-    margin: 0px 10px !important;
-}
-.form-info {
-    flex: 3;
-}
-
-.form-info input {
-    font-size: 16px;
-}
-
 .profile-info {
     display: flex;
     width: 100%;
@@ -70,7 +42,91 @@
     margin: auto;
     width: 60%;
     word-wrap: break-word;
-    /* font-size: 14px; */
     font-weight: 400;
     color: aliceblue;
+}
+
+
+
+
+.content {
+    padding: 30px 25px;
+    background-color: aliceblue;
+    border-radius: 20px;
+}
+.form-contains {
+    display: flex;
+}
+.form-info {
+    flex: 3;
+}
+.form-info input {
+    font-size: 16px;
+}
+.form-control:disabled{
+    cursor: default!important;
+    background-color: rgb(245, 245, 245);
+}
+.form-control{
+    background-color: rgb(255, 255, 255);
+}
+.gender-contains {
+    display: flex;
+    justify-content: space-evenly;
+}
+.gender-contains > label {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+}
+.gender-contains > label > input {
+    width: 20px;
+    margin: auto 10px;
+}
+.btn-list {
+    display: flex;
+}
+.btn-list button {
+    margin-right: 20px;
+}
+
+
+.edit-avatar-contains {
+    flex: 1;
+    margin: auto;
+}
+.avatar-frame {
+    width: 100%;
+    padding-top: 100%;
+    display: inline-block;
+    position: relative;
+    margin-bottom: 10px;
+
+}
+.avatar {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    border-radius: 10%;
+    border: 2px solid #000000;
+    object-fit: cover;
+    display: block;
+    overflow: hidden;
+}
+.choose-img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    z-index: 1;
+}
+
+.admin_btn {
+    margin-top: 50px;
+    background-color: #141010;
+    border: none;
+    border-radius: 5px;
 }

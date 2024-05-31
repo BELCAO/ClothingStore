@@ -4,6 +4,8 @@ export const SAVE_AVATAR_URL = 'SAVE_AVATAR_URL';
 export const DELETE_AVATAR_URL = 'DELETE_AVATAR_URL';
 export const SAVE_USER_NAME = 'SAVE_USER_NAME';
 export const DELETE_USER_NAME = 'DELETE_USER_NAME';
+export const SAVE_USER_INFO = 'SAVE_USER_INFO';
+export const DELETE_USER_INFO = 'DELETE_USER_INFO';
 
 export const saveToken = (token) => ({
   type: SAVE_TOKEN,
@@ -30,4 +32,13 @@ export const saveUserName = (userName) => ({
 
 export const deleteUserName = () => ({
   type: DELETE_USER_NAME
+});
+
+export const saveUserInfo = (userInfo) => ({
+  type: SAVE_USER_INFO,
+  payload: userInfo
+});
+
+export const deleteUserInfo =() => ({
+  type: DELETE_USER_INFO,
 });

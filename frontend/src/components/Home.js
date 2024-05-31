@@ -7,7 +7,7 @@ const Home = () => {
   const [featuredProducts, setFeaturedProducts] = useState([]);
 
   useEffect(() => {
-    // Giả sử bạn lấy dữ liệu sản phẩm từ API hoặc nguồn dữ liệu khác
+   // Giả sử bạn lấy dữ liệu sản phẩm từ API hoặc nguồn dữ liệu khác
     fetchProducts();
     fetchFeaturedProducts();
   }, []);
