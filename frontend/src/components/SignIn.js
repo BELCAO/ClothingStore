@@ -46,7 +46,7 @@ const SignIn = () => {
           <div className="col-md-6 margin-auto">
             <div className="sing-up_container">
               <div className="card">
-                <h2 className="card-header text-center title">Sign In</h2>
+                <h2 className="card-header text-center title">Đăng nhập</h2>
                 <div className="card-body">
                   <Formik
                     initialValues={{
@@ -59,7 +59,7 @@ const SignIn = () => {
                     {({ isValid, isSubmitting, errors, touched }) => (
                       <Form>
                         <div className="form-group">
-                          <label>Email:</label>
+                          <label>Địa chỉ Email:</label>
                           <Field
                             type="email"
                             name="email"
@@ -74,7 +74,7 @@ const SignIn = () => {
                           />
                         </div>
                         <div className="form-group">
-                          <label>Password:</label>
+                          <label>Mật khẩu:</label>
                           <Field
                             type="password"
                             name="password"
@@ -95,22 +95,22 @@ const SignIn = () => {
                           className="btn btn-primary btn-block"
                           disabled={!isValid || isSubmitting}
                         >
-                          Sign In
+                          Đăng nhập
                         </button>
                       </Form>
                     )}
                   </Formik>
                 </div>
                 <div className="separator">
-                  <span>or</span>
+                  <span>hoặc</span>
                 </div>
                 <div className="login-with-google">
-                  <button>Sign in with Google</button>
+                  <button>Đăng nhập với Google</button>
                 </div>
                 <div className="have-account">
                   <p>
-                    You just heard about Clothing Store?{"    "}
-                    <Link to="/SignUp">Sign Up</Link>
+                    Bạn có nghe nói về Clothing Store không ?{"    "}
+                    <Link to="/SignUp">Đăng ký</Link>
                   </p>
                 </div>
               </div>

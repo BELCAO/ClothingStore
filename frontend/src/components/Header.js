@@ -6,10 +6,14 @@ const UserMenu = () => {
   return (
     <ul className="usermenu">
       <li>
-        <Link to="/SignIn" className="log">Sign In</Link>
+        <Link to="/SignIn" className="log">
+           Đăng nhập
+        </Link>
       </li>
       <li>
-        <Link to="/SignUp" className="reg">Sign Up</Link>
+        <Link to="/SignUp" className="reg">
+          Đăng ký
+        </Link>
       </li>
     </ul>
   );
@@ -22,8 +26,18 @@ const Account = (prop) => {
         <Link to="/Profile" style={{ display: "flex", flexDirection: "row" }}>
           <div style={{ margin: "auto" }}>{prop.name}</div>
           <img
-            src={process.env.REACT_APP_HOST_API_URL + "images/avatar?imgPath=" + prop.imgPath}
-            style={{ width: 25, height: 25, borderRadius: 15, marginLeft: 10, objectFit: "cover" }}
+            src={
+              process.env.REACT_APP_HOST_API_URL +
+              "images/avatar?imgPath=" +
+              prop.imgPath
+            }
+            style={{
+              width: 25,
+              height: 25,
+              borderRadius: 15,
+              marginLeft: 10,
+              objectFit: "cover",
+            }}
             alt="Avatar"
           />
         </Link>
@@ -49,7 +63,9 @@ const Header = () => {
 
   const handleSearch = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/products/autocomplete?name=${searchTerm}`);
+      const response = await fetch(
+        `http://localhost:8080/products/autocomplete?name=${searchTerm}`
+      );
       const data = await response.json();
       setSearchResults(data);
     } catch (error) {
@@ -60,14 +76,20 @@ const Header = () => {
 
   const renderUserMenu = () => {
     if (token) {
-      if (userName && avatarUrl) return <Account imgPath={avatarUrl} name={userName} />;
+      if (userName && avatarUrl)
+        return <Account imgPath={avatarUrl} name={userName} />;
     } else {
       return <UserMenu />;
     }
   };
 
   const formatPrice = (price) => {
-    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price).replace(/\D00(?=\D*$)/, '');
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    })
+      .format(price)
+      .replace(/\D00(?=\D*$)/, "");
   };
 
   return (
@@ -89,35 +111,59 @@ const Header = () => {
                     <li className="dorpdown">
                       <a href="#">Eng</a>
                       <ul className="subnav">
-                        <li><a href="#">Eng</a></li>
-                        <li><a href="#">Vns</a></li>
-                        <li><a href="#">Fer</a></li>
-                        <li><a href="#">Gem</a></li>
+                        <li>
+                          <a href="#">Eng</a>
+                        </li>
+                        <li>
+                          <a href="#">Vns</a>
+                        </li>
+                        <li>
+                          <a href="#">Fer</a>
+                        </li>
+                        <li>
+                          <a href="#">Gem</a>
+                        </li>
                       </ul>
                     </li>
                     <li className="dorpdown">
                       <a href="#">USD</a>
                       <ul className="subnav">
-                        <li><a href="#">USD</a></li>
-                        <li><a href="#">UKD</a></li>
-                        <li><a href="#">FER</a></li>
+                        <li>
+                          <a href="#">USD</a>
+                        </li>
+                        <li>
+                          <a href="#">UKD</a>
+                        </li>
+                        <li>
+                          <a href="#">FER</a>
+                        </li>
                       </ul>
                     </li>
                   </ul>
                 </div>
                 <div className="col-md-6">
                   <ul className="topmenu">
-                    <li><a href="#">About Us</a></li>
-                    <li><a href="#">News</a></li>
-                    <li><a href="#">Service</a></li>
-                    <li><a href="#">Recruiment</a></li>
-                    <li><a href="#">Media</a></li>
-                    <li><a href="#">Support</a></li>
+                    <li>
+                      <a href="#">Về Chúng tôi</a>
+                    </li>
+                    <li>
+                      <a href="#">Tin mới</a>
+                    </li>
+                    <li>
+                      <a href="#">Dịch vụ</a>
+                    </li>
+                    <li>
+                      <a href="#">Tuyển dụng</a>
+                    </li>
+                    <li>
+                      <a href="#">Truyền thông</a>
+                    </li>
+                    <li>
+                      <a href="#">Hỗ trọw</a>
+                    </li>
                   </ul>
                 </div>
-                <div className="col-md-3">
-                  {renderUserMenu()}
-                </div>
+                <div className="col-md-3">{renderUserMenu()}</div>
               </div>
             </div>
             <div className="clearfix"></div>
@@ -125,11 +171,7 @@ const Header = () => {
               <ul className="option">
                 <li id="search" className="search">
                   <form>
-                    <input
-                      className="search-submit"
-                      type="submit"
-                      value=""
-                    />
+                    <input className="search-submit" type="submit" value="" />
                     <input
                       className="search-input"
                       placeholder="Enter your search term..."
@@ -140,6 +182,7 @@ const Header = () => {
                     {searchResults.length > 0 && (
                       <div className="search-results">
                         {searchResults.map((product) => (
+                          <div className="search-result-item" key={product.id}>
                           <Link
                             to={`/details/search`}
                             state={{ product }}
@@ -159,6 +202,7 @@ const Header = () => {
                     )}
                   </form>
                 </li>
+
                 <li className="option-cart">
                   <a href="#" className="cart-icon">
                     cart <span className="cart_no">02</span>
@@ -167,12 +211,16 @@ const Header = () => {
                     <li>
                       <div className="cart-item">
                         <div className="image">
-                          <img src="images/products/thum/products-01.png" alt="" />
+                          <img
+                            src="images/products/thum/products-01.png"
+                            alt=""
+                          />
                         </div>
                         <div className="item-description">
                           <p className="name">Lincoln chair</p>
                           <p>
-                            Size: <span className="light-red">One size</span><br />
+                            Size: <span className="light-red">One size</span>
+                            <br />
                             Quantity: <span className="light-red">01</span>
                           </p>
                         </div>
@@ -187,12 +235,16 @@ const Header = () => {
                     <li>
                       <div className="cart-item">
                         <div className="image">
-                          <img src="images/products/thum/products-02.png" alt="" />
+                          <img
+                            src="images/products/thum/products-02.png"
+                            alt=""
+                          />
                         </div>
                         <div className="item-description">
                           <p className="name">Lincoln chair</p>
                           <p>
-                            Size: <span className="light-red">One size</span><br />
+                            Size: <span className="light-red">One size</span>
+                            <br />
                             Quantity: <span className="light-red">01</span>
                           </p>
                         </div>
@@ -205,7 +257,9 @@ const Header = () => {
                       </div>
                     </li>
                     <li>
-                      <span className="total">Total <strong>$60.00</strong></span>
+                      <span className="total">
+                        Total <strong>$60.00</strong>
+                      </span>
                       <button className="checkout">CheckOut</button>
                     </li>
                   </ul>
@@ -232,17 +286,27 @@ const Header = () => {
                       className="dropdown-toggle"
                       data-toggle="dropdown"
                     >
-                      home
+                      Trang Chủ
                     </Link>
                   </li>
-                  <li><Link to="/Productlist?categoryId=1">Áo thun</Link></li>
-                  <li><Link to="/Productlist?categoryId=2">women</Link></li>
-                  <li><Link to="/Productlist?categoryId=7">áo nam</Link></li>
-                  <li><Link to="/Productlist?categoryId=2">áo nữ</Link></li>
-                  <li><Link to="/Productlist?categoryId=5">kids</Link></li>
-                  <li><Link to="/Productlist?categoryId=6">blog</Link></li>
-                  <li><Link to="/Productlist?categoryId=7">jewelry</Link></li>
-                  <li><Link to="/Contact">contact us</Link></li>
+                  <li>
+                    <Link to="/Productlist?categoryId=1">Đồ nam</Link>
+                  </li>
+                  <li>
+                    <Link to="/Productlist?categoryId=2">Đồ nữ</Link>
+                  </li>
+                  <li>
+                    <Link to="/Productlist?categoryId=7">Trẻ Em</Link>
+                  </li>
+                  <li>
+                    <Link to="/Productlist?categoryId=2">Áo Thun</Link>
+                  </li>
+                  <li>
+                    <Link to="/Productlist?categoryId=5">Công sở</Link>
+                  </li>
+                  <li>
+                    <Link to="/Contact">Liên hệ</Link>
+                  </li>
                 </ul>
               </div>
             </div>

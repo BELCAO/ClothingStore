@@ -61,25 +61,25 @@ const ProductList = () => {
             <div className="col-md-3">
               {/* Category and other filters */}
               <div className="category leftbar">
-                <h3 className="title">Categories</h3>
+                <h3 className="title">Danh mục</h3>
                 <ul>
                   <li>
-                    <Link to="/Productlist?categoryId=3">Men</Link>
+                    <Link to="/Productlist?categoryId=3">Nam</Link>
                   </li>
                   <li>
-                    <Link to="/Productlist?categoryId=2">Women</Link>
+                    <Link to="/Productlist?categoryId=2">Nữ</Link>
                   </li>
                   <li>
-                    <Link to="/Productlist?categoryId=1">Salon</Link>
+                    <Link to="/Productlist?categoryId=1">Dạ hội</Link>
                   </li>
                   <li>
-                    <Link to="/Productlist?categoryId=4">New Trend</Link>
+                    <Link to="/Productlist?categoryId=4">Thời thượng</Link>
                   </li>
                   <li>
-                    <Link to="/Productlist?categoryId=5">Living room</Link>
+                    <Link to="/Productlist?categoryId=5">Đồ ở nhà</Link>
                   </li>
                   <li>
-                    <Link to="/Productlist?categoryId=6">Bed room</Link>
+                    <Link to="/Productlist?categoryId=6">Đồ ngủ</Link>
                   </li>
                 </ul>
               </div>
@@ -115,17 +115,17 @@ const ProductList = () => {
                       </Link>
                     </div>
                     <div className="sort-by">
-                      Sort by :
+                      Sắp xếp :
                       <select name="">
                         <option value="Default" selected>
-                          Default
+                          Mặc định
                         </option>
-                        <option value="Name">Name</option>
-                        <option value="Price">Price</option>
+                        <option value="Name">Tên</option>
+                        <option value="Price">Giá</option>
                       </select>
                     </div>
                     <div className="limiter">
-                      Show :
+                      Hiển thị :
                       <select name="" onChange={handlePageSizeChange} value={pageSize}>
                         <option value="3">3</option>
                         <option value="6">6</option>
@@ -164,7 +164,7 @@ const ProductList = () => {
                         <p>
                           <img src="images/star.png" alt="" />
                           <a href="#" className="review_num">
-                            0 Review(s)
+                            0 Đánh giá(s)
                           </a>
                         </p>
                         <div className="list_bottom">
@@ -175,7 +175,7 @@ const ProductList = () => {
                             </span>
                           </div>
                           <div className="button_group">
-                            <button className="button">Add To Cart</button>
+                            <button className="button">Thêm vào giỏ hàng</button>
                             <button className="button compare">
                               <i className="fa fa-exchange"></i>
                             </button>
@@ -189,7 +189,7 @@ const ProductList = () => {
                   ))}
                 </ul>
                 <div className="toolbar">
-                  <div className="sorter bottom">
+                  <div className="sorter">
                     <div className="view-mode">
                       <a href="#" className="list active">
                         List
@@ -199,17 +199,17 @@ const ProductList = () => {
                       </Link>
                     </div>
                     <div className="sort-by">
-                      Sort by :
+                      Sắp xếp :
                       <select name="">
                         <option value="Default" selected>
-                          Default
+                          Mặc định
                         </option>
-                        <option value="Name">Name</option>
-                        <option value="Price">Price</option>
+                        <option value="Name">Tên</option>
+                        <option value="Price">Giá</option>
                       </select>
                     </div>
                     <div className="limiter">
-                      Show :
+                      Hiển thị :
                       <select name="" onChange={handlePageSizeChange} value={pageSize}>
                         <option value="3">3</option>
                         <option value="6">6</option>
@@ -234,100 +234,6 @@ const ProductList = () => {
                 </div>
               </div>
             </div>
-          </div>
-          <div className="clearfix"></div>
-          <div className="our-brand">
-            <h3 className="title">
-              <strong>Our </strong> Brands
-            </h3>
-            <div className="control">
-              <Link id="prev_brand" className="prev" to="#">
-                &lt;
-              </Link>
-              <Link id="next_brand" className="next" to="#">
-                &gt;
-              </Link>
-            </div>
-            <ul id="braldLogo">
-              <li>
-                <ul className="brand_item">
-                  <li>
-                    <Link to="#">
-                      <div className="brand-logo">
-                        <img src="images/envato.png" alt="" />
-                      </div>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="#">
-                      <div className="brand-logo">
-                        <img src="images/themeforest.png" alt="" />
-                      </div>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="#">
-                      <div className="brand-logo">
-                        <img src="images/photodune.png" alt="" />
-                      </div>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="#">
-                      <div className="brand-logo">
-                        <img src="images/activeden.png" alt="" />
-                      </div>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="#">
-                      <div className="brand-logo">
-                        <img src="images/envato.png" alt="" />
-                      </div>
-                    </Link>
-                  </li>
-                </ul>
-              </li>
-              <li>
-                <ul className="brand_item">
-                  <li>
-                    <Link to="#">
-                      <div className="brand-logo">
-                        <img src="images/envato.png" alt="" />
-                      </div>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="#">
-                      <div className="brand-logo">
-                        <img src="images/themeforest.png" alt="" />
-                      </div>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="#">
-                      <div className="brand-logo">
-                        <img src="images/photodune.png" alt="" />
-                      </div>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="#">
-                      <div className="brand-logo">
-                        <img src="images/activeden.png" alt="" />
-                      </div>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="#">
-                      <div className="brand-logo">
-                        <img src="images/envato.png" alt="" />
-                      </div>
-                    </Link>
-                  </li>
-                </ul>
-              </li>
-            </ul>
           </div>
         </div>
       </div>
