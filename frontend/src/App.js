@@ -18,6 +18,7 @@ import Checkout2 from "./components/Checkout2";
 import SignUp from "./components/SignUp";
 import SignIn from "./components/SignIn";
 import Profile from "./components/Profile";
+import Admin from "./components/Admin";
 function App() {
   return (
     <Provider store={store}>
@@ -37,7 +38,8 @@ function App() {
               <Route path="/Checkout2" element={<Checkout2 />} />
               <Route path="/SignUp" element={<SignUp />} />
               <Route path="/SignIn" element={<SignIn />} />
-              <Route path="/Profile" element={<Profile />} />
+              <Route path="/Profile/*" element={<Profile />} />
+              <Route path="/Admin" element={<Admin />} />
             </Routes>
             <Footer />
           </div>
