@@ -22,11 +22,11 @@ public class ApplicationInitConfig {
 	ApplicationRunner applicationRunner() {
 		return args -> {
 			if(!accountService.existsAccountByEmail("admin@gmail.com")) {
-				User account = new User("admin@gmail.com", "admin@gmail.com", "0000000000", passwordEncoder.encode("000000"));
+				User user = new User("Admin", "admin@gmail.com", "0000000000", passwordEncoder.encode("000000"));
 				HashSet<String> roles = new HashSet<String>();
 				roles.add(Role.ADMIN.name());
-				account.setRoles(roles);
-				accountService.createAccount(account);
+				user.setRoles(roles);
+				accountService.createAccount(user);
 			}
 		};
 	}

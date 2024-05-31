@@ -2,11 +2,7 @@ import React from "react";
 
 const LikedProducs = () => {
   return (
-    <>
-      <div
-        className="content"
-        style={{ height: 500, backgroundColor: "aliceblue" }}
-      >
+    <div className="content"  >
         <div className="products-grid">
           <div className="toolbar">
             <div className="sorter">
@@ -340,8 +336,7 @@ const LikedProducs = () => {
           </div>
           <div className="clearfix"></div>
         </div>
-      </div>
-    </>
+    </div>
   );
 };
 export default LikedProducs;

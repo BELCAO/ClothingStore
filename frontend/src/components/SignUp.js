@@ -4,7 +4,7 @@ import * as Yup from "yup";
 import ".././css/mystyle.css";
 import axios from "axios";
 import { useState } from "react";
-import { saveToken } from ".././js/redux/actions";
+import { saveUserInfo, saveToken } from "../js/redux/actions";
 import { useDispatch } from "react-redux";
 
 const SignupSchema = Yup.object().shape({
@@ -44,7 +44,8 @@ const SignUp = () => {
         console.log("Successfully created");
         axios.post("http://localhost:8080/auth/", data)
         .then((response) => {
-          dispatch(saveToken(response.data))
+          dispatch(saveToken(response.data.token));
+          dispatch(saveUserInfo({userName:response.data.name, avatarUrl:response.data.avatarUrl}))
           navigate("/")
         })
         .catch((error) => {

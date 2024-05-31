@@ -3,6 +3,7 @@ package com.cdweb.backend.controller;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RestController
 @RequestMapping("/user")
 public class UserController {
+	@Value("${default.avatar}")
+	private String defaultAvatarUrl;
 	@Autowired
 	private UserService accountService;
 	@Autowired
@@ -51,8 +54,7 @@ public class UserController {
 	@PostMapping("/create")
 	public User createAccount(@RequestBody Map<String, String> data) {
 		User user = new User(data.get("name"), data.get("email"), data.get("phone"), passwordEncoder.encode(data.get("password")));
-		
-		user.setAvatarUrl("Avatar");
+		user.setAvatarUrl(defaultAvatarUrl);
 		return accountService.createAccount(user);
 	}
 	

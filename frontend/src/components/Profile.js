@@ -1,4 +1,4 @@
-import ".././css/profileStyle.css";
+import "../css/profileStyle.css";
 import axios from "axios";
 import { useNavigate, Link, Route, Routes } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -11,9 +11,9 @@ import {
   saveAvatarUrl,
   saveUserName,
 } from "../js/redux/actions";
-import UploadAvatar from "./UploadAvatar";
 import Orders from "./Orders";
 import LikedProducs from "./LikedProducts";
+import { hasPermissionAdmin } from "../js/utility/permissions";
 
 const UpdateProfileSchema = Yup.object().shape({
   email: Yup.string()
@@ -25,8 +25,8 @@ const UpdateProfileSchema = Yup.object().shape({
     .min(10, "Số điện thoại không hợp lệ")
     .max(12, "Số điện thoại không hợp lệ" )
     .required("Vui lòng nhập số điện thoại của bạn"),
-  gender: Yup.string(),
-  birthday: Yup.date(),
+  gender: Yup.string().nullable(),
+  birthday: Yup.date().nullable(),
 });
 
 const Profile = () => {
@@ -34,6 +34,7 @@ const Profile = () => {
   const avatarUrl = useSelector((state) => state.avatarUrl);
   const userName = useSelector((state) => state.userName);
 
+  const [isAdmin, setIsAdmin] = useState(false);
   const [accountInfor, setAccountInfor] = useState();
   const [isEditing, setIsEditing] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -54,8 +55,11 @@ const Profile = () => {
           setAccountInfor(response.data);
         })
         .catch((error) => {
-          console.log("Không load được thông tin tài khoản", error);
+          console.log("Lỗi khi load profile: ", error);
         });
+
+        setIsAdmin(hasPermissionAdmin(token))
+
     } else {
       if (
         window.confirm("You need to log in to continue, do you want to log in?")
@@ -67,27 +71,20 @@ const Profile = () => {
     }
   }, [token]);
 
-  const updateProfile = (values) => {
-    console.log("cập nhật thông tin");
-    handleUpload();
-    axios
-      .post(
+  const updateProfile = async (values) => {
+    try {
+      handleUpload();
+      const response = await axios.post(
         `${process.env.REACT_APP_HOST_API_URL}user/updateMyInfo`,
         values,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      )
-      .then((response) => {
-        setIsEditing(false);
-        dispatch(saveUserName(response.data.name));
-        setAccountInfor(response.data);
-      })
-      .catch((error) => {
-        console.log("Không lưu được", error);
-      });
-  };
-
+        {headers: { Authorization: `Bearer ${token}` },}
+      );
+      setIsEditing(false);
+      dispatch(saveUserName(response.data.name));
+      setAccountInfor(response.data);
+    } catch (error) {
+      console.error("Lỗi khi cập nhật profile: ", error);
+    }}
   const logOut = () => {
     dispatch(deleteToken());
     dispatch(deleteUserInfo());
@@ -117,7 +114,6 @@ const Profile = () => {
 
   const handleFileChange = (e) => {
     setSelectedFile(e.target.files[0]);
-    // Hiển thị ảnh ngay sau khi người dùng chọn
     const reader = new FileReader();
     reader.onload = () => {
       setNUrl(reader.result);
@@ -127,36 +123,30 @@ const Profile = () => {
 
   const handleUpload = async () => {
     if (!selectedFile) {
-      alert("Vui lòng chọn ảnh trước khi tải lên");
       return;
     }
 
     const formData = new FormData();
     formData.append("avatar", selectedFile);
-    console.log(token);
-    axios
-      .post(
+    try {
+      
+    } catch (error) {
+      console.error("Lỗi khi tải lên ảnh:", error);
+      alert("Đã xảy ra lỗi khi tải lên ảnh");
+    }
+    const response = await axios.post(
         `${process.env.REACT_APP_HOST_API_URL}images/loadavatar`,
         formData,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      )
-      .then((response) => {
-        dispatch(saveAvatarUrl(response.data.avatarUrl));
-        setNUrl(
-          `${process.env.REACT_APP_HOST_API_URL}images/avatar?imgPath=${response.data.avatarUrl}`
-        );
-      })
-      .catch((error) => {
-        console.error("Lỗi khi tải lên ảnh:", error);
-        alert("Đã xảy ra lỗi khi tải lên ảnh");
-      });
+        { headers: { Authorization: `Bearer ${token}`}}
+    )
+    
+    dispatch(saveAvatarUrl(response.data.avatarUrl));
+    setNUrl(`${process.env.REACT_APP_HOST_API_URL}images/avatar?imgPath=${response.data.avatarUrl}`);
   };
   const renderInforForm = () => {
     if (accountInfor) {
       return (
-        <>
+        <div className="content">
           <Formik
             initialValues={{
               name: accountInfor.name,
@@ -291,11 +281,12 @@ const Profile = () => {
                       className="invalid-feedback custom-error-message"
                     />
                   </div>
+
                   <div className="btn-list">
                     <button
                       type="submit"
                       className="btn btn-primary"
-                      disabled={ isSubmitting || !isValid|| !isEditing}
+                      disabled={!isValid || isSubmitting || !isEditing}
                     >
                       Save
                     </button>
@@ -304,8 +295,8 @@ const Profile = () => {
                       className="btn btn-primary"
                       disabled={!isEditing}
                       onClick={() => {
-                        resetForm();
                         setIsEditing(false);
+                        resetForm();
                       }}
                     >
                       Cancel
@@ -320,6 +311,7 @@ const Profile = () => {
                       Edit
                     </button>
                   </div>
+
                 </div>
                 <span style={{ width: 25 }}></span>
                 <div className="edit-avatar-contains">
@@ -331,22 +323,20 @@ const Profile = () => {
                     disabled={!isEditing}
                     style={{ position: "relative" }}
                   >
-                    Chọn ảnh
-                    <input
-                      className="choose-img"
-                      type="file"
-                      name="avatar"
-                      onChange={handleFileChange}
-                      accept=".jpg, .png" // Chỉ cho phép người dùng chọn các loại file cụ thể
-                    />
+                      Chọn ảnh
+                      <input
+                        className="choose-img"
+                        type="file"
+                        name="avatar"
+                        onChange={handleFileChange}
+                        accept=".jpg, .png" 
+                      />
                   </button>
                 </div>
               </Form>
             )}
           </Formik>
-          {/* <span style={{ width: 20 }}></span>
-          <UploadAvatar avatarUrl={accountInfor.avatar} /> */}
-        </>
+        </div>
       );
     }
   };
@@ -363,7 +353,7 @@ const Profile = () => {
                 <Link to="/Profile">
                   <div className="item-menu">My Profile</div>
                 </Link>
-                <Link to="/Profile/LidedProducts">
+                <Link to="/Profile/LikedProducts">
                   <div className="item-menu">Liked Products</div>
                 </Link>
                 <Link to="/Profile/Orders">
@@ -375,15 +365,20 @@ const Profile = () => {
                 <div className="item-menu" onClick={logOut}>
                   Log Out
                 </div>
+                {isAdmin && (
+                  <Link to="/Admin" >
+                    <div className="item-menu admin_btn"  >Admin Page</div>
+                  </Link>
+                )}
               </div>
             </div>
           </div>
           <div className="col-md-10">
             <Routes>
+              <Route path="/" element={renderInforForm()} />
               <Route path="/Orders" element={<Orders />} />
               <Route path="/LikedProducts" element={<LikedProducs />} />
             </Routes>
-            <div className="content">{renderInforForm()}</div>
           </div>
         </div>
       </div>

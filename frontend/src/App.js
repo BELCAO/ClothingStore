@@ -18,7 +18,7 @@ import Checkout2 from "./components/Checkout2";
 import SignUp from "./components/SignUp";
 import SignIn from "./components/SignIn";
 import Profile from "./components/Profile";
-import LikedProducs from "./components/LikedProducts";
+import Admin from "./components/Admin";
 function App() {
   return (
     <Provider store={store}>
@@ -38,7 +38,7 @@ function App() {
               <Route path="/SignUp" element={<SignUp />} />
               <Route path="/SignIn" element={<SignIn />} />
               <Route path="/Profile/*" element={<Profile />} />
-              <Route path="/LidedProducts" element={<LikedProducs />} />
+              <Route path="/Admin" element={<Admin />} />
             </Routes>
             <Footer />
           </div>
