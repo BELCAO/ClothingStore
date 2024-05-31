@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.cdweb.backend.converter.ProductConverter;
@@ -17,6 +18,9 @@ import com.cdweb.backend.repository.ProductRepository;
 import com.cdweb.backend.service.IProductService;
 
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Pageable;
+
+
 
 @Service
 public class ProductService implements IProductService {
@@ -46,22 +50,20 @@ public class ProductService implements IProductService {
 		
 	}
 
-	@Override
-	public List<ProductDTO> getAllProducts() {
-	    List<ProductEntity> productEntities = productRepository.findAll();
-	    return productEntities.stream()
-	            .map(productConverter::toDTO)
-	            .collect(Collectors.toList());
-	}
+	 @Override
+	    public Page<ProductDTO> getAllProducts(Pageable pageable) {
+	        return productRepository.findAll(pageable)
+	                .map(productConverter::toDTO);
+	    }
 
-	public List<ProductDTO> getProductsByCategory(Long categoryId) {
-	    CategoryEntity categoryEntity = categoryRepository.findById(categoryId)
-	            .orElseThrow();
-	    List<ProductEntity> productEntities = categoryEntity.getProducts();
-	    return productEntities.stream()
-	            .map(productConverter::toDTO)
-	            .collect(Collectors.toList());
-	}
+	 @Override
+	 public Page<ProductDTO> getProductsByCategory(Long categoryId, Pageable pageable) {
+	     CategoryEntity categoryEntity = categoryRepository.findById(categoryId)
+	             .orElseThrow();
+	     Page<ProductEntity> productEntities = productRepository.findByCategory(categoryEntity, pageable);
+	     return productEntities.map(productConverter::toDTO);
+	 }
+
 
 	@Override
 	public void delete(long[] ids) {
@@ -72,10 +74,20 @@ public class ProductService implements IProductService {
 		
 	}
 	
+
 	@Transactional
 	public Optional<ProductEntity> getProducById(Long id) {
 		return productRepository.findById(id);
 	}
+  
+
+    @Override
+    public List<ProductDTO> autoCompleteSearchByName(String name) {
+        List<ProductEntity> productEntities = productRepository.findTop10ByNameContainingIgnoreCase(name);
+        return productEntities.stream()
+                .map(productConverter::toDTO)
+                .collect(Collectors.toList());
+    }
 
 //	@Override
 //	public ProductDTO update(ProductDTO productDTO) {

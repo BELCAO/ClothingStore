@@ -1,47 +1,34 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 const UserMenu = () => {
   return (
-    <>
-      <ul className="usermenu">
-        <li>
-          <Link to="/SignIn" className="log">
-            Sign In
-          </Link>
-        </li>
-        <li>
-          <Link to="/SignUp" className="reg">
-            Sign Up
-          </Link>
-        </li>
-      </ul>
-    </>
+    <ul className="usermenu">
+      <li>
+        <Link to="/SignIn" className="log">Sign In</Link>
+      </li>
+      <li>
+        <Link to="/SignUp" className="reg">Sign Up</Link>
+      </li>
+    </ul>
   );
 };
+
 const Account = (prop) => {
   return (
-    <>
-      <ul className="usermenu">
-        <li>
-          <Link to="/Profile" style={{ display: "flex", flexDirection: "row" }}>
-            <div style={{ margin: "auto" }}>{prop.name}</div>
-            <img
-              src={process.env.REACT_APP_HOST_API_URL + "images/avatar?imgPath=" + prop.imgPath}
-              style={{
-                widows: 25,
-                height: 25,
-                width: 25,
-                borderRadius: 15,
-                marginLeft: 10,
-                objectFit: "cover"
-              }}
-            />
-          </Link>
-        </li>
-      </ul>
-    </>
+    <ul className="usermenu">
+      <li>
+        <Link to="/Profile" style={{ display: "flex", flexDirection: "row" }}>
+          <div style={{ margin: "auto" }}>{prop.name}</div>
+          <img
+            src={process.env.REACT_APP_HOST_API_URL + "images/avatar?imgPath=" + prop.imgPath}
+            style={{ width: 25, height: 25, borderRadius: 15, marginLeft: 10, objectFit: "cover" }}
+            alt="Avatar"
+          />
+        </Link>
+      </li>
+    </ul>
   );
 };
 
@@ -50,13 +37,44 @@ const Header = () => {
   const avatarUrl = useSelector((state) => state.avatarUrl);
   const userName = useSelector((state) => state.userName);
 
-  const render = () => {
-    if(token) {
-      if(userName && avatarUrl) return <Account imgPath={avatarUrl} name={userName} />;
-    }else{
-      return <UserMenu />
+  const dispatch = useDispatch();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+
+  useEffect(() => {
+    if (searchTerm) {
+      handleSearch();
+    } else {
+      setSearchResults([]);
     }
-  }
+  }, [searchTerm]);
+
+  const handleSearch = async () => {
+    try {
+      const response = await fetch(`http://localhost:8080/products/autocomplete?name=${searchTerm}`);
+      const data = await response.json();
+      setSearchResults(data);
+    } catch (error) {
+      console.error("Error fetching search results:", error);
+      setSearchResults([]);
+    }
+  };
+
+  const renderUserMenu = () => {
+    if (token) {
+      if (userName && avatarUrl) return <Account imgPath={avatarUrl} name={userName} />;
+    } else {
+      return <UserMenu />;
+    }
+  };
+
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price).replace(/\D00(?=\D*$)/, '');
+  };
+
+  
+
+  
   return (
     <div className="header">
       <div className="container">
@@ -76,60 +94,34 @@ const Header = () => {
                     <li className="dorpdown">
                       <a href="#">Eng</a>
                       <ul className="subnav">
-                        <li>
-                          <a href="#">Eng</a>
-                        </li>
-                        <li>
-                          <a href="#">Vns</a>
-                        </li>
-                        <li>
-                          <a href="#">Fer</a>
-                        </li>
-                        <li>
-                          <a href="#">Gem</a>
-                        </li>
+                        <li><a href="#">Eng</a></li>
+                        <li><a href="#">Vns</a></li>
+                        <li><a href="#">Fer</a></li>
+                        <li><a href="#">Gem</a></li>
                       </ul>
                     </li>
                     <li className="dorpdown">
                       <a href="#">USD</a>
                       <ul className="subnav">
-                        <li>
-                          <a href="#">USD</a>
-                        </li>
-                        <li>
-                          <a href="#">UKD</a>
-                        </li>
-                        <li>
-                          <a href="#">FER</a>
-                        </li>
+                        <li><a href="#">USD</a></li>
+                        <li><a href="#">UKD</a></li>
+                        <li><a href="#">FER</a></li>
                       </ul>
                     </li>
                   </ul>
                 </div>
                 <div className="col-md-6">
                   <ul className="topmenu">
-                    <li>
-                      <a href="#">About Us</a>
-                    </li>
-                    <li>
-                      <a href="#">News</a>
-                    </li>
-                    <li>
-                      <a href="#">Service</a>
-                    </li>
-                    <li>
-                      <a href="#">Recruiment</a>
-                    </li>
-                    <li>
-                      <a href="#">Media</a>
-                    </li>
-                    <li>
-                      <a href="#">Support</a>
-                    </li>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">News</a></li>
+                    <li><a href="#">Service</a></li>
+                    <li><a href="#">Recruiment</a></li>
+                    <li><a href="#">Media</a></li>
+                    <li><a href="#">Support</a></li>
                   </ul>
                 </div>
                 <div className="col-md-3">
-                  {render()}
+                  {renderUserMenu()}
                 </div>
               </div>
             </div>
@@ -138,15 +130,40 @@ const Header = () => {
               <ul className="option">
                 <li id="search" className="search">
                   <form>
-                    <input className="search-submit" type="submit" value="" />
+                    <input
+                      className="search-submit"
+                      type="submit"
+                      value=""
+                    />
                     <input
                       className="search-input"
                       placeholder="Enter your search term..."
                       type="text"
-                      name="search"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+
+                      
                     />
+                                {searchResults.length > 0 && (
+  <div className="search-results">
+    {searchResults.map((product) => (
+      <div className="search-result-item" key={product.id}>
+        <div className="image">
+          <img src={product.imageUrl} alt={product.name} />
+        </div>
+        <div className="item-description">
+          <p className="name">{product.name}</p>
+          <p className="price">{formatPrice(product.price)}</p>
+        </div>
+      </div>
+    ))}
+  </div>
+)}
+                  
                   </form>
+               
                 </li>
+    
                 <li className="option-cart">
                   <a href="#" className="cart-icon">
                     cart <span className="cart_no">02</span>
@@ -155,16 +172,12 @@ const Header = () => {
                     <li>
                       <div className="cart-item">
                         <div className="image">
-                          <img
-                            src="images/products/thum/products-01.png"
-                            alt=""
-                          />
+                          <img src="images/products/thum/products-01.png" alt="" />
                         </div>
                         <div className="item-description">
                           <p className="name">Lincoln chair</p>
                           <p>
-                            Size: <span className="light-red">One size</span>
-                            <br />
+                            Size: <span className="light-red">One size</span><br />
                             Quantity: <span className="light-red">01</span>
                           </p>
                         </div>
@@ -179,16 +192,12 @@ const Header = () => {
                     <li>
                       <div className="cart-item">
                         <div className="image">
-                          <img
-                            src="images/products/thum/products-02.png"
-                            alt=""
-                          />
+                          <img src="images/products/thum/products-02.png" alt="" />
                         </div>
                         <div className="item-description">
                           <p className="name">Lincoln chair</p>
                           <p>
-                            Size: <span className="light-red">One size</span>
-                            <br />
+                            Size: <span className="light-red">One size</span><br />
                             Quantity: <span className="light-red">01</span>
                           </p>
                         </div>
@@ -201,9 +210,7 @@ const Header = () => {
                       </div>
                     </li>
                     <li>
-                      <span className="total">
-                        Total <strong>$60.00</strong>
-                      </span>
+                      <span className="total">Total <strong>$60.00</strong></span>
                       <button className="checkout">CheckOut</button>
                     </li>
                   </ul>
@@ -230,121 +237,17 @@ const Header = () => {
                       className="dropdown-toggle"
                       data-toggle="dropdown"
                     >
-                      mome
+                      home
                     </Link>
-                    <div className="dropdown-menu">
-                      <ul className="mega-menu-links">
-                        <li>
-                          <a href="index.html">home</a>
-                        </li>
-                        <li>
-                          <a href="home2.html">home2</a>
-                        </li>
-                        <li>
-                          <a href="home3.html">home3</a>
-                        </li>
-                        <li>
-                          <a href="productlitst.html">Productlitst</a>
-                        </li>
-                        <li>
-                          <a href="#">Productgird</a>
-                        </li>
-                        <li>
-                          <a href="details.html">Details</a>
-                        </li>
-                        <li>
-                          <a href="cart.html">Cart</a>
-                        </li>
-                        <li>
-                          <a href="checkout.html">CheckOut</a>
-                        </li>
-                        <li>
-                          <a href="checkout2.html">CheckOut2</a>
-                        </li>
-                        <li>
-                          <a href="contact.html">contact</a>
-                        </li>
-                      </ul>
-                    </div>
                   </li>
-                  <li>
-                    <Link to="/Productgird">men</Link>
-                  </li>
-                  <li>
-                    <Link to="/Productlitst">women</Link>
-                  </li>
-                  <li className="dropdown">
-                    <Link
-                      to="/Productgird"
-                      className="dropdown-toggle"
-                      data-toggle="dropdown"
-                    >
-                      Fashion
-                    </Link>
-                    <div className="dropdown-menu mega-menu">
-                      <div className="row">
-                        <div className="col-md-6 col-sm-6">
-                          <ul className="mega-menu-links">
-                            <li>
-                              <a href="#">New Collection</a>
-                            </li>
-                            <li>
-                              <a href="#">Shirts & tops</a>
-                            </li>
-                            <li>
-                              <a href="#">Laptop & Brie</a>
-                            </li>
-                            <li>
-                              <a href="#">Dresses</a>
-                            </li>
-                            <li>
-                              <a href="#">Blazers & Jackets</a>
-                            </li>
-                            <li>
-                              <a href="#">Shoulder Bags</a>
-                            </li>
-                          </ul>
-                        </div>
-                        <div className="col-md-6 col-sm-6">
-                          <ul className="mega-menu-links">
-                            <li>
-                              <a href="#">New Collection</a>
-                            </li>
-                            <li>
-                              <a href="#">Shirts & tops</a>
-                            </li>
-                            <li>
-                              <a href="#">Laptop & Brie</a>
-                            </li>
-                            <li>
-                              <a href="#">Dresses</a>
-                            </li>
-                            <li>
-                              <a href="#">Blazers & Jackets</a>
-                            </li>
-                            <li>
-                              <a href="#">Shoulder Bags</a>
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                  </li>
-                  <li>
-                    <Link to="/Productgd">gift</Link>
-                  </li>
-                  <li>
-                    <Link to="/Productgird">kids</Link>
-                  </li>
-                  <li>
-                    <Link to="/Productgird">blog</Link>
-                  </li>
-                  <li>
-                    <Link to="/Productgird">jewelry</Link>
-                  </li>
-                  <li>
-                    <Link to="/Contact">contact us</Link>
-                  </li>
+                  <li><Link to="/Productlist?categoryId=1">Áo thun</Link></li>
+                  <li><Link to="/Productlist?categoryId=2">women</Link></li>
+                  <li><Link to="/Productlist?categoryId=7">áo nam</Link></li>
+                  <li><Link to="/Productlist?categoryId=2">áo nữ</Link></li>
+                  <li><Link to="/Productlist?categoryId=5">kids</Link></li>
+                  <li><Link to="/Productlist?categoryId=6">blog</Link></li>
+                  <li><Link to="/Productlist?categoryId=7">jewelry</Link></li>
+                  <li><Link to="/Contact">contact us</Link></li>
                 </ul>
               </div>
             </div>
@@ -354,4 +257,5 @@ const Header = () => {
     </div>
   );
 };
+
 export default Header;
