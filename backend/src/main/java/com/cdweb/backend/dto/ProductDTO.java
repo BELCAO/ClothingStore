@@ -8,6 +8,8 @@ public class ProductDTO {
 	private String description;
 	private double price;
 	private String imageUrl;
+	private int status;  // 0 for inactive, 1 for active
+	private int quantity; 
 	private List<String> imageUrls; 
 	private Long categoryId;
 	public Long getProductId() {
@@ -54,5 +56,18 @@ public class ProductDTO {
 	public void setCategoryId(Long categoryId) {
 		this.categoryId = categoryId;
 	}
+	public int getStatus() {
+		return status;
+	}
+	public void setStatus(int status) {
+		this.status = status;
+	}
+	public int getQuantity() {
+		return quantity;
+	}
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
+	}
+	
 
 }
