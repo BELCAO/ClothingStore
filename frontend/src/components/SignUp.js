@@ -39,12 +39,11 @@ const SignUp = () => {
     const data = {email: email, name: values.name, password: values.password, phone: values.phoneNumber}
     console.log(data)
     axios
-      .post("http://localhost:8080/account/create", data)
+      .post("http://localhost:8080/user/create", data)
       .then((response) => {
         console.log("Successfully created");
         axios.post("http://localhost:8080/auth/", data)
         .then((response) => {
-          // saveToken(response.data)
           dispatch(saveToken(response.data))
           navigate("/")
         })
@@ -65,7 +64,7 @@ const SignUp = () => {
 
   const existsEmail = (values, actions) => {
     axios
-      .post("http://localhost:8080/account/existsemail", values)
+      .post("http://localhost:8080/user/existsemail", values)
       .then((response) => {
         if (response.data) {
           actions.setFieldError("email", "Email đã được sử dụng");

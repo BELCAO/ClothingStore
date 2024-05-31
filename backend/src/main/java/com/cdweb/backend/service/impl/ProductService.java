@@ -1,6 +1,7 @@
 package com.cdweb.backend.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +10,13 @@ import org.springframework.stereotype.Service;
 import com.cdweb.backend.converter.ProductConverter;
 import com.cdweb.backend.dto.ProductDTO;
 import com.cdweb.backend.entity.CategoryEntity;
+import com.cdweb.backend.entity.Order;
 import com.cdweb.backend.entity.ProductEntity;
 import com.cdweb.backend.repository.CategoryRepository;
 import com.cdweb.backend.repository.ProductRepository;
 import com.cdweb.backend.service.IProductService;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class ProductService implements IProductService {
@@ -66,6 +70,11 @@ public class ProductService implements IProductService {
 			productRepository.deleteById(item);
 		}
 		
+	}
+	
+	@Transactional
+	public Optional<ProductEntity> getProducById(Long id) {
+		return productRepository.findById(id);
 	}
 
 //	@Override

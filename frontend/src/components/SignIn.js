@@ -23,19 +23,8 @@ const SignIn = () => {
   const handleSubmit = (values, actions) => {
     axios.post("http://localhost:8080/auth/", values)
     .then((response) => {
-      dispatch(saveToken(response.data));
-      actions.setSubmitting(false);
-      axios.get(`${process.env.REACT_APP_HOST_API_URL}account/myprofile`,{
-        headers: {Authorization: `Bearer ${response.data}`}
-      })
-      .then((response) => {
-        // dispatch(saveUserName(response.data.name));
-        // dispatch(saveAvatarUrl(response.data.avatarUrl));
-        dispatch(saveUserInfo({userName:response.data.name, avatarUrl:response.data.avatarUrl}))
-      })
-      .catch((error) =>{
-        console.log(error);
-      });
+      dispatch(saveToken(response.data.token));
+      dispatch(saveUserInfo({userName:response.data.name, avatarUrl:response.data.avatarUrl}))
       navigate("/")
     })
     .catch((error) => {

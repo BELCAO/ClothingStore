@@ -8,30 +8,24 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.cdweb.backend.entity.Account;
+import com.cdweb.backend.entity.User;
 import com.cdweb.backend.enums.Role;
-import com.cdweb.backend.service.AccountService;
+import com.cdweb.backend.service.UserService;
 
 @Configuration
 public class ApplicationInitConfig {
 	@Autowired
-	private AccountService accountService;
+	private UserService accountService;
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	@Bean
 	ApplicationRunner applicationRunner() {
 		return args -> {
 			if(!accountService.existsAccountByEmail("admin@gmail.com")) {
-				Account account = new Account();
-				account.setEmail("admin@gmail.com");
-				account.setName("Admin");
-				account.setPhone("");
-				account.setAvatarUrl("Avatar");
-				account.setStatus(1);
+				User account = new User("admin@gmail.com", "admin@gmail.com", "0000000000", passwordEncoder.encode("000000"));
 				HashSet<String> roles = new HashSet<String>();
 				roles.add(Role.ADMIN.name());
 				account.setRoles(roles);
-				account.setPassword(passwordEncoder.encode("000000"));
 				accountService.createAccount(account);
 			}
 		};

@@ -1,9 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-// import { useState } from "react";
-// import { userName, avatarUrl } from "../js/redux/actions";
-// import axios from "axios";
+import { useSelector } from "react-redux";
 
 const UserMenu = () => {
   return (
@@ -52,7 +49,6 @@ const Header = () => {
   const token = useSelector((state) => state.token);
   const avatarUrl = useSelector((state) => state.avatarUrl);
   const userName = useSelector((state) => state.userName);
-  // const dispatch = useDispatch();
 
   const render = () => {
     if(token) {

@@ -23,6 +23,7 @@ const UpdateProfileSchema = Yup.object().shape({
   phoneNumber: Yup.string()
     .matches(/^[0-9]+$/, "Số điện thoại phải là số")
     .min(10, "Số điện thoại không hợp lệ")
+    .max(12, "Số điện thoại không hợp lệ" )
     .required("Vui lòng nhập số điện thoại của bạn"),
   gender: Yup.string(),
   birthday: Yup.date(),
@@ -46,7 +47,7 @@ const Profile = () => {
   useEffect(() => {
     if (token) {
       axios
-        .get(`${process.env.REACT_APP_HOST_API_URL}account/myprofile`, {
+        .get(`${process.env.REACT_APP_HOST_API_URL}user/myprofile`, {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((response) => {
@@ -71,7 +72,7 @@ const Profile = () => {
     handleUpload();
     axios
       .post(
-        `${process.env.REACT_APP_HOST_API_URL}account/updateMyInfo`,
+        `${process.env.REACT_APP_HOST_API_URL}user/updateMyInfo`,
         values,
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -173,7 +174,7 @@ const Profile = () => {
               setFieldValue,
               errors,
               touched,
-              resetForm,
+              resetForm
             }) => (
               <Form className="form-contains">
                 <div className="form-info">
@@ -216,7 +217,7 @@ const Profile = () => {
                       type="text"
                       disabled={!isEditing}
                       className={`form-control ${
-                        errors.email && touched.email ? "is-invalid" : ""
+                        errors.phone && touched.phone ? "is-invalid" : ""
                       }`}
                     />
                     <ErrorMessage
@@ -294,7 +295,7 @@ const Profile = () => {
                     <button
                       type="submit"
                       className="btn btn-primary"
-                      disabled={!isValid || isSubmitting || !isEditing}
+                      disabled={ isSubmitting || !isValid|| !isEditing}
                     >
                       Save
                     </button>
