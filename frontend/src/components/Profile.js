@@ -169,7 +169,7 @@ const Profile = () => {
               <Form className="form-contains">
                 <div className="form-info">
                   <div className="form-group">
-                    <label>Email:</label>
+                    <label>Địa chỉ Email:</label>
                     <Field
                       name="email"
                       type="email"
@@ -185,7 +185,7 @@ const Profile = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label>Name:</label>
+                    <label>Họ và Tên:</label>
                     <Field
                       name="name"
                       type="text"
@@ -201,7 +201,7 @@ const Profile = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label>Phone Number:</label>
+                    <label>Số điện thoại:</label>
                     <Field
                       name="phoneNumber"
                       type="text"
@@ -217,7 +217,7 @@ const Profile = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label>Gender:</label>
+                    <label>Giới tính:</label>
                     <div className="gender-contains">
                       <label>
                         Nam:
@@ -266,7 +266,7 @@ const Profile = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label>Birthday:</label>
+                    <label>Ngày sinh:</label>
                     <Field
                       name="birthday"
                       type="date"
@@ -288,7 +288,7 @@ const Profile = () => {
                       className="btn btn-primary"
                       disabled={!isValid || isSubmitting || !isEditing}
                     >
-                      Save
+                      Lưu thay đổi
                     </button>
                     <button
                       type="button"
@@ -299,7 +299,7 @@ const Profile = () => {
                         resetForm();
                       }}
                     >
-                      Cancel
+                      Hủy
                     </button>
                     <button
                       type="button"
@@ -308,7 +308,7 @@ const Profile = () => {
                         setIsEditing(true);
                       }}
                     >
-                      Edit
+                      Chỉnh sửa
                     </button>
                   </div>
 
@@ -351,23 +351,23 @@ const Profile = () => {
               {renderImageProfile()}
               <div className="item-menu-list">
                 <Link to="/Profile">
-                  <div className="item-menu">My Profile</div>
+                  <div className="item-menu">Hồ sở của tôi</div>
                 </Link>
                 <Link to="/Profile/LikedProducts">
-                  <div className="item-menu">Liked Products</div>
+                  <div className="item-menu">Sản phẩm đã thích</div>
                 </Link>
                 <Link to="/Profile/Orders">
-                  <div className="item-menu">Orders</div>
+                  <div className="item-menu">Đơn hàng</div>
                 </Link>
                 <Link>
-                  <div className="item-menu">Change Password</div>
+                  <div className="item-menu">Đổi mật khẩu</div>
                 </Link>
                 <div className="item-menu" onClick={logOut}>
-                  Log Out
+                  Đăng xuất
                 </div>
                 {isAdmin && (
                   <Link to="/Admin" >
-                    <div className="item-menu admin_btn"  >Admin Page</div>
+                    <div className="item-menu admin_btn"  >Trang Quản Trị</div>
                   </Link>
                 )}
               </div>

@@ -7,15 +7,15 @@ const Footer = () => {
         <div className="container">
           <div className="row">
             <div className="col-md-3">
-              <div className="footer-logo">
+              <div className="footer-logo" style={{width:180}}>
                 <a href="#">
-                  <img src="images/logo.png" alt="" />
+                  <img src="images/logo3.png" alt="" />
                 </a>
               </div>
             </div>
             <div className="col-md-3 col-sm-6">
               <h4 className="title">
-                Contact <strong>Info</strong>
+                <strong>Thông tin</strong> Liên hệ
               </h4>
               <p>No. 08, Nguyen Trai, Hanoi , Vietnam</p>
               <p>Call Us : (084) 1900 1008</p>
@@ -23,7 +23,7 @@ const Footer = () => {
             </div>
             <div className="col-md-3 col-sm-6">
               <h4 className="title">
-                Customer<strong> Support</strong>
+              <strong> Hỗ trợ</strong> Khách hàng
               </h4>
               <ul className="support">
                 <li>
@@ -42,12 +42,12 @@ const Footer = () => {
             </div>
             <div className="col-md-3">
               <h4 className="title">
-                Get Our <strong>Newsletter </strong>
+                <strong>Nhận thông tin </strong> từ chúng tôi
               </h4>
               <p>Lorem ipsum dolor ipsum dolor.</p>
               <form className="newsletter">
                 <input type="text" name="" placeholder="Type your email...." />
-                <input type="submit" value="SignUp" className="button" />
+                <input type="submit" value="Đăng Ký" className="button" />
               </form>
             </div>
           </div>
