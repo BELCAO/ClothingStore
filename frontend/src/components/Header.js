@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 const UserMenu = () => {
   return (
@@ -36,7 +36,6 @@ const Header = () => {
   const token = useSelector((state) => state.token);
   const avatarUrl = useSelector((state) => state.avatarUrl);
   const userName = useSelector((state) => state.userName);
-  const dispatch = useDispatch();
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
 
@@ -71,9 +70,6 @@ const Header = () => {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price).replace(/\D00(?=\D*$)/, '');
   };
 
-  
-
-  
   return (
     <div className="header">
       <div className="container">
@@ -140,29 +136,29 @@ const Header = () => {
                       type="text"
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-
-                      
                     />
-                                {searchResults.length > 0 && (
-  <div className="search-results">
-    {searchResults.map((product) => (
-      <div className="search-result-item" key={product.id}>
-        <div className="image">
-          <img src={product.imageUrl} alt={product.name} />
-        </div>
-        <div className="item-description">
-          <p className="name">{product.name}</p>
-          <p className="price">{formatPrice(product.price)}</p>
-        </div>
-      </div>
-    ))}
-  </div>
-)}
-                  
+                    {searchResults.length > 0 && (
+                      <div className="search-results">
+                        {searchResults.map((product) => (
+                          <Link
+                            to={`/details/search`}
+                            state={{ product }}
+                            key={product.id}
+                            className="search-result-item"
+                          >
+                            <div className="image">
+                              <img src={product.imageUrl} alt={product.name} />
+                            </div>
+                            <div className="item-description">
+                              <p className="name">{product.name}</p>
+                              <p className="price">{formatPrice(product.price)}</p>
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+                    )}
                   </form>
-               
                 </li>
-    
                 <li className="option-cart">
                   <a href="#" className="cart-icon">
                     cart <span className="cart_no">02</span>
