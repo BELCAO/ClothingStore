@@ -159,7 +159,7 @@ const Header = () => {
                       <a href="#">Truyền thông</a>
                     </li>
                     <li>
-                      <a href="#">Hỗ trọw</a>
+                      <a href="#">Hỗ trợ</a>
                     </li>
                   </ul>
                 </div>
@@ -169,39 +169,38 @@ const Header = () => {
             <div className="clearfix"></div>
             <div className="header_bottom">
               <ul className="option">
-                <li id="search" className="search">
-                  <form>
-                    <input className="search-submit" type="submit" value="" />
-                    <input
-                      className="search-input"
-                      placeholder="Enter your search term..."
-                      type="text"
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                    {searchResults.length > 0 && (
-                      <div className="search-results">
-                        {searchResults.map((product) => (
-                          <div className="search-result-item" key={product.id}>
-                          <Link
-                            to={`/details/search`}
-                            state={{ product }}
-                            key={product.id}
-                            className="search-result-item"
-                          >
-                            <div className="image">
-                              <img src={product.imageUrl} alt={product.name} />
-                            </div>
-                            <div className="item-description">
-                              <p className="name">{product.name}</p>
-                              <p className="price">{formatPrice(product.price)}</p>
-                            </div>
-                          </Link>
-                        ))}
-                      </div>
-                    )}
-                  </form>
-                </li>
+              <li id="search" className="search">
+      <form>
+        <input className="search-submit" type="submit" value="" />
+        <input
+          className="search-input"
+          placeholder="Enter your search term..."
+          type="text"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        {searchResults.length > 0 && (
+          <div className="search-results">
+            {searchResults.map((product) => (
+              <Link
+                to={`/details/search`}
+                state={{ product }}
+                key={product.id}
+                className="search-result-item"
+              >
+                <div className="image">
+                  <img src={product.imageUrl} alt={product.name} />
+                </div>
+                <div className="item-description">
+                  <p className="name">{product.name}</p>
+                  <p className="price">{formatPrice(product.price)}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
+      </form>
+    </li>
 
                 <li className="option-cart">
                   <a href="#" className="cart-icon">
