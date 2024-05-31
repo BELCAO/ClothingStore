@@ -8,7 +8,7 @@ const Contact = () => {
         <div className="container">
           <div className="row">
             <div className="col-md-12">
-              <h5 className="title contact-title">Contact Us</h5>
+              <h5 className="title contact-title">Liên hệ với chúng tôi</h5>
               <div className="clearfix"></div>
               <div className="map">
                 <iframe
@@ -21,7 +21,7 @@ const Contact = () => {
               <div className="row">
                 <div className="col-md-4">
                   <div className="contact-infoormation">
-                    <h5>Contact Info</h5>
+                    <h5>Thông tin liên hệ</h5>
                     <p>
                       Lorem ipsum dolor sit amet, consectetur ad ipis cing elit.
                       Suspendisse at sapien mascsa. Lorem ipsum dolor sit amet,

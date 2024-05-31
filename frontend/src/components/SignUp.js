@@ -93,7 +93,7 @@ const SignUp = () => {
             {({ isValid, isSubmitting, errors, touched }) => (
               <Form>
                 <div className="form-group">
-                  <label>Email:</label>
+                  <label>Địa chỉ Email:</label>
                   <Field
                     type="email"
                     name="email"
@@ -112,7 +112,7 @@ const SignUp = () => {
                   className="btn btn-primary btn-block"
                   disabled={!isValid || isSubmitting}
                 >
-                  Continue
+                  Tiếp tục
                 </button>
               </Form>
             )}
@@ -138,7 +138,7 @@ const SignUp = () => {
             {({ isValid, isSubmitting, errors, touched }) => (
               <Form>
                 <div className="form-group">
-                  <label>Name:</label>
+                  <label>Họ và tên:</label>
                   <Field
                     type="text"
                     name="name"
@@ -153,7 +153,7 @@ const SignUp = () => {
                   />
                 </div>
                 <div className="form-group">
-                  <label>Phone Number:</label>
+                  <label>Số điện thoại:</label>
                   <Field
                     type="text"
                     name="phoneNumber"
@@ -170,7 +170,7 @@ const SignUp = () => {
                   />
                 </div>
                 <div className="form-group">
-                  <label>Password:</label>
+                  <label>Mật khẩu:</label>
                   <Field
                     type="password"
                     name="password"
@@ -189,14 +189,14 @@ const SignUp = () => {
                   className="btn btn-primary btn-block"
                   disabled={!isValid || isSubmitting}
                 >
-                  Sign Up
+                  Đăng ký
                 </button>
                 <button
                   type="button"
                   className="btn btn-primary"
                   onClick={toggleCheckEmail}
                 >
-                  Back
+                  Quay lại
                 </button>
               </Form>
             )}
@@ -216,18 +216,18 @@ const SignUp = () => {
           <div className="col-md-6 margin-auto">
             <div className="sing-up_container">
               <div className="card">
-                <h2 className="card-header text-center title">Sign Up</h2>
+                <h2 className="card-header text-center title">Đăng ký</h2>
                 {showCheckEmail ? <FormCheckEmail /> : <FormCreateAccount />}
                 <div className="separator">
-                  <span>or</span>
+                  <span>hoặc</span>
                 </div>
                 <div className="login-with-google">
-                  <button>Sign up with Google</button>
+                  <button>Đăng ký với tài khoản Google</button>
                 </div>
                 <div className="have-account">
                   <p>
-                    Do you have an account yet?{"    "}
-                    <Link to="/SignIn">Sign In</Link>
+                    Bạn có tài khoản hay chưa ?{"    "}
+                    <Link to="/SignIn">Đăng nhập</Link>
                   </p>
                 </div>
               </div>

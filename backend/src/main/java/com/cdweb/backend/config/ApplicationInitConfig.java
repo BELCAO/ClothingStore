@@ -3,6 +3,7 @@ package com.cdweb.backend.config;
 import java.util.HashSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +19,8 @@ public class ApplicationInitConfig {
 	private UserService accountService;
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	@Value("${default.avatar}")
+	private String defaultAvatarUrl;
 	@Bean
 	ApplicationRunner applicationRunner() {
 		return args -> {
@@ -26,6 +29,7 @@ public class ApplicationInitConfig {
 				HashSet<String> roles = new HashSet<String>();
 				roles.add(Role.ADMIN.name());
 				user.setRoles(roles);
+				user.setAvatarUrl(defaultAvatarUrl);
 				accountService.createAccount(user);
 			}
 		};
