@@ -1,7 +1,7 @@
-
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
+import ReactPaginate from 'react-paginate';
 
 const Productgird = () => {
   const [products, setProducts] = useState([]);
@@ -30,10 +30,8 @@ const Productgird = () => {
       });
   };
 
-  const handlePageChange = (newPage) => {
-    if (newPage >= 0 && newPage < totalPages) {
-      setPage(newPage);
-    }
+  const handlePageClick = (data) => {
+    setPage(data.selected);
   };
 
   const handlePageSizeChange = (event) => {
@@ -184,24 +182,19 @@ const Productgird = () => {
                       </select>
                     </div>
                   </div>
-                  <div className="pager">
-                    <a href="#" className="prev-page" onClick={() => handlePageChange(page - 1)}>
-                      <i className="fa fa-angle-left"></i>
-                    </a>
-                    {[...Array(totalPages).keys()].map((pageNumber) => (
-                      <a
-                        href="#"
-                        key={pageNumber}
-                        className={pageNumber === page ? "active" : ""}
-                        onClick={() => handlePageChange(pageNumber)}
-                      >
-                        {pageNumber + 1}
-                      </a>
-                    ))}
-                    <a href="#" className="next-page" onClick={() => handlePageChange(page + 1)}>
-                      <i className="fa fa-angle-right"></i>
-                    </a>
-                  </div>
+                  <ReactPaginate
+                    previousLabel={'previous'}
+                    nextLabel={'next'}
+                    breakLabel={'...'}
+                    breakClassName={'break-me'}
+                    pageCount={totalPages}
+                    marginPagesDisplayed={2}
+                    pageRangeDisplayed={5}
+                    onPageChange={handlePageClick}
+                    containerClassName={'pagination'}
+                    subContainerClassName={'pages pagination'}
+                    activeClassName={'active'}
+                  />
                 </div>
                 <div className="clearfix"></div>
                 <div className="row">
@@ -245,24 +238,19 @@ const Productgird = () => {
                       </select>
                     </div>
                   </div>
-                  <div className="pager">
-                    <a href="#" className="prev-page" onClick={() => handlePageChange(page - 1)}>
-                      <i className="fa fa-angle-left"></i>
-                    </a>
-                    {[...Array(totalPages).keys()].map((pageNumber) => (
-                      <a
-                        href="#"
-                        key={pageNumber}
-                        className={pageNumber === page ? "active" : ""}
-                        onClick={() => handlePageChange(pageNumber)}
-                      >
-                        {pageNumber + 1}
-                      </a>
-                    ))}
-                    <a href="#" className="next-page" onClick={() => handlePageChange(page + 1)}>
-                      <i className="fa fa-angle-right"></i>
-                    </a>
-                  </div>
+                  <ReactPaginate
+                    previousLabel={'previous'}
+                    nextLabel={'next'}
+                    breakLabel={'...'}
+                    breakClassName={'break-me'}
+                    pageCount={totalPages}
+                    marginPagesDisplayed={2}
+                    pageRangeDisplayed={5}
+                    onPageChange={handlePageClick}
+                    containerClassName={'pagination'}
+                    subContainerClassName={'pages pagination'}
+                    activeClassName={'active'}
+                  />
                 </div>
                 <div className="clearfix"></div>
               </div>
