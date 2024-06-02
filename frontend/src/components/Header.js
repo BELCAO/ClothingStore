@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
+// UserMenu component
 const UserMenu = () => {
   return (
     <ul className="usermenu">
       <li>
         <Link to="/SignIn" className="log">
-           Đăng nhập
+          Đăng nhập
         </Link>
       </li>
       <li>
@@ -19,6 +23,7 @@ const UserMenu = () => {
   );
 };
 
+// Account component
 const Account = (prop) => {
   return (
     <ul className="usermenu">
@@ -52,6 +57,10 @@ const Header = () => {
   const userName = useSelector((state) => state.userName);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  const [cartItems, setCartItems] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (searchTerm) {
@@ -60,6 +69,10 @@ const Header = () => {
       setSearchResults([]);
     }
   }, [searchTerm]);
+
+  useEffect(() => {
+    fetchCartItems();
+  }, []);
 
   const handleSearch = async () => {
     try {
@@ -71,6 +84,17 @@ const Header = () => {
     } catch (error) {
       console.error("Error fetching search results:", error);
       setSearchResults([]);
+    }
+  };
+
+  const fetchCartItems = async () => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/cart/get?userId=2`);
+      const data = await response.json();
+      setCartItems(data.items);
+      setTotalPrice(data.totalPrice);
+    } catch (error) {
+      console.error("Error fetching cart items:", error);
     }
   };
 
@@ -90,6 +114,16 @@ const Header = () => {
     })
       .format(price)
       .replace(/\D00(?=\D*$)/, "");
+  };
+
+  const settings = {
+    dots: true,
+    infinite: false,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    vertical: true,
+    verticalSwiping: true,
   };
 
   return (
@@ -169,97 +203,69 @@ const Header = () => {
             <div className="clearfix"></div>
             <div className="header_bottom">
               <ul className="option">
-              <li id="search" className="search">
-      <form>
-        <input className="search-submit" type="submit" value="" />
-        <input
-          className="search-input"
-          placeholder="Enter your search term..."
-          type="text"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        {searchResults.length > 0 && (
-          <div className="search-results">
-            {searchResults.map((product) => (
-              <Link
-                to={`/details/search`}
-                state={{ product }}
-                key={product.id}
-                className="search-result-item"
-              >
-                <div className="image">
-                  <img src={product.imageUrl} alt={product.name} />
-                </div>
-                <div className="item-description">
-                  <p className="name">{product.name}</p>
-                  <p className="price">{formatPrice(product.price)}</p>
-                </div>
-              </Link>
-            ))}
-          </div>
-        )}
-      </form>
-    </li>
+                <li id="search" className="search">
+                  <form>
+                    <input className="search-submit" type="submit" value="" />
+                    <input
+                      className="search-input"
+                      placeholder="Enter your search term..."
+                      type="text"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                    {searchResults.length > 0 && (
+                      <div className="search-results">
+                        {searchResults.map((product) => (
+                          <Link
+                            to={`/details/search`}
+                            state={{ product }}
+                            key={product.id}
+                            className="search-result-item"
+                          >
+                            <div className="image">
+                              <img src={product.imageUrl} alt={product.name} />
+                            </div>
+                            <div className="item-description">
+                              <p className="name">{product.name}</p>
+                              <p className="price">{formatPrice(product.price)}</p>
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </form>
+                </li>
 
                 <li className="option-cart">
-                  <a href="#" className="cart-icon">
-                    cart <span className="cart_no">02</span>
+                  <a className="cart-icon">
+                    cart <span className="cart_no">{cartItems.length}</span>
                   </a>
                   <ul className="option-cart-item">
-                    <li>
-                      <div className="cart-item">
-                        <div className="image">
-                          <img
-                            src="images/products/thum/products-01.png"
-                            alt=""
-                          />
-                        </div>
-                        <div className="item-description">
-                          <p className="name">Lincoln chair</p>
-                          <p>
-                            Size: <span className="light-red">One size</span>
-                            <br />
-                            Quantity: <span className="light-red">01</span>
-                          </p>
-                        </div>
-                        <div className="right">
-                          <p className="price">$30.00</p>
-                          <a href="#" className="remove">
-                            <img src="images/remove.png" alt="remove" />
-                          </a>
-                        </div>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="cart-item">
-                        <div className="image">
-                          <img
-                            src="images/products/thum/products-02.png"
-                            alt=""
-                          />
-                        </div>
-                        <div className="item-description">
-                          <p className="name">Lincoln chair</p>
-                          <p>
-                            Size: <span className="light-red">One size</span>
-                            <br />
-                            Quantity: <span className="light-red">01</span>
-                          </p>
-                        </div>
-                        <div className="right">
-                          <p className="price">$30.00</p>
-                          <a href="#" className="remove">
-                            <img src="images/remove.png" alt="remove" />
-                          </a>
-                        </div>
-                      </div>
-                    </li>
+                    <Slider {...settings}>
+                      {cartItems.map((item) => (
+                        <li key={item.id}>
+                          <div className="cart-item">
+                            <div className="image">
+                              <img src={item.productImage} alt={item.productName} />
+                            </div>
+                            <div className="item-description">
+                              <p className="name">{item.productName}</p>
+                              <p>
+                                Quantity: <span className="light-red">{item.quantity}</span>
+                              </p>
+                            </div>
+                            <div className="right">
+                              <p className="price">{formatPrice(item.productPrice * item.quantity)}</p>
+                            </div>
+                          </div>
+                        </li>
+                      ))}
+                    </Slider>
                     <li>
                       <span className="total">
-                        Total <strong>$60.00</strong>
+                        Total <strong>{formatPrice(totalPrice)}</strong>
                       </span>
-                      <button className="checkout">CheckOut</button>
+                      <button className="checkout" onClick={() => navigate("/cart")}>CheckOut</button>
                     </li>
                   </ul>
                 </li>

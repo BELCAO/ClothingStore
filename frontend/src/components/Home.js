@@ -1,53 +1,85 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
-
 const Home = () => {
   const [products, setProducts] = useState([]);
   const [featuredProducts, setFeaturedProducts] = useState([]);
+  const [cartItems, setCartItems] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
 
   useEffect(() => {
-   // Giả sử bạn lấy dữ liệu sản phẩm từ API hoặc nguồn dữ liệu khác
     fetchProducts();
     fetchFeaturedProducts();
+    fetchCartItems();
   }, []);
 
   const fetchProducts = async () => {
     try {
-      // Gọi API hoặc lấy dữ liệu sản phẩm từ nguồn dữ liệu khác
       const response = await fetch("http://localhost:8080/products");
       const data = await response.json();
       if (data && Array.isArray(data.content)) {
         setProducts(data.content);
       } else {
         console.error("Received data is not an array:", data);
-        setProducts([]);  // Thiết lập mảng rỗng nếu dữ liệu không phải mảng
+        setProducts([]);
       }
     } catch (error) {
       console.error("Error fetching products:", error);
-      setProducts([]);  // Thiết lập mảng rỗng trong trường hợp lỗi
+      setProducts([]);
     }
   };
 
-  
   const fetchFeaturedProducts = async () => {
     try {
-      // Gọi API hoặc lấy dữ liệu sản phẩm từ nguồn dữ liệu khác
       const response = await fetch("http://localhost:8080/categories/3/products");
       const data = await response.json();
       if (data && Array.isArray(data.content)) {
         setFeaturedProducts(data.content);
       } else {
         console.error("Received data is not an array:", data);
-        setFeaturedProducts([]);  // Thiết lập mảng rỗng nếu dữ liệu không phải mảng
+        setFeaturedProducts([]);
       }
     } catch (error) {
       console.error("Error fetching products:", error);
-      setFeaturedProducts([]);  // Thiết lập mảng rỗng trong trường hợp lỗi
+      setFeaturedProducts([]);
     }
+  };
 
+  const fetchCartItems = async () => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/cart/get?userId=2`);
+      const data = await response.json();
+      setCartItems(data.items);
+      setTotalPrice(data.totalPrice);
+    } catch (error) {
+      console.error("Error fetching cart items:", error);
+    }
+  };
 
-
+  const handleAddToCart = async (product) => {
+    try {
+      const response = await fetch("http://localhost:8080/api/cart/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: 2, // Replace with actual userId
+          productId: product.productId,
+          quantity: 1, // Default quantity
+        }),
+      });
+      if (response.ok) {
+        const updatedCart = await response.json();
+        setCartItems(updatedCart.items);
+        setTotalPrice(updatedCart.totalPrice);
+        alert("Sản phẩm đã được thêm vào giỏ hàng");
+      } else {
+        console.error("Failed to add product to cart");
+      }
+    } catch (error) {
+      console.error("Error adding product to cart:", error);
+    }
   };
 
   const handleProductClick = (product) => {
@@ -192,27 +224,27 @@ const Home = () => {
               </Link>
             </div>
             <ul id="hot">
-        <li>
-          <div className="row">
-            {products.map((product) => (
-              <div key={product.id} className="col-md-3 col-sm-6">
-                <div className="products">
-                  <div className="thumbnail">
-                  {handleProductClick(product)}
-                  </div>
-                  <div className="productname">{product.name}</div>
-                  <h4 className="price">{formatPrice(product.price)}</h4>
-                  <div className="button_group">
-                    <button className="button add-cart" type="button">Add To Cart</button>
-                    <button className="button compare" type="button"><i className="fa fa-exchange"></i></button>
-                    <button className="button wishlist" type="button"><i className="fa fa-heart-o"></i></button>
-                  </div>
+              <li>
+                <div className="row">
+                  {products.map((product) => (
+                    <div key={product.id} className="col-md-3 col-sm-6">
+                      <div className="products">
+                        <div className="thumbnail">
+                          {handleProductClick(product)}
+                        </div>
+                        <div className="productname">{product.name}</div>
+                        <h4 className="price">{formatPrice(product.price)}</h4>
+                        <div className="button_group">
+                          <button className="button add-cart" type="button" onClick={() => handleAddToCart(product)}>Add To Cart</button>
+                          <button className="button compare" type="button"><i className="fa fa-exchange"></i></button>
+                          <button className="button wishlist" type="button"><i className="fa fa-heart-o"></i></button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              </div>
-            ))}
-          </div>
-        </li>
-      </ul>
+              </li>
+            </ul>
           </div>
           <div className="clearfix"></div>
           <div className="featured-products">
@@ -229,26 +261,25 @@ const Home = () => {
             </div>
             <ul id="featured">
               <li>
-              <div className="row">
-            {featuredProducts.map((product) => (
-              <div key={product.id} className="col-md-3 col-sm-6">
-                <div className="products">
-                  <div className="thumbnail">
-                  {handleProductClick(product)}
-                  </div>
-                  <div className="productname">{product.name}</div>
-                  <h4 className="price">{formatPrice(product.price)}</h4>
-                  <div className="button_group">
-                    <button className="button add-cart" type="button">Add To Cart</button>
-                    <button className="button compare" type="button"><i className="fa fa-exchange"></i></button>
-                    <button className="button wishlist" type="button"><i className="fa fa-heart-o"></i></button>
-                  </div>
+                <div className="row">
+                  {featuredProducts.map((product) => (
+                    <div key={product.id} className="col-md-3 col-sm-6">
+                      <div className="products">
+                        <div className="thumbnail">
+                          {handleProductClick(product)}
+                        </div>
+                        <div className="productname">{product.name}</div>
+                        <h4 className="price">{formatPrice(product.price)}</h4>
+                        <div className="button_group">
+                          <button className="button add-cart" type="button" onClick={() => handleAddToCart(product)}>Add To Cart</button>
+                          <button className="button compare" type="button"><i className="fa fa-exchange"></i></button>
+                          <button className="button wishlist" type="button"><i className="fa fa-heart-o"></i></button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              </div>
-            ))}
-          </div>
               </li>
-              
             </ul>
           </div>
         </div>
