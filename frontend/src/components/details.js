@@ -7,7 +7,7 @@ const Details = () => {
   const [product, setProduct] = useState(location.state?.product || null);
   const [currentImageUrl, setCurrentImageUrl] = useState(product?.imageUrl || "");
   const [hotProducts, setHotProducts] = useState([]);
-  const [quantity, setQuantity] = useState(1);  // New state for quantity
+  const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
     if (!product) {
@@ -77,12 +77,14 @@ const Details = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          accountId: 2, // Thay thế bằng accountId thực tế
+          userId: 2, // Thay thế bằng accountId thực tế
           productId: product.productId,
           quantity: quantity,
         }),
       });
       if (response.ok) {
+        const updatedCart = await response.json();
+        // Update cart items and total price in context or state here
         alert("Sản phẩm đã được thêm vào giỏ hàng");
       } else {
         console.error("Failed to add product to cart");
@@ -113,6 +115,7 @@ const Details = () => {
                       {product.imageUrls?.map((imageUrl, index) => (
                         <li key={index}>
                           <a
+                            href="#"
                             onClick={(e) => {
                               e.preventDefault();
                               setCurrentImageUrl(imageUrl);
