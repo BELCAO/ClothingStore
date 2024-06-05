@@ -46,6 +46,7 @@ public class AuthenticationService {
 		Map<String, String> result = new HashMap<String, String>();
 		result.put("token", token);
 		result.put("name", user.getName());
+		result.put("userId", String.valueOf(user.getId())); 
 		result.put("avatarUrl", user.getAvatarUrl());
 		return result;
 	}
