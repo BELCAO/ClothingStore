@@ -13,6 +13,7 @@ const initialState = {
   token: null,
   avatarUrl: null,
   userName: null,
+  userId: null, // Thêm userId vào initialState
 };
 
 const rootReducer = (state = initialState, action) => {
@@ -52,15 +53,18 @@ const rootReducer = (state = initialState, action) => {
         ...state,
         userName: action.payload.userName,
         avatarUrl: action.payload.avatarUrl,
+        userId: action.payload.userId, // Lưu userId vào state
       }
     case DELETE_USER_INFO:
       return {
         ...state,
         userName: null,
         avatarUrl: null,
+        userId: null, // Xóa userId khỏi state
       }
     default:
       return state;
   }
 };
+
 export default rootReducer;

@@ -23,16 +23,23 @@ const SignIn = () => {
   const handleSubmit = (values, actions) => {
     axios.post("http://localhost:8080/auth/", values)
     .then((response) => {
-      dispatch(saveToken(response.data.token));
-      dispatch(saveUserInfo({userName:response.data.name, avatarUrl:response.data.avatarUrl}))
-      navigate("/")
+        console.log("Login response", response.data); // Kiểm tra response từ server
+        dispatch(saveToken(response.data.token));
+        dispatch(saveUserInfo({
+            userName: response.data.name,
+            avatarUrl: response.data.avatarUrl,
+            userId: parseInt(response.data.userId, 10),  // Chuyển userId thành số và lưu userId
+        }));
+        console.log("Updated Redux Store: ", ); // Kiểm tra Redux store
+        navigate("/");
     })
     .catch((error) => {
-      actions.setSubmitting(false);
-      actions.resetForm();
-      console.log("Error Sign in", error);
+        actions.setSubmitting(false);
+        actions.resetForm();
+        console.log("Error Sign in", error);
     });
-  };
+};
+
 
 
   return (

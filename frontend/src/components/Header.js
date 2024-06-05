@@ -55,6 +55,7 @@ const Header = () => {
   const token = useSelector((state) => state.token);
   const avatarUrl = useSelector((state) => state.avatarUrl);
   const userName = useSelector((state) => state.userName);
+  const userId = useSelector((state) => state.userId); // Lấy userId từ Redux store
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [cartItems, setCartItems] = useState([]);
@@ -71,8 +72,10 @@ const Header = () => {
   }, [searchTerm]);
 
   useEffect(() => {
-    fetchCartItems();
-  }, []);
+    if (userId) {
+      fetchCartItems(userId); // Chỉ fetch cart items nếu có userId
+    }
+  }, [userId]);
 
   const handleSearch = async () => {
     try {
@@ -87,9 +90,11 @@ const Header = () => {
     }
   };
 
-  const fetchCartItems = async () => {
+  const fetchCartItems = async (userId) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/cart/get?userId=2`);
+      const response = await fetch(
+        `http://localhost:8080/api/cart/get?userId=${userId}`
+      );
       const data = await response.json();
       setCartItems(data.items);
       setTotalPrice(data.totalPrice);
@@ -265,7 +270,7 @@ const Header = () => {
                       <span className="total">
                         Total <strong>{formatPrice(totalPrice)}</strong>
                       </span>
-                      <button className="checkout" onClick={() => navigate("/cart")}>CheckOut</button>
+                      <button className="checkout" onClick={() => navigate("/cart")}>Chi tiết giỏ hàng</button>
                     </li>
                   </ul>
                 </li>

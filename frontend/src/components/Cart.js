@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
+  const userId = useSelector((state) => state.userId); // Lấy userId từ Redux store
 
   useEffect(() => {
-    fetchCartItems();
-  }, []);
+    if (userId) {
+      fetchCartItems(userId); // Chỉ fetch cart items nếu có userId
+    }
+  }, [userId]);
 
-  const fetchCartItems = async () => {
+  const fetchCartItems = async (userId) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/cart/get?userId=2`);
+      const response = await fetch(`http://localhost:8080/api/cart/get?userId=${userId}`);
       const data = await response.json();
       setCartItems(data.items);
       setTotalPrice(data.totalPrice);
@@ -27,7 +31,7 @@ const Cart = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          userId: 2, // Replace with actual userId
+          userId: userId, // Sử dụng userId từ Redux store
           productId: productId,
         }),
       });

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Details = () => {
   const location = useLocation();
@@ -8,6 +9,8 @@ const Details = () => {
   const [currentImageUrl, setCurrentImageUrl] = useState(product?.imageUrl || "");
   const [hotProducts, setHotProducts] = useState([]);
   const [quantity, setQuantity] = useState(1);
+
+  const userId = useSelector((state) => state.userId); // Lấy userId từ Redux store
 
   useEffect(() => {
     if (!product) {
@@ -71,13 +74,18 @@ const Details = () => {
 
   const handleAddToCart = async () => {
     try {
+      if (!userId) {
+        alert("User is not logged in.");
+        return;
+      }
+
       const response = await fetch("http://localhost:8080/api/cart/add", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          userId: 2, // Thay thế bằng accountId thực tế
+          userId: userId, // Sử dụng userId từ Redux store
           productId: product.productId,
           quantity: quantity,
         }),
@@ -97,7 +105,6 @@ const Details = () => {
   if (!product) {
     return <div>Product not found</div>;
   }
-
   return (
     <>
       <div className="clearfix"></div>
@@ -196,7 +203,7 @@ const Details = () => {
                         <div key={product.id} className="col-md-3 col-sm-6">
                           <div className="products">
                             <div className="thumbnail">
-                              <Link to={`/details/${product.id}`} state={{ product }}>
+                              <Link to={`/details`} state={{ product }}>
                                 <img src={product.imageUrl} alt={product.name} style={{ width: 200, height: "auto" }} />
                               </Link>
                             </div>
