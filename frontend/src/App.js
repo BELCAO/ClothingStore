@@ -18,7 +18,7 @@ import Checkout2 from "./components/Checkout2";
 import SignUp from "./components/SignUp";
 import SignIn from "./components/SignIn";
 import Profile from "./components/Profile";
-import Admin from "./components/Admin";
+import Admin from "./components/admin/Admin";
 function App() {
   return (
     <Provider store={store}>
