@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import ReactPaginate from 'react-paginate';
+import { useSelector } from "react-redux";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -10,9 +12,10 @@ const ProductList = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Lấy categoryId từ URL
   const queryParams = new URLSearchParams(location.search);
   const categoryId = queryParams.get("categoryId") || 3;
+
+  const userId = useSelector((state) => state.userId); // Lấy userId từ Redux store
 
   useEffect(() => {
     fetchProducts(page, pageSize, categoryId);
@@ -30,19 +33,48 @@ const ProductList = () => {
       });
   };
 
-  const handlePageChange = (newPage) => {
-    if (newPage >= 0 && newPage < totalPages) {
-      setPage(newPage);
-    }
+  const handlePageClick = (data) => {
+    setPage(data.selected);
   };
 
   const handlePageSizeChange = (event) => {
     setPageSize(Number(event.target.value));
-    setPage(0); // Reset to first page when page size changes
+    setPage(0);
   };
 
   const handleProductClick = (product) => {
     navigate("/details", { state: { product, hotProducts: products } });
+  };
+
+  const handleAddToCart = async (product) => {
+    try {
+      if (!userId) {
+        alert("User is not logged in.");
+        return;
+      }
+
+      const response = await fetch("http://localhost:8080/api/cart/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: userId, // Sử dụng userId từ Redux store
+          productId: product.productId,
+          quantity: 1, // Mặc định số lượng là 1
+        }),
+      });
+
+      if (response.ok) {
+        const updatedCart = await response.json();
+        // Update cart items and total price in context or state here if needed
+        alert("Sản phẩm đã được thêm vào giỏ hàng");
+      } else {
+        console.error("Failed to add product to cart");
+      }
+    } catch (error) {
+      console.error("Error adding product to cart:", error);
+    }
   };
 
   const formatPrice = (price) => {
@@ -85,25 +117,58 @@ const ProductList = () => {
                   </li>
                 </ul>
               </div>
-              {/* Other filters */}
+               <div className="clearfix"></div>
+              <div className="product-tag leftbar">
+                <h3 className="title">Products <strong>Tags</strong></h3>
+                <ul>
+                  <li><a href="#">Lincoln us</a></li>
+                  <li><a href="#">SDress for Girl</a></li>
+                  <li><a href="#">Corner</a></li>
+                  <li><a href="#">Window</a></li>
+                  <li><a href="#">PG</a></li>
+                  <li><a href="#">Oscar</a></li>
+                  <li><a href="#">Bath room</a></li>
+                  <li><a href="#">PSD</a></li>
+                </ul>
+              </div>
+              <div className="clearfix"></div>
+              <div className="fbl-box leftbar">
+                <h3 className="title">Facebook</h3>
+                <span className="likebutton">
+                  <a href="#"><img src="images/fblike.png" alt="" /></a>
+                </span>
+                <p>12k people like Flat Shop.</p>
+                <ul>
+                  <li><a href="#"></a></li>
+                  <li><a href="#"></a></li>
+                  <li><a href="#"></a></li>
+                  <li><a href="#"></a></li>
+                  <li><a href="#"></a></li>
+                  <li><a href="#"></a></li>
+                  <li><a href="#"></a></li>
+                  <li><a href="#"></a></li>
+                </ul>
+                <div className="fbplug">
+                  <a href="#"><span><img src="images/fbicon.png" alt="" /></span>Facebook social plugin</a>
+                </div>
+              </div>
+              <div className="clearfix"></div>
+              <div className="leftbanner"><img src="images/banner-small-01.png" alt="" /></div>
             </div>
             <div className="col-md-9">
               <div className="banner">
                 <div className="bannerslide" id="bannerslide">
                   <ul className="slides">
-                    <li>
-                      <a href="#">
-                        <img src="images/banner-01.jpg" alt="" />
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <img src="images/banner-02.jpg" alt="" />
-                      </a>
-                    </li>
+                    <li><a href="#"><img src="images/banner-01.jpg" alt="" /></a></li>
+                    <li><a href="#"><img src="images/banner-02.jpg" alt="" /></a></li>
                   </ul>
                 </div>
               </div>
+              {/* Other filters */}
+            </div>
+            
+            <div className="col-md-9">
+     
               <div className="clearfix"></div>
               <div className="products-list">
                 <div className="toolbar">
@@ -136,24 +201,19 @@ const ProductList = () => {
                       </select>
                     </div>
                   </div>
-                  <div className="pager">
-                    <a href="#" className="prev-page" onClick={() => handlePageChange(page - 1)}>
-                      <i className="fa fa-angle-left"></i>
-                    </a>
-                    {[...Array(totalPages).keys()].map((pageNumber) => (
-                      <a
-                        href="#"
-                        key={pageNumber}
-                        className={pageNumber === page ? "active" : ""}
-                        onClick={() => handlePageChange(pageNumber)}
-                      >
-                        {pageNumber + 1}
-                      </a>
-                    ))}
-                    <a href="#" className="next-page" onClick={() => handlePageChange(page + 1)}>
-                      <i className="fa fa-angle-right"></i>
-                    </a>
-                  </div>
+                  <ReactPaginate
+                    previousLabel={'previous'}
+                    nextLabel={'next'}
+                    breakLabel={'...'}
+                    breakClassName={'break-me'}
+                    pageCount={totalPages}
+                    marginPagesDisplayed={2}
+                    pageRangeDisplayed={5}
+                    onPageChange={handlePageClick}
+                    containerClassName={'pagination'}
+                    subContainerClassName={'pages pagination'}
+                    activeClassName={'active'}
+                  />
                 </div>
                 <ul className="products-listItem">
                   {products.map((product) => (
@@ -182,7 +242,7 @@ const ProductList = () => {
                             </span>
                           </div>
                           <div className="button_group">
-                            <button className="button">Thêm vào giỏ hàng</button>
+                            <button className="button" onClick={() => handleAddToCart(product)}>Thêm vào giỏ hàng</button>
                             <button className="button compare">
                               <i className="fa fa-exchange"></i>
                             </button>
@@ -225,24 +285,19 @@ const ProductList = () => {
                       </select>
                     </div>
                   </div>
-                  <div className="pager">
-                    <a href="#" className="prev-page" onClick={() => handlePageChange(page - 1)}>
-                      <i className="fa fa-angle-left"></i>
-                    </a>
-                    {[...Array(totalPages).keys()].map((pageNumber) => (
-                      <a
-                        href="#"
-                        key={pageNumber}
-                        className={pageNumber === page ? "active" : ""}
-                        onClick={() => handlePageChange(pageNumber)}
-                      >
-                        {pageNumber + 1}
-                      </a>
-                    ))}
-                    <a href="#" className="next-page" onClick={() => handlePageChange(page + 1)}>
-                      <i className="fa fa-angle-right"></i>
-                    </a>
-                  </div>
+                  <ReactPaginate
+                    previousLabel={'previous'}
+                    nextLabel={'next'}
+                    breakLabel={'...'}
+                    breakClassName={'break-me'}
+                    pageCount={totalPages}
+                    marginPagesDisplayed={2}
+                    pageRangeDisplayed={5}
+                    onPageChange={handlePageClick}
+                    containerClassName={'pagination'}
+                    subContainerClassName={'pages pagination'}
+                    activeClassName={'active'}
+                  />
                 </div>
               </div>
             </div>

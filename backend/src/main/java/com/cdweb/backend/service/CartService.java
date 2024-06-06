@@ -1,12 +1,16 @@
 package com.cdweb.backend.service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.cdweb.backend.entity.Account;
+import com.cdweb.backend.dto.CartDTO;
+import com.cdweb.backend.dto.CartItemDTO;
+import com.cdweb.backend.entity.User;
 import com.cdweb.backend.entity.Cart;
 import com.cdweb.backend.entity.CartItem;
 import com.cdweb.backend.entity.ProductEntity;
@@ -25,17 +29,18 @@ public class CartService {
     @Autowired
     private ProductRepository productRepository;
 
-    public Cart getCartByAccountId(Long accountId) {
-        return cartRepository.findByAccountId(accountId);
+    public CartDTO getCartByUserId(Long userId) {
+        Cart cart = cartRepository.findByUserId(userId);
+        return convertToDTO(cart);
     }
 
-    public Cart addProductToCart(Long accountId, Long productId, int quantity) {
-        Cart cart = cartRepository.findByAccountId(accountId);
+    public CartDTO addProductToCart(Long userId, Long productId, int quantity) {
+        Cart cart = cartRepository.findByUserId(userId);
         if (cart == null) {
             cart = new Cart();
-            Account account = new Account();
-            account.setId(accountId);
-            cart.setAccount(account);
+            User user = new User();
+            user.setId(userId);
+            cart.setUser(user);
             cart = cartRepository.save(cart);
         }
 
@@ -61,16 +66,40 @@ public class CartService {
         cart.getItems().add(cartItem);
         cartItemRepository.save(cartItem);
 
-        return cartRepository.save(cart);
+        return convertToDTO(cartRepository.save(cart));
     }
 
-    public void removeProductFromCart(Long accountId, Long productId) {
-        Cart cart = cartRepository.findByAccountId(accountId);
+    public void removeProductFromCart(Long userId, Long productId) {
+        Cart cart = cartRepository.findByUserId(userId);
         if (cart == null) {
             throw new RuntimeException("Cart not found");
         }
 
         cart.getItems().removeIf(item -> item.getProduct().getProductId().equals(productId));
         cartRepository.save(cart);
+    }
+
+    private CartDTO convertToDTO(Cart cart) {
+        CartDTO cartDTO = new CartDTO();
+        cartDTO.setId(cart.getId());
+        cartDTO.setUserId(cart.getUser().getId());
+        List<CartItemDTO> items = cart.getItems().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+        cartDTO.setItems(items);
+        cartDTO.setTotalPrice(items.stream().mapToDouble(CartItemDTO::getTotalItemPrice).sum());
+        return cartDTO;
+    }
+
+    private CartItemDTO convertToDTO(CartItem cartItem) {
+        CartItemDTO cartItemDTO = new CartItemDTO();
+        cartItemDTO.setId(cartItem.getId());
+        cartItemDTO.setProductId(cartItem.getProduct().getProductId());
+        cartItemDTO.setProductName(cartItem.getProduct().getName());
+        cartItemDTO.setProductImage(cartItem.getProduct().getImageUrl());
+        cartItemDTO.setProductPrice(cartItem.getProduct().getPrice());
+        cartItemDTO.setQuantity(cartItem.getQuantity());
+        cartItemDTO.setTotalItemPrice(cartItem.getQuantity() * cartItem.getProduct().getPrice());
+        return cartItemDTO;
     }
 }

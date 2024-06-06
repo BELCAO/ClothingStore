@@ -1,7 +1,8 @@
-
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
+import ReactPaginate from 'react-paginate';
+import { useSelector } from "react-redux";
 
 const Productgird = () => {
   const [products, setProducts] = useState([]);
@@ -13,6 +14,8 @@ const Productgird = () => {
 
   const queryParams = new URLSearchParams(location.search);
   const categoryId = queryParams.get("categoryId") || 3;
+
+  const userId = useSelector((state) => state.userId); // Lấy userId từ Redux store
 
   useEffect(() => {
     fetchProducts(page, pageSize, categoryId);
@@ -30,10 +33,8 @@ const Productgird = () => {
       });
   };
 
-  const handlePageChange = (newPage) => {
-    if (newPage >= 0 && newPage < totalPages) {
-      setPage(newPage);
-    }
+  const handlePageClick = (data) => {
+    setPage(data.selected);
   };
 
   const handlePageSizeChange = (event) => {
@@ -43,6 +44,37 @@ const Productgird = () => {
 
   const handleProductClick = (product) => {
     navigate("/details", { state: { product } });
+  };
+
+  const handleAddToCart = async (product) => {
+    try {
+      if (!userId) {
+        alert("User is not logged in.");
+        return;
+      }
+
+      const response = await fetch("http://localhost:8080/api/cart/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: userId, // Sử dụng userId từ Redux store
+          productId: product.productId,
+          quantity: 1, // Mặc định số lượng là 1
+        }),
+      });
+
+      if (response.ok) {
+        const updatedCart = await response.json();
+        // Update cart items and total price in context or state here if needed
+        alert("Sản phẩm đã được thêm vào giỏ hàng");
+      } else {
+        console.error("Failed to add product to cart");
+      }
+    } catch (error) {
+      console.error("Error adding product to cart:", error);
+    }
   };
 
   const formatPrice = (price) => {
@@ -79,46 +111,9 @@ const Productgird = () => {
                   <li><Link to="/Productgird?categoryId=6">Bed room</Link></li>
                 </ul>
               </div>
-              <div className="clearfix"></div>
-              <div className="branch leftbar">
-                <h3 className="title">Branch</h3>
-                <ul>
-                  <li><a href="#">New</a></li>
-                  <li><a href="#">Sofa</a></li>
-                  <li><a href="#">Salon</a></li>
-                  <li><a href="#">New Trend</a></li>
-                  <li><a href="#">Living room</a></li>
-                  <li><a href="#">Bed room</a></li>
-                </ul>
-              </div>
-              <div className="clearfix"></div>
-              <div className="price-filter leftbar">
-                <h3 className="title">Price</h3>
-                <form className="pricing">
-                  <label>$ <input type="number" /></label>
-                  <span className="separate">-</span>
-                  <label>$ <input type="number" /></label>
-                  <input type="submit" value="Go" />
-                </form>
-              </div>
-              <div className="clearfix"></div>
-              <div className="clolr-filter leftbar">
-                <h3 className="title">Color</h3>
-                <ul>
-                  <li><a href="#" className="red-bg">light red</a></li>
-                  <li><a href="#" className="yellow-bg">yellow</a></li>
-                  <li><a href="#" className="black-bg">black</a></li>
-                  <li><a href="#" className="pink-bg">pink</a></li>
-                  <li><a href="#" className="dkpink-bg">dkpink</a></li>
-                  <li><a href="#" className="chocolate-bg">chocolate</a></li>
-                  <li><a href="#" className="orange-bg">orange</a></li>
-                  <li><a href="#" className="off-white-bg">off-white</a></li>
-                  <li><a href="#" className="extra-lightgreen-bg">extra-lightgreen</a></li>
-                  <li><a href="#" className="lightgreen-bg">lightgreen</a></li>
-                  <li><a href="#" className="biscuit-bg">biscuit</a></li>
-                  <li><a href="#" className="chocolatelight-bg">chocolatelight</a></li>
-                </ul>
-              </div>
+             
+  
+              
               <div className="clearfix"></div>
               <div className="product-tag leftbar">
                 <h3 className="title">Products <strong>Tags</strong></h3>
@@ -184,24 +179,19 @@ const Productgird = () => {
                       </select>
                     </div>
                   </div>
-                  <div className="pager">
-                    <a href="#" className="prev-page" onClick={() => handlePageChange(page - 1)}>
-                      <i className="fa fa-angle-left"></i>
-                    </a>
-                    {[...Array(totalPages).keys()].map((pageNumber) => (
-                      <a
-                        href="#"
-                        key={pageNumber}
-                        className={pageNumber === page ? "active" : ""}
-                        onClick={() => handlePageChange(pageNumber)}
-                      >
-                        {pageNumber + 1}
-                      </a>
-                    ))}
-                    <a href="#" className="next-page" onClick={() => handlePageChange(page + 1)}>
-                      <i className="fa fa-angle-right"></i>
-                    </a>
-                  </div>
+                  <ReactPaginate
+                    previousLabel={'previous'}
+                    nextLabel={'next'}
+                    breakLabel={'...'}
+                    breakClassName={'break-me'}
+                    pageCount={totalPages}
+                    marginPagesDisplayed={2}
+                    pageRangeDisplayed={5}
+                    onPageChange={handlePageClick}
+                    containerClassName={'pagination'}
+                    subContainerClassName={'pages pagination'}
+                    activeClassName={'active'}
+                  />
                 </div>
                 <div className="clearfix"></div>
                 <div className="row">
@@ -216,7 +206,7 @@ const Productgird = () => {
                         <div className="productname">{truncate(product.name, 25)}</div>
                         <h4 className="price">{formatPrice(product.price)}</h4>
                         <div className="button_group">
-                          <button className="button add-cart" type="button">Add To Cart</button>
+                          <button className="button add-cart" type="button" onClick={() => handleAddToCart(product)}>Add To Cart</button>
                           <button className="button compare" type="button">
                             <i className="fa fa-exchange"></i>
                           </button>
@@ -245,24 +235,19 @@ const Productgird = () => {
                       </select>
                     </div>
                   </div>
-                  <div className="pager">
-                    <a href="#" className="prev-page" onClick={() => handlePageChange(page - 1)}>
-                      <i className="fa fa-angle-left"></i>
-                    </a>
-                    {[...Array(totalPages).keys()].map((pageNumber) => (
-                      <a
-                        href="#"
-                        key={pageNumber}
-                        className={pageNumber === page ? "active" : ""}
-                        onClick={() => handlePageChange(pageNumber)}
-                      >
-                        {pageNumber + 1}
-                      </a>
-                    ))}
-                    <a href="#" className="next-page" onClick={() => handlePageChange(page + 1)}>
-                      <i className="fa fa-angle-right"></i>
-                    </a>
-                  </div>
+                  <ReactPaginate
+                    previousLabel={'previous'}
+                    nextLabel={'next'}
+                    breakLabel={'...'}
+                    breakClassName={'break-me'}
+                    pageCount={totalPages}
+                    marginPagesDisplayed={2}
+                    pageRangeDisplayed={5}
+                    onPageChange={handlePageClick}
+                    containerClassName={'pagination'}
+                    subContainerClassName={'pages pagination'}
+                    activeClassName={'active'}
+                  />
                 </div>
                 <div className="clearfix"></div>
               </div>

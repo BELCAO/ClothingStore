@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.cdweb.backend.entity.Cart;
+import com.cdweb.backend.dto.CartDTO;
 import com.cdweb.backend.service.CartService;
 
 @RestController
@@ -16,27 +16,27 @@ public class CartController {
     private CartService cartService;
 
     @PostMapping("/add")
-    public ResponseEntity<Cart> addProductToCart(@RequestBody Map<String, Object> payload) {
-        Long accountId = Long.parseLong(payload.get("accountId").toString());
+    public ResponseEntity<CartDTO> addProductToCart(@RequestBody Map<String, Object> payload) {
+        Long userId = Long.parseLong(payload.get("userId").toString());
         Long productId = Long.parseLong(payload.get("productId").toString());
         int quantity = Integer.parseInt(payload.get("quantity").toString());
-        
-        Cart cart = cartService.addProductToCart(accountId, productId, quantity);
+
+        CartDTO cart = cartService.addProductToCart(userId, productId, quantity);
         return ResponseEntity.ok(cart);
     }
 
     @GetMapping("/get")
-    public ResponseEntity<Cart> getCart(@RequestParam Long accountId) {
-        Cart cart = cartService.getCartByAccountId(accountId);
+    public ResponseEntity<CartDTO> getCart(@RequestParam Long userId) {
+        CartDTO cart = cartService.getCartByUserId(userId);
         return ResponseEntity.ok(cart);
     }
 
     @DeleteMapping("/remove")
     public ResponseEntity<Void> removeProductFromCart(@RequestBody Map<String, Object> payload) {
-        Long accountId = Long.parseLong(payload.get("accountId").toString());
+        Long userId = Long.parseLong(payload.get("userId").toString());
         Long productId = Long.parseLong(payload.get("productId").toString());
-        
-        cartService.removeProductFromCart(accountId, productId);
+
+        cartService.removeProductFromCart(userId, productId);
         return ResponseEntity.noContent().build();
     }
 }
