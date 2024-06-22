@@ -1,7 +1,109 @@
-import React from "react";
-import Header from "./Header";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Home = () => {
+  const [products, setProducts] = useState([]);
+  const [featuredProducts, setFeaturedProducts] = useState([]);
+  const [cartItems, setCartItems] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const userInfo = useSelector((state) => state);
+  const userId = userInfo.userId;
+
+  useEffect(() => {
+    fetchProducts();
+    fetchFeaturedProducts();
+  }, [userId]);
+
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/products");
+      const data = await response.json();
+      if (data && Array.isArray(data.content)) {
+        setProducts(data.content);
+      } else {
+        console.error("Received data is not an array:", data);
+        setProducts([]);
+      }
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      setProducts([]);
+    }
+  };
+
+  const fetchFeaturedProducts = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:8080/categories/3/products"
+      );
+      const data = await response.json();
+      if (data && Array.isArray(data.content)) {
+        setFeaturedProducts(data.content);
+      } else {
+        console.error("Received data is not an array:", data);
+        setFeaturedProducts([]);
+      }
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      setFeaturedProducts([]);
+    }
+  };
+
+  
+
+  const handleAddToCart = async (product) => {
+    try {
+      if (!userId) {
+        alert("User is not logged in.");
+        return;
+      }
+
+      const response = await fetch("http://localhost:8080/api/cart/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: userId,
+          productId: product.productId,
+          quantity: 1,
+        }),
+      });
+
+      if (response.ok) {
+        const updatedCart = await response.json();
+        setCartItems(updatedCart.items);
+        setTotalPrice(updatedCart.totalPrice);
+        alert("Sản phẩm đã được thêm vào giỏ hàng");
+      } else {
+        console.error("Failed to add product to cart");
+      }
+    } catch (error) {
+      console.error("Error adding product to cart:", error);
+    }
+  };
+
+  const handleProductClick = (product) => {
+    return (
+      <Link to="/details" state={{ product }}>
+        <img
+          src={product.imageUrl}
+          alt={product.name}
+          style={{ width: 200, height: "auto" }}
+        />
+      </Link>
+    );
+  };
+
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    })
+      .format(price)
+      .replace(/\D00(?=\D*$)/, "");
+  };
+
   return (
     <>
       <div className="clearfix"></div>
@@ -32,9 +134,7 @@ const Home = () => {
                   </p>
                 </div>
                 <div className="flat-button caption4 formLeft delay600 text-center">
-                  <a className="more" href="#">
-                    More Details
-                  </a>
+                  <Link className="more">More Details</Link>
                 </div>
                 <div
                   className="flat-image formBottom delay200"
@@ -56,9 +156,7 @@ const Home = () => {
                   </h2>
                 </div>
                 <div className="flat-button caption5 formLeft delay600">
-                  <a className="more" href="#">
-                    More Details
-                  </a>
+                  <Link className="more">More Details</Link>
                 </div>
                 <div
                   className="flat-image formBottom delay200"
@@ -80,9 +178,9 @@ const Home = () => {
                   </p>
                 </div>
                 <div className="flat-button caption4 formLeft delay600 text-center">
-                  <a className="more" href="#">
+                  <Link className="more" to="#">
                     More Details
-                  </a>
+                  </Link>
                 </div>
                 <div
                   className="flat-image formBottom delay200"
@@ -124,240 +222,42 @@ const Home = () => {
               <strong>Hot</strong> Products
             </h3>
             <div className="control">
-              <a id="prev_hot" className="prev" href="#">
+              <Link id="prev_hot" className="prev" to="#">
                 &lt;
-              </a>
-              <a id="next_hot" className="next" href="#">
+              </Link>
+              <Link id="next_hot" className="next" to="#">
                 &gt;
-              </a>
+              </Link>
             </div>
             <ul id="hot">
               <li>
                 <div className="row">
-                  <div className="col-md-3 col-sm-6">
-                    <div className="products">
-                      <div className="offer">- %20</div>
-                      <div className="thumbnail">
-                        <a href="details.html">
-                          <img
-                            src="images/products/small/products-01.png"
-                            alt="Product Name"
-                          />
-                        </a>
-                      </div>
-                      <div className="productname">
-                        Iphone 5s Gold 32 Gb 2013
-                      </div>
-                      <h4 className="price">$451.00</h4>
-                      <div className="button_group">
-                        <button className="button add-cart" type="button">
-                          Add To Cart
-                        </button>
-                        <button className="button compare" type="button">
-                          <i className="fa fa-exchange"></i>
-                        </button>
-                        <button className="button wishlist" type="button">
-                          <i className="fa fa-heart-o"></i>
-                        </button>
+                  {products.map((product) => (
+                    <div key={product.id} className="col-md-3 col-sm-6">
+                      <div className="products">
+                        <div className="thumbnail">
+                          {handleProductClick(product)}
+                        </div>
+                        <div className="productname">{product.name}</div>
+                        <h4 className="price">{formatPrice(product.price)}</h4>
+                        <div className="button_group">
+                          <button
+                            className="button add-cart"
+                            type="button"
+                            onClick={() => handleAddToCart(product)}
+                          >
+                            Add To Cart
+                          </button>
+                          <button className="button compare" type="button">
+                            <i className="fa fa-exchange"></i>
+                          </button>
+                          <button className="button wishlist" type="button">
+                            <i className="fa fa-heart-o"></i>
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="col-md-3 col-sm-6">
-                    <div className="products">
-                      <div className="thumbnail">
-                        <a href="details.html">
-                          <img
-                            src="images/products/small/products-02.png"
-                            alt="Product Name"
-                          />
-                        </a>
-                      </div>
-                      <div className="productname">
-                        Iphone 5s Gold 32 Gb 2013
-                      </div>
-                      <h4 className="price">$451.00</h4>
-                      <div className="button_group">
-                        <button className="button add-cart" type="button">
-                          Add To Cart
-                        </button>
-                        <button className="button compare" type="button">
-                          <i className="fa fa-exchange"></i>
-                        </button>
-                        <button className="button wishlist" type="button">
-                          <i className="fa fa-heart-o"></i>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-md-3 col-sm-6">
-                    <div className="products">
-                      <div className="offer">New</div>
-                      <div className="thumbnail">
-                        <a href="details.html">
-                          <img
-                            src="images/products/small/products-03.png"
-                            alt="Product Name"
-                          />
-                        </a>
-                      </div>
-                      <div className="productname">
-                        Iphone 5s Gold 32 Gb 2013
-                      </div>
-                      <h4 className="price">$451.00</h4>
-                      <div className="button_group">
-                        <button className="button add-cart" type="button">
-                          Add To Cart
-                        </button>
-                        <button className="button compare" type="button">
-                          <i className="fa fa-exchange"></i>
-                        </button>
-                        <button className="button wishlist" type="button">
-                          <i className="fa fa-heart-o"></i>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-md-3 col-sm-6">
-                    <div className="products">
-                      <div className="thumbnail">
-                        <a href="details.html">
-                          <img
-                            src="images/products/small/products-04.png"
-                            alt="Product Name"
-                          />
-                        </a>
-                      </div>
-                      <div className="productname">
-                        Iphone 5s Gold 32 Gb 2013
-                      </div>
-                      <h4 className="price">$451.00</h4>
-                      <div className="button_group">
-                        <button className="button add-cart" type="button">
-                          Add To Cart
-                        </button>
-                        <button className="button compare" type="button">
-                          <i className="fa fa-exchange"></i>
-                        </button>
-                        <button className="button wishlist" type="button">
-                          <i className="fa fa-heart-o"></i>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </li>
-              <li>
-                <div className="row">
-                  <div className="col-md-3 col-sm-6">
-                    <div className="products">
-                      <div className="offer">- %20</div>
-                      <div className="thumbnail">
-                        <a href="details.html">
-                          <img
-                            src="images/products/small/products-01.png"
-                            alt="Product Name"
-                          />
-                        </a>
-                      </div>
-                      <div className="productname">
-                        Iphone 5s Gold 32 Gb 2013
-                      </div>
-                      <h4 className="price">$451.00</h4>
-                      <div className="button_group">
-                        <button className="button add-cart" type="button">
-                          Add To Cart
-                        </button>
-                        <button className="button compare" type="button">
-                          <i className="fa fa-exchange"></i>
-                        </button>
-                        <button className="button wishlist" type="button">
-                          <i className="fa fa-heart-o"></i>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-md-3 col-sm-6">
-                    <div className="products">
-                      <div className="thumbnail">
-                        <a href="details.html">
-                          <img
-                            src="images/products/small/products-02.png"
-                            alt="Product Name"
-                          />
-                        </a>
-                      </div>
-                      <div className="productname">
-                        Iphone 5s Gold 32 Gb 2013
-                      </div>
-                      <h4 className="price">$451.00</h4>
-                      <div className="button_group">
-                        <button className="button add-cart" type="button">
-                          Add To Cart
-                        </button>
-                        <button className="button compare" type="button">
-                          <i className="fa fa-exchange"></i>
-                        </button>
-                        <button className="button wishlist" type="button">
-                          <i className="fa fa-heart-o"></i>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-md-3 col-sm-6">
-                    <div className="products">
-                      <div className="offer">New</div>
-                      <div className="thumbnail">
-                        <a href="details.html">
-                          <img
-                            src="images/products/small/products-03.png"
-                            alt="Product Name"
-                          />
-                        </a>
-                      </div>
-                      <div className="productname">
-                        Iphone 5s Gold 32 Gb 2013
-                      </div>
-                      <h4 className="price">$451.00</h4>
-                      <div className="button_group">
-                        <button className="button add-cart" type="button">
-                          Add To Cart
-                        </button>
-                        <button className="button compare" type="button">
-                          <i className="fa fa-exchange"></i>
-                        </button>
-                        <button className="button wishlist" type="button">
-                          <i className="fa fa-heart-o"></i>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-md-3 col-sm-6">
-                    <div className="products">
-                      <div className="thumbnail">
-                        <a href="details.html">
-                          <img
-                            src="images/products/small/products-04.png"
-                            alt="Product Name"
-                          />
-                        </a>
-                      </div>
-                      <div className="productname">
-                        Iphone 5s Gold 32 Gb 2013
-                      </div>
-                      <h4 className="price">$451.00</h4>
-                      <div className="button_group">
-                        <button className="button add-cart" type="button">
-                          Add To Cart
-                        </button>
-                        <button className="button compare" type="button">
-                          <i className="fa fa-exchange"></i>
-                        </button>
-                        <button className="button wishlist" type="button">
-                          <i className="fa fa-heart-o"></i>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </li>
             </ul>
@@ -368,332 +268,43 @@ const Home = () => {
               <strong>Featured </strong> Products
             </h3>
             <div className="control">
-              <a id="prev_featured" className="prev" href="#">
+              <Link id="prev_featured" className="prev" to="#">
                 &lt;
-              </a>
-              <a id="next_featured" className="next" href="#">
+              </Link>
+              <Link id="next_featured" className="next" to="#">
                 &gt;
-              </a>
+              </Link>
             </div>
             <ul id="featured">
               <li>
                 <div className="row">
-                  <div className="col-md-3 col-sm-6">
-                    <div className="products">
-                      <div className="thumbnail">
-                        <a href="details.html">
-                          <img
-                            src="images/products/small/products-05.png"
-                            alt="Product Name"
-                          />
-                        </a>
-                      </div>
-                      <div className="productname">
-                        Iphone 5s Gold 32 Gb 2013
-                      </div>
-                      <h4 className="price">$451.00</h4>
-                      <div className="button_group">
-                        <button className="button add-cart" type="button">
-                          Add To Cart
-                        </button>
-                        <button className="button compare" type="button">
-                          <i className="fa fa-exchange"></i>
-                        </button>
-                        <button className="button wishlist" type="button">
-                          <i className="fa fa-heart-o"></i>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-md-3 col-sm-6">
-                    <div className="products">
-                      <div className="thumbnail">
-                        <a href="details.html">
-                          <img
-                            src="images/products/small/products-06.png"
-                            alt="Product Name"
-                          />
-                        </a>
-                      </div>
-                      <div className="productname">
-                        Iphone 5s Gold 32 Gb 2013
-                      </div>
-                      <h4 className="price">$451.00</h4>
-                      <div className="button_group">
-                        <button className="button add-cart" type="button">
-                          Add To Cart
-                        </button>
-                        <button className="button compare" type="button">
-                          <i className="fa fa-exchange"></i>
-                        </button>
-                        <button className="button wishlist" type="button">
-                          <i className="fa fa-heart-o"></i>
-                        </button>
+                  {featuredProducts.map((product) => (
+                    <div key={product.id} className="col-md-3 col-sm-6">
+                      <div className="products">
+                        <div className="thumbnail">
+                          {handleProductClick(product)}
+                        </div>
+                        <div className="productname">{product.name}</div>
+                        <h4 className="price">{formatPrice(product.price)}</h4>
+                        <div className="button_group">
+                          <button
+                            className="button add-cart"
+                            type="button"
+                            onClick={() => handleAddToCart(product)}
+                          >
+                            Add To Cart
+                          </button>
+                          <button className="button compare" type="button">
+                            <i className="fa fa-exchange"></i>
+                          </button>
+                          <button className="button wishlist" type="button">
+                            <i className="fa fa-heart-o"></i>
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="col-md-3 col-sm-6">
-                    <div className="products">
-                      <div className="offer">New</div>
-                      <div className="thumbnail">
-                        <a href="details.html">
-                          <img
-                            src="images/products/small/products-07.png"
-                            alt="Product Name"
-                          />
-                        </a>
-                      </div>
-                      <div className="productname">
-                        Iphone 5s Gold 32 Gb 2013
-                      </div>
-                      <h4 className="price">$451.00</h4>
-                      <div className="button_group">
-                        <button className="button add-cart" type="button">
-                          Add To Cart
-                        </button>
-                        <button className="button compare" type="button">
-                          <i className="fa fa-exchange"></i>
-                        </button>
-                        <button className="button wishlist" type="button">
-                          <i className="fa fa-heart-o"></i>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-md-3 col-sm-6">
-                    <div className="products">
-                      <div className="thumbnail">
-                        <a href="details.html">
-                          <img
-                            src="images/products/small/products-04.png"
-                            alt="Product Name"
-                          />
-                        </a>
-                      </div>
-                      <div className="productname">
-                        Iphone 5s Gold 32 Gb 2013
-                      </div>
-                      <h4 className="price">$451.00</h4>
-                      <div className="button_group">
-                        <button className="button add-cart" type="button">
-                          Add To Cart
-                        </button>
-                        <button className="button compare" type="button">
-                          <i className="fa fa-exchange"></i>
-                        </button>
-                        <button className="button wishlist" type="button">
-                          <i className="fa fa-heart-o"></i>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
+                  ))}
                 </div>
-              </li>
-              <li>
-                <div className="row">
-                  <div className="col-md-3 col-sm-6">
-                    <div className="products">
-                      <div className="thumbnail">
-                        <a href="details.html">
-                          <img
-                            src="images/products/small/products-01.png"
-                            alt="Product Name"
-                          />
-                        </a>
-                      </div>
-                      <div className="productname">
-                        Iphone 5s Gold 32 Gb 2013
-                      </div>
-                      <h4 className="price">$451.00</h4>
-                      <div className="button_group">
-                        <button className="button add-cart" type="button">
-                          Add To Cart
-                        </button>
-                        <button className="button compare" type="button">
-                          <i className="fa fa-exchange"></i>
-                        </button>
-                        <button className="button wishlist" type="button">
-                          <i className="fa fa-heart-o"></i>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-md-3 col-sm-6">
-                    <div className="products">
-                      <div className="thumbnail">
-                        <a href="details.html">
-                          <img
-                            src="images/products/small/products-02.png"
-                            alt="Product Name"
-                          />
-                        </a>
-                      </div>
-                      <div className="productname">
-                        Iphone 5s Gold 32 Gb 2013
-                      </div>
-                      <h4 className="price">$451.00</h4>
-                      <div className="button_group">
-                        <button className="button add-cart" type="button">
-                          Add To Cart
-                        </button>
-                        <button className="button compare" type="button">
-                          <i className="fa fa-exchange"></i>
-                        </button>
-                        <button className="button wishlist" type="button">
-                          <i className="fa fa-heart-o"></i>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-md-3 col-sm-6">
-                    <div className="products">
-                      <div className="thumbnail">
-                        <a href="details.html">
-                          <img
-                            src="images/products/small/products-03.png"
-                            alt="Product Name"
-                          />
-                        </a>
-                      </div>
-                      <div className="productname">
-                        Iphone 5s Gold 32 Gb 2013
-                      </div>
-                      <h4 className="price">$451.00</h4>
-                      <div className="button_group">
-                        <button className="button add-cart" type="button">
-                          Add To Cart
-                        </button>
-                        <button className="button compare" type="button">
-                          <i className="fa fa-exchange"></i>
-                        </button>
-                        <button className="button wishlist" type="button">
-                          <i className="fa fa-heart-o"></i>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-md-3 col-sm-6">
-                    <div className="products">
-                      <div className="thumbnail">
-                        <a href="details.html">
-                          <img
-                            src="images/products/small/products-04.png"
-                            alt="Product Name"
-                          />
-                        </a>
-                      </div>
-                      <div className="productname">
-                        Iphone 5s Gold 32 Gb 2013
-                      </div>
-                      <h4 className="price">$451.00</h4>
-                      <div className="button_group">
-                        <button className="button add-cart" type="button">
-                          Add To Cart
-                        </button>
-                        <button className="button compare" type="button">
-                          <i className="fa fa-exchange"></i>
-                        </button>
-                        <button className="button wishlist" type="button">
-                          <i className="fa fa-heart-o"></i>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </div>
-          <div className="clearfix"></div>
-          <div className="our-brand">
-            <h3 className="title">
-              <strong>Our </strong> Brands
-            </h3>
-            <div className="control">
-              <a id="prev_brand" className="prev" href="#">
-                &lt;
-              </a>
-              <a id="next_brand" className="next" href="#">
-                &gt;
-              </a>
-            </div>
-            <ul id="braldLogo">
-              <li>
-                <ul className="brand_item">
-                  <li>
-                    <a href="#">
-                      <div className="brand-logo">
-                        <img src="images/envato.png" alt="" />
-                      </div>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <div className="brand-logo">
-                        <img src="images/themeforest.png" alt="" />
-                      </div>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <div className="brand-logo">
-                        <img src="images/photodune.png" alt="" />
-                      </div>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <div className="brand-logo">
-                        <img src="images/activeden.png" alt="" />
-                      </div>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <div className="brand-logo">
-                        <img src="images/envato.png" alt="" />
-                      </div>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-              <li>
-                <ul className="brand_item">
-                  <li>
-                    <a href="#">
-                      <div className="brand-logo">
-                        <img src="images/envato.png" alt="" />
-                      </div>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <div className="brand-logo">
-                        <img src="images/themeforest.png" alt="" />
-                      </div>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <div className="brand-logo">
-                        <img src="images/photodune.png" alt="" />
-                      </div>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <div className="brand-logo">
-                        <img src="images/activeden.png" alt="" />
-                      </div>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <div className="brand-logo">
-                        <img src="images/envato.png" alt="" />
-                      </div>
-                    </a>
-                  </li>
-                </ul>
               </li>
             </ul>
           </div>

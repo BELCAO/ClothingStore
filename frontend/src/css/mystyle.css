@@ -1,0 +1,100 @@
+
+  .logo {
+    height: auto;
+  }
+
+  h2 {
+    text-align: center;
+  }
+  .form-group {
+    margin-bottom: 20px;
+  }
+  .form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 20px;
+  }
+  .form-group label {
+    font-weight: bold;
+  }
+  .form-group button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    font-size: 20px;
+  }
+  .separator {
+    text-align: center;
+    margin: 20px 0;
+  }
+  .login-with-google {
+    text-align: center;
+    margin: 20px auto;
+  }
+  .login-with-google button {
+    background-color: #f8f8f8;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+  }
+  .have-account {
+    text-align: center;
+  }
+  .have-account a {
+    color: #6709e2;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  .sing-up_container {
+    margin: 100px 50px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .margin-auto {
+    margin: auto;
+  }
+  .display-flex {
+    display: flex;
+    height: 700px;
+  }
+
+  .custom-error-message {
+    color: red;
+    font-size: 12px;
+  }
+
+  .title {
+    font-weight: bold;
+    font-size: 40px;
+    margin: 20px auto;
+  }
+  .is-invalid {
+    border-color: red !important;
+    border-width: 1px !important;
+  }
+  .form-group > label {
+    font-size: 16px;
+    margin-bottom: 5px;
+  }
+  .form-control:focus {
+    border-color: #80bdff !important; /* Màu border khi chạm vào trường */
+    box-shadow: 0 0 0.2rem rgba(0, 123, 255, 0.25) !important; /* Hiệu ứng box-shadow khi chạm vào trường */
+  }
+  
+
+  .location-select {
+    width: 90%;
+  }
+  
+  .new-customer>div {
+    margin-bottom: 20px;
+  }

@@ -550,7 +550,7 @@ button:hover {
 .usermenu {
     float: right;
     padding-top: 15px;
-    line-height:
+   
 }
 
 .usermenu li {
@@ -687,6 +687,36 @@ ul.dropdown-menu>li>a:hover {
     z-index: 1;
 }
 
+
+  
+  .search-result-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .search-result-item .image {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+  }
+  
+  .search-result-item .image img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+  
+  .search-result-item .item-description .name {
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .search-result-item .item-description .price {
+    color: #666;
+  }
+
 .search {
     float: left;
     position: relative;
@@ -732,6 +762,18 @@ ul.dropdown-menu>li>a:hover {
     border-radius: 10px;
     display: none;
 }
+
+.search-results {
+    position: absolute;
+    top: 71px; /* Chiều cao của search-input + top của search-input */
+    right: 0;
+    width: 220px; /* Cùng chiều ngang với search-input */
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 999;
+    max-height: 200px;
+    overflow-y: auto;
+  }
 
 .search form:hover .search-input {
     display: block;
@@ -1397,7 +1439,7 @@ ul.dropdown-menu>li>a:hover {
 
 #braldLogo .brand_item li {
     display: inline-block;
-    *display: inline;
+    display: inline;
     margin-right: 2%;
     width: 18.4%;
 }

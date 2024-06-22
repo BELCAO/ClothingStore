@@ -1,7 +1,136 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
+// UserMenu component
+const UserMenu = () => {
+  return (
+    <ul className="usermenu">
+      <li>
+        <Link to="/SignIn" className="log">
+          Đăng nhập
+        </Link>
+      </li>
+      <li>
+        <Link to="/SignUp" className="reg">
+          Đăng ký
+        </Link>
+      </li>
+    </ul>
+  );
+};
+
+// Account component
+const Account = (prop) => {
+  return (
+    <ul className="usermenu">
+      <li>
+        <Link to="/Profile" style={{ display: "flex", flexDirection: "row" }}>
+          <div style={{ margin: "auto" }}>{prop.name}</div>
+          <img
+            src={
+              process.env.REACT_APP_HOST_API_URL +
+              "images/avatar?imgPath=" +
+              prop.imgPath
+            }
+            style={{
+              width: 25,
+              height: 25,
+              borderRadius: 15,
+              marginLeft: 10,
+              objectFit: "cover",
+            }}
+            alt="Avatar"
+          />
+        </Link>
+      </li>
+    </ul>
+  );
+};
 
 const Header = () => {
+  const token = useSelector((state) => state.token);
+  const avatarUrl = useSelector((state) => state.avatarUrl);
+  const userName = useSelector((state) => state.userName);
+  const userId = useSelector((state) => state.userId); // Lấy userId từ Redux store
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [cartItems, setCartItems] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (searchTerm) {
+      handleSearch();
+    } else {
+      setSearchResults([]);
+    }
+  }, [searchTerm]);
+
+  useEffect(() => {
+    if (userId) {
+      fetchCartItems(userId); // Chỉ fetch cart items nếu có userId
+    }
+  }, [userId]);
+
+  const handleSearch = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/products/autocomplete?name=${searchTerm}`
+      );
+      const data = await response.json();
+      setSearchResults(data);
+    } catch (error) {
+      console.error("Error fetching search results:", error);
+      setSearchResults([]);
+    }
+  };
+
+  const fetchCartItems = async (userId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/cart/get?userId=${userId}`
+      );
+      const data = await response.json();
+      setCartItems(data.items);
+      setTotalPrice(data.totalPrice);
+    } catch (error) {
+      console.error("Error fetching cart items:", error);
+    }
+  };
+
+  const renderUserMenu = () => {
+    if (token) {
+      if (userName && avatarUrl)
+        return <Account imgPath={avatarUrl} name={userName} />;
+    } else {
+      return <UserMenu />;
+    }
+  };
+
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    })
+      .format(price)
+      .replace(/\D00(?=\D*$)/, "");
+  };
+
+  const settings = {
+    dots: true,
+    infinite: false,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    vertical: true,
+    verticalSwiping: true,
+  };
+
   return (
     <div className="header">
       <div className="container">
@@ -9,7 +138,7 @@ const Header = () => {
           <div className="col-md-2 col-sm-2">
             <div className="logo">
               <Link to="/">
-                <img src="images/logo2.png" alt="FlatShop" />
+                <img src="images/logo3.png" alt="FlatShop" />
               </Link>
             </div>
           </div>
@@ -54,39 +183,26 @@ const Header = () => {
                 <div className="col-md-6">
                   <ul className="topmenu">
                     <li>
-                      <a href="#">About Us</a>
+                      <a href="#">Về Chúng tôi</a>
                     </li>
                     <li>
-                      <a href="#">News</a>
+                      <a href="#">Tin mới</a>
                     </li>
                     <li>
-                      <a href="#">Service</a>
+                      <a href="#">Dịch vụ</a>
                     </li>
                     <li>
-                      <a href="#">Recruiment</a>
+                      <a href="#">Tuyển dụng</a>
                     </li>
                     <li>
-                      <a href="#">Media</a>
+                      <a href="#">Truyền thông</a>
                     </li>
                     <li>
-                      <a href="#">Support</a>
+                      <a href="#">Hỗ trợ</a>
                     </li>
                   </ul>
                 </div>
-                <div className="col-md-3">
-                  <ul className="usermenu">
-                    <li>
-                      <a href="checkout.html" className="log">
-                        Login
-                      </a>
-                    </li>
-                    <li>
-                      <a href="checkout2.html" className="reg">
-                        Register
-                      </a>
-                    </li>
-                  </ul>
-                </div>
+                <div className="col-md-3">{renderUserMenu()}</div>
               </div>
             </div>
             <div className="clearfix"></div>
@@ -99,74 +215,62 @@ const Header = () => {
                       className="search-input"
                       placeholder="Enter your search term..."
                       type="text"
-                      value=""
-                      name="search"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
                     />
+                    {searchResults.length > 0 && (
+                      <div className="search-results">
+                        {searchResults.map((product) => (
+                          <Link
+                            to={`/details/search`}
+                            state={{ product }}
+                            key={product.id}
+                            className="search-result-item"
+                          >
+                            <div className="image">
+                              <img src={product.imageUrl} alt={product.name} />
+                            </div>
+                            <div className="item-description">
+                              <p className="name">{product.name}</p>
+                              <p className="price">{formatPrice(product.price)}</p>
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+                    )}
                   </form>
                 </li>
+
                 <li className="option-cart">
-                  <a href="#" className="cart-icon">
-                    cart <span className="cart_no">02</span>
+                  <a className="cart-icon">
+                    cart <span className="cart_no">{cartItems.length}</span>
                   </a>
                   <ul className="option-cart-item">
-                    <li>
-                      <div className="cart-item">
-                        <div className="image">
-                          <img
-                            src="images/products/thum/products-01.png"
-                            alt=""
-                          />
-                        </div>
-                        <div className="item-description">
-                          <p className="name">Lincoln chair</p>
-                          <p>
-                            Size: <span className="light-red">One size</span>
-                            <br />
-                            Quantity: <span className="light-red">01</span>
-                          </p>
-                        </div>
-                        <div className="right">
-                          <p className="price">$30.00</p>
-                          <a href="#" className="remove">
-                            <img src="images/remove.png" alt="remove" />
-                          </a>
-                        </div>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="cart-item">
-                        <div className="image">
-                          <img
-                            src="images/products/thum/products-02.png"
-                            alt=""
-                          />
-                        </div>
-                        <div className="item-description">
-                          <p className="name">Lincoln chair</p>
-                          <p>
-                            Size: <span className="light-red">One size</span>
-                            <br />
-                            Quantity: <span className="light-red">01</span>
-                          </p>
-                        </div>
-                        <div className="right">
-                          <p className="price">$30.00</p>
-                          <a href="#" className="remove">
-                            <img src="images/remove.png" alt="remove" />
-                          </a>
-                        </div>
-                      </div>
-                    </li>
+                    <Slider {...settings}>
+                      {cartItems.map((item) => (
+                        <li key={item.id}>
+                          <div className="cart-item">
+                            <div className="image">
+                              <img src={item.productImage} alt={item.productName} />
+                            </div>
+                            <div className="item-description">
+                              <p className="name">{item.productName}</p>
+                              <p>
+                                Quantity: <span className="light-red">{item.quantity}</span>
+                              </p>
+                            </div>
+                            <div className="right">
+                              <p className="price">{formatPrice(item.productPrice * item.quantity)}</p>
+                            </div>
+                          </div>
+                        </li>
+                      ))}
+                    </Slider>
                     <li>
                       <span className="total">
-                        Total <strong>$60.00</strong>
+                        Total <strong>{formatPrice(totalPrice)}</strong>
                       </span>
-                      <button
-                        className="checkout"
-                        onClick="location.href='checkout.html'"
-                      >
-                        CheckOut
-                      </button>
+                      <button className="checkout" onClick={() => navigate("/cart")}>Chi tiết giỏ hàng</button>
                     </li>
                   </ul>
                 </li>
@@ -192,120 +296,26 @@ const Header = () => {
                       className="dropdown-toggle"
                       data-toggle="dropdown"
                     >
-                      mome
+                      Trang Chủ
                     </Link>
-                    <div className="dropdown-menu">
-                      <ul className="mega-menu-links">
-                        <li>
-                          <a href="index.html">home</a>
-                        </li>
-                        <li>
-                          <a href="home2.html">home2</a>
-                        </li>
-                        <li>
-                          <a href="home3.html">home3</a>
-                        </li>
-                        <li>
-                          <a href="productlitst.html">Productlitst</a>
-                        </li>
-                        <li>
-                          <a href="#">Productgird</a>
-                        </li>
-                        <li>
-                          <a href="details.html">Details</a>
-                        </li>
-                        <li>
-                          <a href="cart.html">Cart</a>
-                        </li>
-                        <li>
-                          <a href="checkout.html">CheckOut</a>
-                        </li>
-                        <li>
-                          <a href="checkout2.html">CheckOut2</a>
-                        </li>
-                        <li>
-                          <a href="contact.html">contact</a>
-                        </li>
-                      </ul>
-                    </div>
                   </li>
                   <li>
-                    <Link to="/Productgird">men</Link>
+                    <Link to="/Productlist?categoryId=1">Đồ nam</Link>
                   </li>
                   <li>
-                    <Link to="/Productlitst">women</Link>
-                  </li>
-                  <li className="dropdown">
-                    <Link
-                      to="/Productgird"
-                      className="dropdown-toggle"
-                      data-toggle="dropdown"
-                    >
-                      Fashion
-                    </Link>
-                    <div className="dropdown-menu mega-menu">
-                      <div className="row">
-                        <div className="col-md-6 col-sm-6">
-                          <ul className="mega-menu-links">
-                            <li>
-                              <a href="#">New Collection</a>
-                            </li>
-                            <li>
-                              <a href="#">Shirts & tops</a>
-                            </li>
-                            <li>
-                              <a href="#">Laptop & Brie</a>
-                            </li>
-                            <li>
-                              <a href="#">Dresses</a>
-                            </li>
-                            <li>
-                              <a href="#">Blazers & Jackets</a>
-                            </li>
-                            <li>
-                              <a href="#">Shoulder Bags</a>
-                            </li>
-                          </ul>
-                        </div>
-                        <div className="col-md-6 col-sm-6">
-                          <ul className="mega-menu-links">
-                            <li>
-                              <a href="#">New Collection</a>
-                            </li>
-                            <li>
-                              <a href="#">Shirts & tops</a>
-                            </li>
-                            <li>
-                              <a href="#">Laptop & Brie</a>
-                            </li>
-                            <li>
-                              <a href="#">Dresses</a>
-                            </li>
-                            <li>
-                              <a href="#">Blazers & Jackets</a>
-                            </li>
-                            <li>
-                              <a href="#">Shoulder Bags</a>
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
+                    <Link to="/Productlist?categoryId=2">Đồ nữ</Link>
                   </li>
                   <li>
-                    <Link to="/Productgd">gift</Link>
+                    <Link to="/Productlist?categoryId=7">Trẻ Em</Link>
                   </li>
                   <li>
-                    <Link to="/Productgird">kids</Link>
+                    <Link to="/Productlist?categoryId=2">Áo Thun</Link>
                   </li>
                   <li>
-                    <Link to="/Productgird">blog</Link>
+                    <Link to="/Productlist?categoryId=5">Công sở</Link>
                   </li>
                   <li>
-                    <Link to="/Productgird">jewelry</Link>
-                  </li>
-                  <li>
-                    <Link to="/Contact">contact us</Link>
+                    <Link to="/Contact">Liên hệ</Link>
                   </li>
                 </ul>
               </div>
@@ -316,4 +326,5 @@ const Header = () => {
     </div>
   );
 };
+
 export default Header;
