@@ -1,5 +1,6 @@
 package com.cdweb.backend.service;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.cdweb.backend.dto.DetailOrderDTO;
 import com.cdweb.backend.dto.OrderDTO;
-import com.cdweb.backend.entity.Address;
+import com.cdweb.backend.entity.DeliveryInfo;
 import com.cdweb.backend.entity.DetailOrder;
 import com.cdweb.backend.entity.Order;
 import com.cdweb.backend.entity.Payment;
@@ -34,7 +35,7 @@ public class OrderService {
 	@Autowired
 	private TransportationService transportationService;
 	@Autowired 
-	private AddressService addressService;
+	private DeliveryInfoService deliveryInfoService;
 	@Transactional
 	public List<Order> getAllOrders() {
 		return orderRepository.findAll();
@@ -44,34 +45,49 @@ public class OrderService {
 		return orderRepository.findById(id);
 	}
 	@Transactional
-	public Order createOrder(OrderDTO orderDTO) {
+	public Long createOrder(OrderDTO orderDTO) {
 		Order order = new Order();
-		System.out.println(orderDTO.toString());
-		order.setUser(userService.getAccountById(orderDTO.getUserId()));
-		order.setBuyerName(orderDTO.getBuyerName());
-		order.setBuyerPhone(orderDTO.getBuyerPhone());
+		order = orderRepository.save(order);
 		
-		Payment payment = orderDTO.getPayment();
+		order.setUser(userService.getAccountById(orderDTO.getUserId()));
+		
+		// Phần liên quan đến thanh toán
+		Payment payment = new Payment();
+		payment.setOnline(orderDTO.isOnline());
+		payment.setPaymentAmout(orderDTO.getPaymentAmout());
+		payment.setDescription("text");
+		payment.setStatus("Chua chuyen tien");
 		payment.setOrder(order);
 		payment = paymentService.createPayment(payment);
 		order.setPayment(payment);
 		
-		order.setDate(orderDTO.getDate());
-		order.setAddress(orderDTO.getAddress());
-
-		Transportation transportation = orderDTO.getTransportation();
+		
+		// Ngày tạo đơn hàng
+		order.setDate(new Date(System.currentTimeMillis()));
+		
+		// Thông tin vận chuyển
+		Optional<DeliveryInfo> deliveryInfo = deliveryInfoService.getDeliveryInfoById(orderDTO.getDeliveryInfoId());
+		if(deliveryInfo.isPresent()) {
+			order.setDeliveryInfo(deliveryInfo.get());			
+		}else {
+			return null;
+		}
+		
+		// Vận chuyển
+		Transportation transportation = new Transportation();
+		transportation.setTransType(orderDTO.getTransType());
+		transportation.setTransportFree(orderDTO.getTransportFree());
+		transportation.setStartDate(new Date(System.currentTimeMillis()));
+		transportation.setEndDate(new Date());
+		transportation.setStatus("xac nhan");
 		transportation.setOrder(order);
 		transportation = transportationService.createTransportation(transportation);
 		order.setTransportation(transportation);
 		
-		Address address = orderDTO.getAddress();
-		address = addressService.createAddress(address);
-		order.setAddress(address);
-		
+		// Tổng tiền
 		order.setTotalAmout(orderDTO.getTotalAmout());
-		order.setStatus("Check");
 		
-		order = orderRepository.save(order);
+		// Thêm chi tiết đơn hàng
 		Set<DetailOrder> detailOrders = new HashSet<>();
 		for (DetailOrderDTO detailOrderDTO : orderDTO.getDetailOrderDTOs()) {
 			DetailOrder detailOrder = new DetailOrder();
@@ -79,11 +95,14 @@ public class OrderService {
 			detailOrder.setProductEntity(productEntity);
 			detailOrder.setQuantity(detailOrderDTO.getQuantity());
 			detailOrder.setTotalPrice(detailOrderDTO.getTotalPrice());
-			detailOrder.setOrder(order);
 			detailOrders.add(detailOrder);
+			detailOrder.setOrder(order);
 		}
 		order.setDetailOrders(detailOrders);
-		return orderRepository.save(order);
+		order.setStatus("cho xac nhan");
+		
+		
+		return orderRepository.save(order).getId();
 	}
 	@Transactional
 	public boolean deleteOrderById(Long id) {

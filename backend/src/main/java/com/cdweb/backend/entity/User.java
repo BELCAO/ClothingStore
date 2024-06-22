@@ -11,6 +11,7 @@ import com.cdweb.backend.enums.Status;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -36,12 +37,14 @@ public class User {
 	private String password;
 	private Date birthday;
 	private String avatarUrl;
+	@Column(nullable = false)
 	private Set<String> roles;
 	@Column(length = 10, nullable = false)
 	private String status;
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-	private Set<Address> addresses;
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	
+	@OneToMany(mappedBy = "userId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private Set<DeliveryInfo> deliveryInfos;
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<Order> orders;
 	
 	
@@ -141,13 +144,23 @@ public class User {
 		this.status = status;
 	}
 
-	public Set<Address> getAddresses() {
-		return addresses;
+	public Set<DeliveryInfo> getDeliveryInfos() {
+		return deliveryInfos;
 	}
 
-	public void setAddresses(Set<Address> addresses) {
-		this.addresses = addresses;
+	public void setDeliveryInfos(Set<DeliveryInfo> deliveryInfos) {
+		this.deliveryInfos = deliveryInfos;
 	}
+
+	public Set<Order> getOrders() {
+		return orders;
+	}
+
+	public void setOrders(Set<Order> orders) {
+		this.orders = orders;
+	}
+
+
 	
 	
 

@@ -1,66 +1,53 @@
 package com.cdweb.backend.dto;
-import java.util.Date;
-import java.util.List;
-import com.cdweb.backend.entity.Address;
-import com.cdweb.backend.entity.Payment;
-import com.cdweb.backend.entity.Transportation;
+
+import java.util.Set;
 
 
 public class OrderDTO {
 	private Long userId;
-	private String buyerName;
-	private String buyerPhone;
-	private Payment payment;
-	private Date date;
-	private Address address;
-	private Transportation transportation;
+	private boolean online;
+	private Long paymentAmout;
+	private Long deliveryInfoId;
+	private String transType;
+	private Long transportFree;
 	private Long totalAmout;
-	private List<DetailOrderDTO> detailOrderDTOs;
-	
-	public OrderDTO() {
-		super();
-	}
+	private Set<DetailOrderDTO> detailOrderDTOs;
 	public Long getUserId() {
 		return userId;
 	}
 	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
-	public String getBuyerName() {
-		return buyerName;
+
+	public boolean isOnline() {
+		return online;
 	}
-	public void setBuyerName(String buyerName) {
-		this.buyerName = buyerName;
+	public void setOnline(boolean online) {
+		this.online = online;
 	}
-	public String getBuyerPhone() {
-		return buyerPhone;
+	public Long getPaymentAmout() {
+		return paymentAmout;
 	}
-	public void setBuyerPhone(String buyerPhone) {
-		this.buyerPhone = buyerPhone;
+	public void setPaymentAmout(Long paymentAmout) {
+		this.paymentAmout = paymentAmout;
 	}
-	public Payment getPayment() {
-		return payment;
+	public Long getDeliveryInfoId() {
+		return deliveryInfoId;
 	}
-	public void setPayment(Payment payment) {
-		this.payment = payment;
+	public void setDeliveryInfoId(Long deliveryInfoId) {
+		this.deliveryInfoId = deliveryInfoId;
 	}
-	public Date getDate() {
-		return date;
+	public String getTransType() {
+		return transType;
 	}
-	public void setDate(Date date) {
-		this.date = date;
+	public void setTransType(String transType) {
+		this.transType = transType;
 	}
-	public Address getAddress() {
-		return address;
+	public Long getTransportFree() {
+		return transportFree;
 	}
-	public void setAddress(Address address) {
-		this.address = address;
-	}
-	public Transportation getTransportation() {
-		return transportation;
-	}
-	public void setTransportation(Transportation transportation) {
-		this.transportation = transportation;
+	public void setTransportFree(Long transportFree) {
+		this.transportFree = transportFree;
 	}
 	public Long getTotalAmout() {
 		return totalAmout;
@@ -68,17 +55,19 @@ public class OrderDTO {
 	public void setTotalAmout(Long totalAmout) {
 		this.totalAmout = totalAmout;
 	}
-	public List<DetailOrderDTO> getDetailOrderDTOs() {
+	public Set<DetailOrderDTO> getDetailOrderDTOs() {
 		return detailOrderDTOs;
 	}
-	public void setDetailOrderDTOs(List<DetailOrderDTO> detailOrderDTOs) {
+	public void setDetailOrderDTOs(Set<DetailOrderDTO> detailOrderDTOs) {
 		this.detailOrderDTOs = detailOrderDTOs;
 	}
 	@Override
 	public String toString() {
-		return "OrderDTO [userId=" + userId + ", buyerName=" + buyerName + ", buyerPhone=" + buyerPhone + ", payment="
-				+ payment + ", date=" + date + ", address=" + address + ", transportation=" + transportation
+		return "OrderDTO [userId=" + userId + ", online=" + online + ", paymentAmout=" + paymentAmout
+				+ ", deliveryInfoId=" + deliveryInfoId + ", transType=" + transType + ", transportFree=" + transportFree
 				+ ", totalAmout=" + totalAmout + ", detailOrderDTOs=" + detailOrderDTOs + "]";
 	}
+
+
 	
 }

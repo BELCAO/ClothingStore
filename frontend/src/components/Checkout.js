@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useCart } from "./CartContext"; // Import CartContext
 import axios from "axios";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 const Checkout = () => {
   const { cartItems, totalPrice } = useCart(); // Sử dụng CartContext
@@ -36,6 +38,36 @@ const Checkout = () => {
   const [selectedDistrict, setSelectedDistrict] = useState('');
   const [selectedWard, setSelectedWard] = useState('');
   const [paypalLoaded, setPaypalLoaded] = useState(false);
+
+  const [buyerName, setBuyerName] = useState('');
+  const [buyerPhone, setBuyerPhone] = useState('');
+  const [paymentOnline, setPaymentOnline] = useState('');
+  const [paymentAmount, setPaymentAmount] = useState('');
+  const [addressDescription, setAddressDescription] = useState('');
+  const [transportationFree, setTransportationFree] = useState('');
+  const [transportationType, setTransportationType] = useState('');
+  const [totalAmount, setTotalAmount] = useState('');
+
+  const [cartItems, setCartItems] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const userId = useSelector((state) => state.userId); // Lấy userId từ Redux store
+
+  useEffect(() => {
+    if (userId) {
+      fetchCartItems(userId); // Chỉ fetch cart items nếu có userId
+    }
+  }, [userId]);
+
+  const fetchCartItems = async (userId) => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/cart/get?userId=${userId}`);
+      const data = await response.json();
+      setCartItems(data.items);
+      setTotalPrice(data.totalPrice);
+    } catch (error) {
+      console.error("Error fetching cart items:", error);
+    }
+  };
 
   useEffect(() => {
     axios.get('https://esgoo.net/api-tinhthanh/1/0.htm')
@@ -120,6 +152,7 @@ const Checkout = () => {
       .format(price)
       .replace(/\D00(?=\D*$)/, "");
   };
+
 
   useEffect(() => {
     if (checkoutForm.payment.online && window.paypal && !paypalLoaded) {

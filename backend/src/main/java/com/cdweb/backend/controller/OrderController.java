@@ -35,7 +35,7 @@ public class OrderController {
 		return order.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
 	}
 	@PostMapping
-	public ResponseEntity<Order> createOrder(@RequestBody OrderDTO orderDTO){		
+	public ResponseEntity<Long> createOrder(@RequestBody OrderDTO orderDTO){		
 		return ResponseEntity.ok().body(orderService.createOrder(orderDTO));
 	}
 	
