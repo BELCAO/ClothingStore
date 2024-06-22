@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { useCart } from "./CartContext"; // Import CartContext
 
 const Cart = () => {
-  const [cartItems, setCartItems] = useState([]);
-  const [totalPrice, setTotalPrice] = useState(0);
   const userId = useSelector((state) => state.userId); // Lấy userId từ Redux store
+  const { cartItems, setCartItems, totalPrice, setTotalPrice } = useCart(); // Sử dụng CartContext
 
   useEffect(() => {
     if (userId) {
@@ -37,11 +37,10 @@ const Cart = () => {
       });
       if (response.ok) {
         // Remove the item from the state
-        setCartItems((prevItems) => prevItems.filter((item) => item.productId !== productId));
+        const updatedCartItems = cartItems.filter((item) => item.productId !== productId);
+        setCartItems(updatedCartItems);
         // Recalculate the total price
-        const updatedTotalPrice = cartItems
-          .filter((item) => item.productId !== productId)
-          .reduce((acc, item) => acc + item.productPrice * item.quantity, 0);
+        const updatedTotalPrice = updatedCartItems.reduce((acc, item) => acc + item.productPrice * item.quantity, 0);
         setTotalPrice(updatedTotalPrice);
         alert("Sản phẩm đã được xóa khỏi giỏ hàng");
       } else {
@@ -96,31 +95,13 @@ const Cart = () => {
                               02 Review(s)
                             </a>
                           </p>
-                          <div className="color-choser">
-                            <span className="text">Product Color :</span>
-                            <ul>
-                              <li>
-                                <a className="black-bg " href="#">
-                                  black
-                                </a>
-                              </li>
-                            
-                            </ul>
-                          </div>
-                    
                         </div>
                       </td>
                       <td>
                         <h5>{formatPrice(item.productPrice)}</h5>
                       </td>
                       <td>
-                        <select value={item.quantity} name="">
-                          {[...Array(10).keys()].map((n) => (
-                            <option key={n + 1} value={n + 1}>
-                              {n + 1}
-                            </option>
-                          ))}
-                        </select>
+                        <span>{item.quantity}</span>
                       </td>
                       <td>
                         <h5>

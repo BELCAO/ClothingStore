@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useCart } from "./CartContext";
 
 const Details = () => {
   const location = useLocation();
@@ -9,6 +10,8 @@ const Details = () => {
   const [currentImageUrl, setCurrentImageUrl] = useState(product?.imageUrl || "");
   const [hotProducts, setHotProducts] = useState([]);
   const [quantity, setQuantity] = useState(1);
+  const { cartItems, setCartItems, totalPrice, setTotalPrice } = useCart(); // Use CartContext
+
 
   const userId = useSelector((state) => state.userId); // Lấy userId từ Redux store
 
@@ -92,7 +95,8 @@ const Details = () => {
       });
       if (response.ok) {
         const updatedCart = await response.json();
-        // Update cart items and total price in context or state here
+        setCartItems(updatedCart.items);
+        setTotalPrice(updatedCart.totalPrice);
         alert("Sản phẩm đã được thêm vào giỏ hàng");
       } else {
         console.error("Failed to add product to cart");

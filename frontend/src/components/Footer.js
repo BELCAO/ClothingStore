@@ -17,9 +17,9 @@ const Footer = () => {
               <h4 className="title">
                 <strong>Thông tin</strong> Liên hệ
               </h4>
-              <p>No. 08, Nguyen Trai, Hanoi , Vietnam</p>
-              <p>Call Us : (084) 1900 1008</p>
-              <p>Email : michael@leebros.us</p>
+              <p>Linh Trung, Thủ Đức, TP.Hồ Chính Minh , Việt Nam</p>
+              <p>Call Us : 0867474001</p>
+              <p>Email : clothingstore@gmail.com</p>
             </div>
             <div className="col-md-3 col-sm-6">
               <h4 className="title">
@@ -58,7 +58,7 @@ const Footer = () => {
           <div className="row">
             <div className="col-md-6">
               <p>
-                Copyright © 2012. Designed by <a href="#">Michael Lee</a>. All
+                Copyright © 2024. Designed by <a href="#">Bel, Bach</a>. All
                 rights reseved
               </p>
             </div>
