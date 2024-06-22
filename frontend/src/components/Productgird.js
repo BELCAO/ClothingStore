@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import ReactPaginate from 'react-paginate';
 import { useSelector } from "react-redux";
+import { useCart } from "./CartContext";
 
 const Productgird = () => {
   const [products, setProducts] = useState([]);
@@ -16,6 +17,7 @@ const Productgird = () => {
   const categoryId = queryParams.get("categoryId") || 3;
 
   const userId = useSelector((state) => state.userId); // Lấy userId từ Redux store
+  const { cartItems, setCartItems, totalPrice, setTotalPrice } = useCart(); // Use CartContext
 
   useEffect(() => {
     fetchProducts(page, pageSize, categoryId);
@@ -67,7 +69,8 @@ const Productgird = () => {
 
       if (response.ok) {
         const updatedCart = await response.json();
-        // Update cart items and total price in context or state here if needed
+        setCartItems(updatedCart.items);
+        setTotalPrice(updatedCart.totalPrice);
         alert("Sản phẩm đã được thêm vào giỏ hàng");
       } else {
         console.error("Failed to add product to cart");
@@ -101,14 +104,14 @@ const Productgird = () => {
           <div className="row">
             <div className="col-md-3">
               <div className="category leftbar">
-                <h3 className="title">Categories</h3>
+                <h3 className="title">DANH MỤC</h3>
                 <ul>
-                  <li><Link to="/Productgird?categoryId=3">Men</Link></li>
-                  <li><Link to="/Productgird?categoryId=2">Women</Link></li>
-                  <li><Link to="/Productgird?categoryId=1">Salon</Link></li>
-                  <li><Link to="/Productgird?categoryId=4">New Trend</Link></li>
-                  <li><Link to="/Productgird?categoryId=5">Living room</Link></li>
-                  <li><Link to="/Productgird?categoryId=6">Bed room</Link></li>
+                  <li><Link to="/Productgird?categoryId=1">Áo thun</Link></li>
+                  <li><Link to="/Productgird?categoryId=2">Áo khoác</Link></li>
+                  <li><Link to="/Productgird?categoryId=3">Áo Polo</Link></li>
+                  <li><Link to="/Productgird?categoryId=4">Áo sơ mi</Link></li>
+                  <li><Link to="/Productgird?categoryId=5">Quần</Link></li>
+                 
                 </ul>
               </div>
              
@@ -170,12 +173,12 @@ const Productgird = () => {
                       <a href="#" className="grid active">Grid</a>
                     </div>
                     <div className="sort-by">
-                      Sort by:
+                      Hiển thị:
                       <select onChange={handlePageSizeChange} value={pageSize}>
-                        <option value="3">3</option>
-                        <option value="6">6</option>
-                        <option value="9">9</option>
+                        <option value="5">5</option>
                         <option value="10">10</option>
+                        <option value="15">15</option>
+                   
                       </select>
                     </div>
                   </div>
@@ -226,12 +229,12 @@ const Productgird = () => {
                       <a href="#" className="grid active">Grid</a>
                     </div>
                     <div className="sort-by">
-                      Sort by:
+                      Hiển thị:
                       <select onChange={handlePageSizeChange} value={pageSize}>
-                        <option value="3">3</option>
-                        <option value="6">6</option>
-                        <option value="9">9</option>
+                        <option value="5">5</option>
                         <option value="10">10</option>
+                        <option value="15">15</option>
+                     
                       </select>
                     </div>
                   </div>

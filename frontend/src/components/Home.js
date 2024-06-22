@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useCart } from './CartContext'; // Import CartContext
 
 const Home = () => {
   const [products, setProducts] = useState([]);
   const [featuredProducts, setFeaturedProducts] = useState([]);
-  const [cartItems, setCartItems] = useState([]);
-  const [totalPrice, setTotalPrice] = useState(0);
   const userInfo = useSelector((state) => state);
   const userId = userInfo.userId;
+  const { cartItems, setCartItems, totalPrice, setTotalPrice } = useCart(); // Use CartContext
 
   useEffect(() => {
     fetchProducts();
@@ -17,7 +17,9 @@ const Home = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch("http://localhost:8080/products");
+      const response = await fetch(
+        "http://localhost:8080/categories/6/products"
+      );
       const data = await response.json();
       if (data && Array.isArray(data.content)) {
         setProducts(data.content);
@@ -34,7 +36,7 @@ const Home = () => {
   const fetchFeaturedProducts = async () => {
     try {
       const response = await fetch(
-        "http://localhost:8080/categories/3/products"
+        "http://localhost:8080/categories/7/products"
       );
       const data = await response.json();
       if (data && Array.isArray(data.content)) {
@@ -48,8 +50,6 @@ const Home = () => {
       setFeaturedProducts([]);
     }
   };
-
-  
 
   const handleAddToCart = async (product) => {
     try {
@@ -71,6 +71,7 @@ const Home = () => {
       });
 
       if (response.ok) {
+        // Fetch the updated cart items and total price after adding the product
         const updatedCart = await response.json();
         setCartItems(updatedCart.items);
         setTotalPrice(updatedCart.totalPrice);
@@ -119,18 +120,17 @@ const Home = () => {
             <ul className="sequence-canvas">
               <li className="animate-in">
                 <div className="flat-caption caption1 formLeft delay300 text-center">
-                  <span className="suphead">Paris show 2014</span>
+                  <span className="suphead">VietNam show 2024</span>
                 </div>
                 <div className="flat-caption caption2 formLeft delay400 text-center">
-                  <h1>Collection For Winter</h1>
+                  <h1>Enjoy Your Youth!</h1>
                 </div>
                 <div className="flat-caption caption3 formLeft delay500 text-center">
                   <p>
-                    Lorem Ipsum is simply dummy text of the printing and
-                    typesetting industry.
-                    <br />
-                    Lorem Ipsum is simply dummy text of the printing and
-                    typesetting
+                    Không chỉ là thời trang, ClothingStore còn là “phòng thí
+                    nghiệm” của tuổi trẻ - nơi nghiên cứu và cho ra đời nguồn
+                    năng lượng mang tên “Youth”. Chúng mình luôn muốn tạo nên
+                    những trải nghiệm vui vẻ, năng động và trẻ trung.
                   </p>
                 </div>
                 <div className="flat-button caption4 formLeft delay600 text-center">
@@ -146,13 +146,13 @@ const Home = () => {
               </li>
               <li>
                 <div className="flat-caption caption2 formLeft delay400">
-                  <h1>Collection For Winter</h1>
+                  <h1>Collection For Youths</h1>
                 </div>
                 <div className="flat-caption caption3 formLeft delay500">
                   <h2>
-                    Etiam velit purus, luctus vitae velit sedauctor
+                    Khám phá phong cách trẻ trung, năng động
                     <br />
-                    egestas diam, Etiam velit purus.
+                    Cập nhật xu hướng thời trang mới nhất năm 2024.
                   </h2>
                 </div>
                 <div className="flat-button caption5 formLeft delay600">
@@ -167,14 +167,13 @@ const Home = () => {
               </li>
               <li>
                 <div className="flat-caption caption2 formLeft delay400 text-center">
-                  <h1>New Fashion of 2013</h1>
+                  <h1>New Fashion of 2024</h1>
                 </div>
                 <div className="flat-caption caption3 formLeft delay500 text-center">
                   <p>
-                    Lorem Ipsum is simply dummy text of the printing and
-                    typesetting industry. <br />
-                    Lorem Ipsum is simply dummy text of the printing and
-                    typesetting
+                    Bứt phá giới hạn với xu hướng thời trang 2024,
+                    <br />
+                    khẳng định phong cách trẻ trung, hiện đại.
                   </p>
                 </div>
                 <div className="flat-button caption4 formLeft delay600 text-center">
