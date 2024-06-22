@@ -1,59 +1,52 @@
 import React, { useState, useEffect } from "react";
-import ".././css/mystyle.css";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
+import { useSelector } from "react-redux";
+import { useCart } from "./CartContext"; // Import CartContext
 import axios from "axios";
 
-
-
 const Checkout = () => {
+  const { cartItems, totalPrice } = useCart(); // Sử dụng CartContext
+
   const [checkoutForm, setCheckoutForm] = useState({
     userId: '',
     buyerName: '',
     buyerPhone: '',
-    payment:{
+    payment: {
       online: true,
-      paymentAmout:1000},
+      paymentAmout: 1000
+    },
     date: '',
-    address:{
-      district:'',
-      province:'',
-      ward:'',
-      description:''},
-    transportation:{
-      transportFree:'',
-      transType: ''},
+    address: {
+      district: '',
+      province: '',
+      ward: '',
+      description: ''
+    },
+    transportation: {
+      transportFree: '',
+      transType: ''
+    },
     totalAmout: '',
-    detailDorderDTOs:''
+    detailDorderDTOs: ''
   });
-  const [provinces, setProvinces] = useState([])
-  const [districts, setDistricts] = useState([])
-  const [wards, setWards] = useState([])
-  const [selectedProvince, setSelectedProvince] = useState('')
-  const [selectedDistrict, setSelectedDistrict] = useState('')
-  const [selectedWard, setSelectedWard] = useState('')
 
+  const [provinces, setProvinces] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [wards, setWards] = useState([]);
+  const [selectedProvince, setSelectedProvince] = useState('');
+  const [selectedDistrict, setSelectedDistrict] = useState('');
+  const [selectedWard, setSelectedWard] = useState('');
+  const [paypalLoaded, setPaypalLoaded] = useState(false);
 
-  const [userId, setUserId] = useState('');
-  const [buyerName, setBuyerName] = useState('');
-  const [buyerPhone, setBuyerPhone] = useState('');
-  const [paymentOnline, setPaymentOnline] = useState('');
-  const [paymentAmount, setPaymentAmount] = useState('');
-  const [addressDescription, setAddressDescription] = useState('');
-  const [transportationFree, setTransportationFree] = useState('');
-  const [transportationType, setTransportationType] = useState('');
-  const [totalAmount, setTotalAmount] = useState('');
   useEffect(() => {
-    axios
-    .get('https://esgoo.net/api-tinhthanh/1/0.htm')
-    .then((response) => {
-      setProvinces(response.data.data)
-    })
-    .catch((errors) => {
-      setProvinces([])
-      console.log("Error creating account: ", errors);
-    });
-  }, [])
+    axios.get('https://esgoo.net/api-tinhthanh/1/0.htm')
+      .then((response) => {
+        setProvinces(response.data.data);
+      })
+      .catch((errors) => {
+        setProvinces([]);
+        console.log("Error creating account: ", errors);
+      });
+  }, []);
 
   const handleProvinceChange = (e) => {
     const provinceCode = e.target.value;
@@ -61,15 +54,14 @@ const Checkout = () => {
     setSelectedDistrict('');
     setSelectedWard('');
     // Fetch districts data for selected province
-    axios
-    .get(`https://esgoo.net/api-tinhthanh/2/${provinceCode}.htm`)
-    .then((response) => {
-      setDistricts(response.data.data)
-    })
-    .catch((errors) => {
-      setDistricts([])
-      console.log("Error creating account: ", errors);
-    });
+    axios.get(`https://esgoo.net/api-tinhthanh/2/${provinceCode}.htm`)
+      .then((response) => {
+        setDistricts(response.data.data);
+      })
+      .catch((errors) => {
+        setDistricts([]);
+        console.log("Error creating account: ", errors);
+      });
   };
 
   const handleDistrictChange = (e) => {
@@ -77,68 +69,84 @@ const Checkout = () => {
     setSelectedDistrict(districtCode);
     setSelectedWard('');
     // Fetch wards data for selected district
-    axios
-    .get(`https://esgoo.net/api-tinhthanh/3/${districtCode}.htm`)
-    .then((response) => {
-      setWards(response.data.data)
-    })
-    .catch((errors) => {
-      setWards([])
-      console.log("Error creating account: ", errors);
-    });
+    axios.get(`https://esgoo.net/api-tinhthanh/3/${districtCode}.htm`)
+      .then((response) => {
+        setWards(response.data.data);
+      })
+      .catch((errors) => {
+        setWards([]);
+        console.log("Error creating account: ", errors);
+      });
   };
 
   const handleWardChange = (e) => {
     setSelectedWard(e.target.value);
   };
 
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setCheckoutForm({ ...checkoutForm, [name]: value });
   };
 
+  const handlePaymentChange = (e) => {
+    const isOnline = e.target.value === "online";
+    setCheckoutForm({ ...checkoutForm, payment: { ...checkoutForm.payment, online: isOnline } });
+    if (!isOnline) {
+      setPaypalLoaded(false);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const jsonData = {
-      userId,
-      buyerName,
-      buyerPhone,
-      payment: {
-        online: paymentOnline,
-        paymentAmout :paymentAmount
-      },
+      ...checkoutForm,
       address: {
+        ...checkoutForm.address,
         district: selectedDistrict,
         province: selectedProvince,
         ward: selectedWard,
-        description: addressDescription
-      },
-      transportation: {
-        transportFree: transportationFree,
-        transType: transportationType
-      },
+      }
     };
 
-    const jsonString = JSON.stringify(jsonData);
-    console.log(jsonString);
-    // fetch('url_api_goi', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json'
-    //   },
-    //   body: JSON.stringify(checkoutForm)
-    // })
-    //   .then(response => response.json())
-    //   .then(data => {
-    //     console.log('Dữ liệu đã được gửi đi:', data);
-    //     // Xử lý phản hồi từ API (nếu cần)
-    //   })
-    //   .catch(error => {
-    //     console.error('Lỗi khi gửi dữ liệu:', error);
-    //     // Xử lý lỗi (nếu cần)
-    //   });
+    console.log(JSON.stringify(jsonData));
+    // Gọi API để gửi dữ liệu đặt hàng
   };
+
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    })
+      .format(price)
+      .replace(/\D00(?=\D*$)/, "");
+  };
+
+  useEffect(() => {
+    if (checkoutForm.payment.online && window.paypal && !paypalLoaded) {
+      window.paypal.Buttons({
+        createOrder: (data, actions) => {
+          return actions.order.create({
+            purchase_units: [{
+              amount: {
+                value: (totalPrice / 23000).toFixed(2), // Chuyển đổi sang USD (tỷ giá ước tính)
+              }
+            }]
+          });
+        },
+        onApprove: (data, actions) => {
+          return actions.order.capture().then((details) => {
+            alert('Thanh toán thành công');
+            // Xử lý logic sau khi thanh toán thành công
+          });
+        },
+        onError: (err) => {
+          console.error('Lỗi khi thanh toán PayPal:', err);
+        }
+      }).render('#paypal-button-container');
+      setPaypalLoaded(true);
+    }
+  }, [checkoutForm.payment.online, totalPrice, paypalLoaded]);
+
   return (
     <>
       <div className="clearfix"></div>
@@ -148,37 +156,31 @@ const Checkout = () => {
             <div className="col-md-12">
               <div className="checkout-page">
                 <ol className="checkout-steps">
-
                   <li className="steps">
-                    <a className="step-title">
-                      01. Thong tin nguoi mua
-                    </a>
+                    <a className="step-title">01. Thong tin nguoi mua</a>
                     <div className="step-description">
                       <div className="row">
                         <div className="col-md-6 col-sm-6">
                           <div className="new-customer">
-                            <h5>ho va ten</h5>
+                            <h5>Họ và Tên</h5>
                             <div>
-                              <input type="text" value={buyerName} onChange={(e)=> setBuyerName(e.target.value)} />
+                              <input type="text" value={checkoutForm.buyerName} onChange={(e) => setCheckoutForm({ ...checkoutForm, buyerName: e.target.value })} />
                             </div>
                           </div>
                         </div>
                         <div className="col-md-6 col-sm-6">
                           <div className="new-customer">
-                            <h5>So dien thaoi</h5>
+                            <h5>Số điện thoại</h5>
                             <div>
-                              <input type="text" value={setBuyerPhone} onChange={(e)=> setBuyerPhone(e.target.value)} />
+                              <input type="text" value={checkoutForm.buyerPhone} onChange={(e) => setCheckoutForm({ ...checkoutForm, buyerPhone: e.target.value })} />
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </li>
-
                   <li className="steps">
-                    <a className="step-title">
-                      02. Dia chi
-                    </a>
+                    <a className="step-title">02. Dia chi</a>
                     <div className="step-description">
                       <div className="row">
                         <div className="col-md-6 col-sm-6">
@@ -216,79 +218,95 @@ const Checkout = () => {
                             </div>
                             <h5>Địa chỉ</h5>
                             <div>
-                              <input type="text" value={addressDescription} onChange={(e)=> setAddressDescription(e.target.value)} style={{marginLeft:10, width: "90%"}}></input>
+                              <input type="text" value={checkoutForm.address.description} onChange={(e) => setCheckoutForm({ ...checkoutForm, address: { ...checkoutForm.address, description: e.target.value } })} style={{ marginLeft: 10, width: "90%" }} />
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </li>
-
                   <li className="steps">
-                    <a className="step-title">
-                      03. San pham
-                    </a>
+                    <a className="step-title">03. San pham</a>
                     <div className="step-description">
                       <div className="row">
                         <div className="col-md-12 col-sm-12">
+                          <ul>
+                            {cartItems.map(item => (
+                              <li key={item.productId}>
+                                <div>{item.productName} - {item.quantity} x {formatPrice(item.productPrice)}</div>
+                              </li>
+                            ))}
+                          </ul>
                         </div>
                       </div>
                     </div>
                   </li>
-
                   <li className="steps">
-                    <a className="step-title">
-                      04. Van chuyen
-                    </a>
+                    <a className="step-title">04. Van chuyen</a>
                     <div className="step-description">
                       <div className="row">
                         <div className="col-md-6 col-sm-6">
                           <div className="new-customer">
-                            <h5>Hinh thuc van chuyn</h5>
+                            <h5>Hình thức vận chuyển</h5>
                             <div>
-                              <select className="location-select"  value={transportationType} onChange={(e)=> setTransportationType(e.target.value)}>
+                              <select className="location-select" value={checkoutForm.transportation.transType} onChange={(e) => setCheckoutForm({ ...checkoutForm, transportation: { ...checkoutForm.transportation, transType: e.target.value } })}>
                                 <option value="Nhanh">Nhanh</option>
-                                <option value="Tiet kiem">Tiet kiem</option>
-                                <option value="Hoa toc">Hoa toc</option>
+                                <option value="Tiet kiem">Tiết kiệm</option>
+                                <option value="Hoa toc">Hoả tốc</option>
                               </select>
                             </div>
                           </div>
                         </div>
                         <div className="col-md-6 col-sm-6">
                           <div className="new-customer">
-                            <h5>Phi van chuyen</h5>
+                            <h5>Phí vận chuyển</h5>
                             <div>
-                              <input type="text" value={transportationFree} onChange={(e)=> setTransportationFree(e.target.value)} style={{marginLeft:10, width: "90%"}} readOnly></input>
+                              <input type="text" value={checkoutForm.transportation.transportFree} onChange={(e) => setCheckoutForm({ ...checkoutForm, transportation: { ...checkoutForm.transportation, transportFree: e.target.value } })} style={{ marginLeft: 10, width: "90%" }} readOnly />
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </li>
-                  
-                  
                   <li className="steps">
-                    <a className="step-title">
-                      05. Thanh toan
-                    </a>
+                    <a className="step-title">05. Thanh toán</a>
                     <div className="step-description">
                       <div className="row">
                         <div className="col-md-6 col-sm-6">
                           <div className="new-customer">
-                            <h5>Hinh Thuc Thanh Toan</h5>
+                            <h5>Hình thức thanh toán</h5>
                             <div>
-                              <select className="location-select" value={paymentOnline} onChange={(e)=> setPaymentOnline(e.target.value)}>
-                                  <option value="online">online</option>
-                                  <option value="offline">offlien</option>
-                                </select>
+                              <label>
+                                <input
+                                  type="radio"
+                                  name="payment"
+                                  value="online"
+                                  checked={checkoutForm.payment.online === true}
+                                  onChange={handlePaymentChange}
+                                />
+                                Online
+                              </label>
+                              <label>
+                                <input
+                                  type="radio"
+                                  name="payment"
+                                  value="offline"
+                                  checked={checkoutForm.payment.online === false}
+                                  onChange={handlePaymentChange}
+                                />
+                                Offline
+                              </label>
                             </div>
+                            {checkoutForm.payment.online && (
+                              <div id="paypal-button-container" style={{ marginTop: 10 }}></div>
+                            )}
                           </div>
                         </div>
                         <div className="col-md-6 col-sm-6">
                           <div className="new-customer">
                             <h5>Tổng tiền</h5>
                             <div>
-                              <input type="text" value={paymentAmount} onChange={(e)=> setPaymentAmount(e.target.value)} style={{marginLeft:10, width: "90%"}} readOnly></input>
+                              <input type="text" value={formatPrice(totalPrice)} readOnly style={{ marginLeft: 10, width: "90%" }} />
                             </div>
                             <h5>Đặt hàng</h5>
                             <div>
@@ -299,8 +317,6 @@ const Checkout = () => {
                       </div>
                     </div>
                   </li>
-               
-
                 </ol>
               </div>
             </div>
@@ -311,4 +327,5 @@ const Checkout = () => {
     </>
   );
 };
+
 export default Checkout;
