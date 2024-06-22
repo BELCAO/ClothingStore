@@ -3,6 +3,8 @@ import ".././css/mystyle.css";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 
 
@@ -34,7 +36,6 @@ const Checkout = () => {
   const [selectedWard, setSelectedWard] = useState('')
 
 
-  const [userId, setUserId] = useState('');
   const [buyerName, setBuyerName] = useState('');
   const [buyerPhone, setBuyerPhone] = useState('');
   const [paymentOnline, setPaymentOnline] = useState('');
@@ -43,6 +44,27 @@ const Checkout = () => {
   const [transportationFree, setTransportationFree] = useState('');
   const [transportationType, setTransportationType] = useState('');
   const [totalAmount, setTotalAmount] = useState('');
+
+  const [cartItems, setCartItems] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const userId = useSelector((state) => state.userId); // Lấy userId từ Redux store
+
+  useEffect(() => {
+    if (userId) {
+      fetchCartItems(userId); // Chỉ fetch cart items nếu có userId
+    }
+  }, [userId]);
+
+  const fetchCartItems = async (userId) => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/cart/get?userId=${userId}`);
+      const data = await response.json();
+      setCartItems(data.items);
+      setTotalPrice(data.totalPrice);
+    } catch (error) {
+      console.error("Error fetching cart items:", error);
+    }
+  };
   useEffect(() => {
     axios
     .get('https://esgoo.net/api-tinhthanh/1/0.htm')
@@ -139,6 +161,15 @@ const Checkout = () => {
     //     // Xử lý lỗi (nếu cần)
     //   });
   };
+
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    })
+      .format(price)
+      .replace(/\D00(?=\D*$)/, "");
+  };
   return (
     <>
       <div className="clearfix"></div>
@@ -231,6 +262,60 @@ const Checkout = () => {
                     <div className="step-description">
                       <div className="row">
                         <div className="col-md-12 col-sm-12">
+                        <table className="shop-table">
+                <thead>
+                  <tr>
+                    <th>Ảnh</th>
+                    <th>Chi tiết</th>
+                    <th>Giá</th>
+                    <th>Số lượng</th>
+                    <th>Tổng giá</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {cartItems.map((item) => (
+                    <tr key={item.productId}>
+                      <td>
+                        <img src={item.productImage} alt={item.productName} />
+                      </td>
+                      <td>
+                        <div className="shop-details">
+                          <div className="productname">{item.productName}</div>
+                          <p>
+                            <img alt="" src="images/star.png" />
+                            <a className="review_num" href="#">
+                              02 Review(s)
+                            </a>
+                          </p>
+                          <div className="color-choser">
+                            <span className="text">Product Color :</span>
+                            <ul>
+                              <li>
+                                <a className="black-bg " href="#">
+                                  black
+                                </a>
+                              </li>
+                            
+                            </ul>
+                          </div>
+                    
+                        </div>
+                      </td>
+                      <td>
+                        <h5>{formatPrice(item.productPrice)}</h5>
+                      </td>
+                      <td>
+                        <h5>{item.quantity}</h5>
+                      </td>
+                      <td>
+                        <h5>
+                          <strong className="red">{formatPrice(item.productPrice * item.quantity)}</strong>
+                        </h5>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
                         </div>
                       </div>
                     </div>

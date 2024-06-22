@@ -4,6 +4,7 @@ import java.util.Date;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -24,8 +25,9 @@ public class Transportation {
 	private Long transportFree;
 	@Column( nullable = false)
 	private String status;
-    @OneToOne(mappedBy = "transportation")
+    @OneToOne(mappedBy = "transportation", fetch = FetchType.LAZY)
     private Order order;
+//    private Long orderId;
 	
 	public Transportation() {
 		super();
@@ -79,6 +81,14 @@ public class Transportation {
 		this.status = status;
 	}
 
+//	public Long getOrderId() {
+//		return orderId;
+//	}
+//
+//	public void setOrderId(Long orderId) {
+//		this.orderId = orderId;
+//	}
+
 	public Order getOrder() {
 		return order;
 	}
@@ -86,6 +96,8 @@ public class Transportation {
 	public void setOrder(Order order) {
 		this.order = order;
 	}
+	
+	
 	
 	
 	

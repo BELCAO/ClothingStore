@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -68,17 +69,17 @@ const Cart = () => {
         <div className="container shopping-cart">
           <div className="row">
             <div className="col-md-12">
-              <h3 className="title">Shopping Cart</h3>
+              <h3 className="title">Giỏ hàng</h3>
               <div className="clearfix"></div>
               <table className="shop-table">
                 <thead>
                   <tr>
-                    <th>Image</th>
-                    <th>Details</th>
-                    <th>Price</th>
-                    <th>Quantity</th>
-                    <th>Total Price</th>
-                    <th>Delete</th>
+                    <th>Ảnh</th>
+                    <th>Chi tiết</th>
+                    <th>Giá</th>
+                    <th>Số lượng</th>
+                    <th>Tổng giá</th>
+                    <th>Xóa</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -147,7 +148,7 @@ const Cart = () => {
               <div className="clearfix"></div>
               <div className="row">
                 <div className="col-md-4 col-sm-6">
-                  <div className="shippingbox">
+                  {/* <div className="shippingbox">
                     <h5>Estimate Shipping And Tax</h5>
                     <form>
                       <label>Select Country *</label>
@@ -321,10 +322,10 @@ const Cart = () => {
                       <div className="clearfix"></div>
                       <button>Get A Qoute</button>
                     </form>
-                  </div>
+                  </div> */}
                 </div>
                 <div className="col-md-4 col-sm-6">
-                  <div className="shippingbox">
+                  {/* <div className="shippingbox">
                     <h5>Discount Codes</h5>
                     <form>
                       <label>Enter your coupon code if you have one</label>
@@ -332,117 +333,27 @@ const Cart = () => {
                       <div className="clearfix"></div>
                       <button>Get A Qoute</button>
                     </form>
-                  </div>
+                  </div> */}
                 </div>
                 <div className="col-md-4 col-sm-6">
                   <div className="shippingbox">
                     <div className="subtotal">
-                      <h5>Sub Total</h5>
+                      <h5>Tạm tính</h5>
                       <span>{formatPrice(totalPrice)}</span>
                     </div>
-                    <div className="grandtotal">
+                    {/* <div className="grandtotal">
                       <h5>GRAND TOTAL</h5>
                       <span>{formatPrice(totalPrice)}</span>
-                    </div>
-                    <button>Process To Checkout</button>
+                    </div> */}
+                    <button>
+                      <Link to="/Checkout" >
+                      Đặt hàng 
+                      </Link>
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div className="clearfix"></div>
-          <div className="our-brand">
-            <h3 className="title">
-              <strong>Our</strong> Brands
-            </h3>
-            <div className="control">
-              <a id="prev_brand" className="prev" href="#">
-                &lt;
-              </a>
-              <a id="next_brand" className="next" href="#">
-                &gt;
-              </a>
-            </div>
-            <ul id="braldLogo">
-              <li>
-                <ul className="brand_item">
-                  <li>
-                    <a href="#">
-                      <div className="brand-logo">
-                        <img src="images/envato.png" alt="" />
-                      </div>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <div className="brand-logo">
-                        <img src="images/themeforest.png" alt="" />
-                      </div>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <div className="brand-logo">
-                        <img src="images/photodune.png" alt="" />
-                      </div>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <div className="brand-logo">
-                        <img src="images/activeden.png" alt="" />
-                      </div>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <div className="brand-logo">
-                        <img src="images/envato.png" alt="" />
-                      </div>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-              <li>
-                <ul className="brand_item">
-                  <li>
-                    <a href="#">
-                      <div className="brand-logo">
-                        <img src="images/envato.png" alt="" />
-                      </div>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <div className="brand-logo">
-                        <img src="images/themeforest.png" alt="" />
-                      </div>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <div className="brand-logo">
-                        <img src="images/photodune.png" alt="" />
-                      </div>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <div className="brand-logo">
-                        <img src="images/activeden.png" alt="" />
-                      </div>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <div className="brand-logo">
-                        <img src="images/envato.png" alt="" />
-                      </div>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-            </ul>
           </div>
         </div>
       </div>
