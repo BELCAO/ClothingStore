@@ -22,12 +22,13 @@ public class SecurityConfig {
 	private String signerKey;
 	
 	private final String[] PUBLIC_ENDPOINTS = {"/auth/","/account/create", "/account/existsemail", "/product"};
+	private final String[] ADMIN_ENDPOINTS = {"/user", "/orders"};
+
     @Bean
     SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
 		httpSecurity.authorizeHttpRequests(request -> request	
 				.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
-				.requestMatchers(HttpMethod.GET, "/images/avatar").permitAll()
-				.requestMatchers(HttpMethod.GET, "account/list").hasAuthority("SCOPE_ADMIN")
+				.requestMatchers(HttpMethod.GET, ADMIN_ENDPOINTS).hasAuthority("SCOPE_ADMIN")
 				.anyRequest().permitAll()
 //				.authenticated()
 				);

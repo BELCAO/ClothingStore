@@ -3,9 +3,12 @@ import {Box, Typography, Paper, Table, TableBody, TableCell, TableContainer, Tab
 import axios from 'axios';
 import {useNavigate } from "react-router-dom";
 import ReactPaginate from 'react-paginate';
+import { useSelector } from "react-redux";
+
 import './ProductManagement.css'; // Import file CSS cho react-paginate
 
 function OrderManagement() {
+  const token = useSelector((state) => state.token);
   const navigate = useNavigate();
 
   const [orders, setOrders] = useState([]);
@@ -27,7 +30,11 @@ function OrderManagement() {
   }, [page, rowsPerPage, orderStatus]);
 
   const fetchOrders = (page, size, status) => {
-    axios.get(`http://localhost:8080/orders?page=${page}&size=${size}&status=${status}`)
+    axios.get(`http://localhost:8080/orders?page=${page}&size=${size}&status=${status}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    )
       .then(response => {
         setOrders(response.data.content || []);
         setTotalPages(response.data.totalPages);
@@ -42,7 +49,9 @@ function OrderManagement() {
   };
 
   const changeStatus = (orderId, newStatus) => {
-    axios.put(`http://localhost:8080/orders/${orderId}?status=${newStatus}`)
+    axios.put(`http://localhost:8080/orders/${orderId}?status=${newStatus}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
     .then(response => {
       fetchOrders(page, rowsPerPage, orderStatus);
     })
