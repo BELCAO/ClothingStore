@@ -1,5 +1,7 @@
 package com.cdweb.backend.dto;
 
+import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.persistence.Column;
@@ -12,7 +14,7 @@ public class OrderDTO {
 	private String transType;
 	private Long transportFree;
 	private Long totalAmout;
-	private Set<DetailOrderDTO> detailOrderDTOs;
+	private Set<DetailOrderDTO> detailOrderDTOs = new HashSet<>();
 	
 	
     private String recipientName;
@@ -21,6 +23,15 @@ public class OrderDTO {
 	private String district;
 	private String ward;
 	private String description;
+	
+	private String status;
+	private String date;
+	
+	private Long id;
+	
+
+	
+	
 	public Long getUserId() {
 		return userId;
 	}
@@ -61,8 +72,8 @@ public class OrderDTO {
 	public Set<DetailOrderDTO> getDetailOrderDTOs() {
 		return detailOrderDTOs;
 	}
-	public void setDetailOrderDTOs(Set<DetailOrderDTO> detailOrderDTOs) {
-		this.detailOrderDTOs = detailOrderDTOs;
+	public void addDetailOrderDTOs(DetailOrderDTO detailOrderDTOs) {
+		this.detailOrderDTOs.add(detailOrderDTOs);
 	}
 	
 	
@@ -102,6 +113,29 @@ public class OrderDTO {
 	}
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	
+	
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	
+	
+	public String getDate() {
+		return date;
+	}
+	public void setDate(String date) {
+		this.date = date;
+	}
+	
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
 	}
 	@Override
 	public String toString() {

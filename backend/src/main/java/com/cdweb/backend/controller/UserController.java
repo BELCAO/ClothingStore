@@ -9,11 +9,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.cdweb.backend.dto.OrderDTO;
 import com.cdweb.backend.entity.User;
 import com.cdweb.backend.service.UserService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 
@@ -67,5 +71,11 @@ public class UserController {
 	public boolean exitsByPhone(@RequestBody Map<String, String> data) {
 		return accountService.existsAccountByPhone(data.get("phone"));
 	}
+	
+	@GetMapping("/orders")
+	public List<OrderDTO> getOrders() {
+		return accountService.getOrders(Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName()));
+	}
+	
 	
 }

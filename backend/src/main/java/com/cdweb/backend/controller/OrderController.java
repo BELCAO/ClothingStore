@@ -30,9 +30,11 @@ public class OrderController {
 		return ResponseEntity.ok().body(orderService.getAllOrders());
 	}
 	@GetMapping("/{id}")
-	public ResponseEntity<Order> getOrderById(@PathVariable Long id){
-		Optional<Order> order = orderService.getOrderById(id);
-		return order.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+	public ResponseEntity<OrderDTO> getOrderById(@PathVariable Long id){
+		return ResponseEntity.ok().body(orderService.getOrderById(id));
+//		OrderDTO orderDTO = new OrderDTO();
+//		return ResponseEntity.ok().body(orderDTO);
+//		return order.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
 	}
 	@PostMapping
 	public ResponseEntity<Long> createOrder(@RequestBody OrderDTO orderDTO){		
