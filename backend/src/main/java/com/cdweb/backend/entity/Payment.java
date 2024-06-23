@@ -2,6 +2,7 @@ package com.cdweb.backend.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -19,8 +20,9 @@ public class Payment {
 	private String description;
 	@Column(nullable = false)
 	private String status;
-    @OneToOne(mappedBy = "payment")
+    @OneToOne(mappedBy = "payment", fetch = FetchType.LAZY)
     private Order order;
+//    private Long orderId;
 	
 	public Payment() {
 		super();
@@ -66,6 +68,14 @@ public class Payment {
 		this.status = status;
 	}
 
+//	public Long getOrderId() {
+//		return orderId;
+//	}
+//
+//	public void setOrderId(Long orderId) {
+//		this.orderId = orderId;
+//	}
+
 	public Order getOrder() {
 		return order;
 	}
@@ -73,6 +83,7 @@ public class Payment {
 	public void setOrder(Order order) {
 		this.order = order;
 	}
+	
 	
 	
 }

@@ -1,16 +1,31 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-
+import React from "react";
+import { Box } from "@mui/material";
+import Sidebar from "./Sidebar";
+import Footer from "./Footer";
+import Topbar from "./Topbar";
+import { Routes, Route, Redirect } from "react-router-dom";
+import Dashboard from "./Dashboard";
+import ProductManagement from "./ProductManagement";
+import UserManagement from "./UserManagement";
+import OrderManagement from "./OrderManagement";
 
 const Admin = () => {
   return (
-    <>
-      <div className="clearfix"></div>
-      <div className="container_fullwidth" style={{height:1000}}>
-        <h1 style={{textAlign:"center"}}>Đây là trang Admin</h1>
-      </div>
-      <div className="clearfix"></div>
-    </>
+    <Box display="flex" flexDirection="column" minHeight="100vh" >
+      <Topbar />
+      <Box display="flex" flexGrow={1} mt={8} mb={8}>
+        <Sidebar />
+        <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+          <Routes>
+            <Route path="/" element={<Dashboard/>} />
+            <Route path="/orders" element={<OrderManagement/>} />
+            <Route path="/users" element={<UserManagement/>} />
+            <Route path="/products" element={<ProductManagement/>} />
+          </Routes>
+        </Box>
+      </Box>
+      <Footer />
+    </Box>
   );
 };
 

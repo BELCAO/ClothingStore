@@ -61,10 +61,8 @@ public class AuthenticationService {
 				.subject(Long.toString(account.getId()))
 				.issuer("cdw.com")
 				.issueTime(new Date())
-				.expirationTime(new Date(
-						Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()
-						))
-				.claim("scope", buildScope(account))
+				.expirationTime(new Date(Instant.now().plus(48, ChronoUnit.HOURS).toEpochMilli()))
+				.claim("scope", account.getRole())
 				.build();
 		Payload payload = new Payload(claimsSet.toJSONObject());
 		JWSObject jwsObject = new JWSObject(header, payload);
@@ -77,12 +75,12 @@ public class AuthenticationService {
 		}
 	}
 	
-	private String buildScope(User account) {
-		StringJoiner stringJoiner = new StringJoiner(" ");
-		if(!CollectionUtils.isEmpty(account.getRoles())) {
-			account.getRoles().forEach(s -> stringJoiner.add(s));
-		}
-		return stringJoiner.toString();
-	}
+//	private String buildScope(User account) {
+//		StringJoiner stringJoiner = new StringJoiner(" ");
+//		if(!CollectionUtils.isEmpty(account.getRoles())) {
+//			account.getRoles().forEach(s -> stringJoiner.add(s));
+//		}
+//		return stringJoiner.toString();
+//	}
 
 }
