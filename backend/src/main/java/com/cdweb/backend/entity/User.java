@@ -7,6 +7,7 @@ import java.util.Set;
 
 import com.cdweb.backend.enums.Role;
 import com.cdweb.backend.enums.Status;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -43,8 +44,10 @@ public class User {
 	private String status;
 	
 	@OneToMany(mappedBy = "userId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JsonIgnore
 	private Set<DeliveryInfo> deliveryInfos;
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JsonIgnore
 	private Set<Order> orders;
 	
 	

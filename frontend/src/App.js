@@ -19,6 +19,7 @@ import SignUp from "./components/SignUp";
 import SignIn from "./components/SignIn";
 import Profile from "./components/Profile";
 import Admin from "./components/admin/Admin";
+import Order from "./components/Order";
 function App() {
   return (
     <Provider store={store}>
@@ -39,6 +40,7 @@ function App() {
               <Route path="/SignUp" element={<SignUp />} />
               <Route path="/SignIn" element={<SignIn />} />
               <Route path="/Profile/*" element={<Profile />} />
+              <Route path="/Order/:id" element={<Order />} />
               <Route path="/Admin" element={<Admin />} />
             </Routes>
             <Footer />

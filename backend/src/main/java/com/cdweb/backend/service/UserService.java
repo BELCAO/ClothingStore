@@ -1,12 +1,21 @@
 package com.cdweb.backend.service;
 
 import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.cdweb.backend.dto.DetailOrderDTO;
+import com.cdweb.backend.dto.OrderDTO;
+import com.cdweb.backend.entity.DetailOrder;
+import com.cdweb.backend.entity.Order;
 import com.cdweb.backend.entity.User;
 import com.cdweb.backend.repository.UserRepository;
 
@@ -65,6 +74,42 @@ public class UserService {
 	@Transactional
 	public boolean existsAccountByPhone(String phone) {
 		return accountRepository.existsByPhone(phone);
+	}
+	public List<OrderDTO> getOrders(Long id) {
+		User user =  accountRepository.findById(id).orElseThrow(() -> new RuntimeException("Account Not Found"));
+		Set<Order> orders = user.getOrders();
+		List<OrderDTO> result = new ArrayList<>();
+		for (Order order : orders) {
+			OrderDTO orderDTO = new OrderDTO();
+			orderDTO.setStatus(order.getStatus());
+			orderDTO.setDate(formatDate(order.getDate()));
+			orderDTO.setTotalAmout(order.getTotalAmout());
+			orderDTO.setId(order.getId());
+			Set<DetailOrder> detailOrders = order.getDetailOrders();
+			for (DetailOrder detailOrder : detailOrders) {
+				DetailOrderDTO detailOrderDTO = new DetailOrderDTO();
+				detailOrderDTO.setProductEntityId(detailOrder.getProductEntity().getProductId());
+				detailOrderDTO.setImageUrl(detailOrder.getProductEntity().getImageUrl());
+				detailOrderDTO.setQuantity(detailOrder.getQuantity());
+				detailOrderDTO.setProductName(detailOrder.getProductEntity().getName());
+				detailOrderDTO.setTotalPrice(detailOrder.getTotalPrice());
+				detailOrderDTO.setProductPrice(detailOrder.getProductEntity().getPrice());
+				orderDTO.addDetailOrderDTOs(detailOrderDTO);
+			}
+			result.add(orderDTO);
+		}
+		return result;
+	}
+	private String formatDate(java.util.Date date) {
+        try {
+            // Định dạng đối tượng Date thành chuỗi ngày giờ
+            SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+            String formattedDate = outputFormat.format(date);
+            return formattedDate;
+        } catch (DateTimeParseException e) {
+            System.err.println("Invalid date format: ");
+        }
+        return null;
 	}
 
 

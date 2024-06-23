@@ -1,5 +1,8 @@
 package com.cdweb.backend.service;
 
+import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -41,8 +44,40 @@ public class OrderService {
 		return orderRepository.findAll();
 	}
 	@Transactional
-	public Optional<Order> getOrderById(Long id) {
-		return orderRepository.findById(id);
+	public OrderDTO getOrderById(Long id) {
+		OrderDTO result = new OrderDTO();
+		Optional<Order> orderOptional = orderRepository.findById(id);
+		if (orderOptional.isPresent()) {
+		    Order order = orderOptional.get();
+		    result.setOnline(order.getPayment().isOnline());
+		    result.setPaymentAmout(order.getPayment().getPaymentAmout());
+		    result.setTransType(order.getTransportation().getTransType());
+		    result.setTransportFree(order.getTransportation().getTransportFree());
+		    result.setTotalAmout(order.getTotalAmout());
+		    
+		    result.setRecipientName(order.getDeliveryInfo().getRecipientName());
+		    result.setRecipientPhone(order.getDeliveryInfo().getRecipientPhone());
+		    result.setProvince(order.getDeliveryInfo().getProvince());
+		    result.setDistrict(order.getDeliveryInfo().getDistrict());
+		    result.setWard(order.getDeliveryInfo().getWard());
+		    result.setDescription(order.getDeliveryInfo().getDistrict());
+		    
+		    Set<DetailOrder> detailOrders = order.getDetailOrders();
+		    for (DetailOrder detailOrder : detailOrders) {
+				DetailOrderDTO detailOrderDTO = new DetailOrderDTO();
+				detailOrderDTO.setProductEntityId(detailOrder.getProductEntity().getProductId());
+				detailOrderDTO.setQuantity(detailOrder.getQuantity());
+				detailOrderDTO.setTotalPrice(detailOrder.getTotalPrice());
+				detailOrderDTO.setImageUrl(detailOrder.getProductEntity().getImageUrl());
+				detailOrderDTO.setProductName(detailOrder.getProductEntity().getName());
+				detailOrderDTO.setProductPrice(detailOrder.getProductEntity().getPrice());
+				result.addDetailOrderDTOs(detailOrderDTO);
+			}
+		    result.setStatus(order.getStatus());
+		    result.setDate(formatDate(order.getDate()));
+		}
+		return result;
+//		return orderRepository.findById(id);
 	}
 	@Transactional
 	public Long createOrder(OrderDTO orderDTO) {
@@ -130,5 +165,17 @@ public class OrderService {
 			order.setStatus(status);
 			return orderRepository.save(order);
 		});
+	}
+	
+	private String formatDate(Date date) {
+        try {
+            // Định dạng đối tượng Date thành chuỗi ngày giờ
+            SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+            String formattedDate = outputFormat.format(date);
+            return formattedDate;
+        } catch (DateTimeParseException e) {
+            System.err.println("Invalid date format: ");
+        }
+        return null;
 	}
 }

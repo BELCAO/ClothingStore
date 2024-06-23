@@ -62,7 +62,7 @@ public class AuthenticationService {
 				.issuer("cdw.com")
 				.issueTime(new Date())
 				.expirationTime(new Date(
-						Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()
+						Instant.now().plus(48, ChronoUnit.HOURS).toEpochMilli()
 						))
 				.claim("scope", buildScope(account))
 				.build();

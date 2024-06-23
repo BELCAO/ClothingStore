@@ -5,6 +5,9 @@ public class DetailOrderDTO {
 	private Long productEntityId;
 	private int quantity;
 	private Long totalPrice;
+	private String imageUrl;
+	private String productName;
+	private double productPrice;
 	
 	public DetailOrderDTO() {
 		super();
@@ -27,5 +30,24 @@ public class DetailOrderDTO {
 	public void setTotalPrice(Long totalPrice) {
 		this.totalPrice = totalPrice;
 	}
+	public String getImageUrl() {
+		return imageUrl;
+	}
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
+	public String getProductName() {
+		return productName;
+	}
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
+	public double getProductPrice() {
+		return productPrice;
+	}
+	public void setProductPrice(double productPrice) {
+		this.productPrice = productPrice;
+	}
+	
 	
 }

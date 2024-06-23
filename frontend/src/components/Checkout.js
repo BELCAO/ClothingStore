@@ -192,7 +192,7 @@ const Checkout = () => {
           const userConfirmed = window.confirm("Đặt hàng thành công! Xem đơn hàng ?");
           if (userConfirmed) {
             // Thực hiện hành động nào đó khi người dùng bấm nút "OK"
-            navigate("/cart")
+            navigate("/Order/"+response.data)
           } else {
             // Thực hiện hành động nào đó khi người dùng bấm nút "Cancel"
             navigate("/")
