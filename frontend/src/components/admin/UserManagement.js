@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import {
   Box,
   Typography,
@@ -23,6 +24,8 @@ import "./ProductManagement.css";
 
 function UserManagement() {
   const navigate = useNavigate();
+  const token = useSelector((state) => state.token);
+
 
   const [users, setUsers] = useState([]);
   const [page, setPage] = useState(0);
@@ -39,7 +42,10 @@ function UserManagement() {
 
   const fetchOrders = (page, size, role) => {
     axios
-      .get(`http://localhost:8080/user?page=${page}&size=${size}&role=${role}`)
+      .get(`http://localhost:8080/user?page=${page}&size=${size}&role=${role}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        })
       .then((response) => {
         setUsers(response.data.content || []);
         setTotalPages(response.data.totalPages);
@@ -52,7 +58,11 @@ function UserManagement() {
 
   const changeStatus = (userId, newStatus) => {
     axios
-      .put(`http://localhost:8080/user/${userId}?status=${newStatus}`)
+      .put(`http://localhost:8080/user/${userId}?status=${newStatus}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+      )
       .then((response) => {
         fetchOrders(page, rowsPerPage, role);
       })
@@ -66,10 +76,6 @@ function UserManagement() {
     setRole(newRole);
   };
 
-  const handlePageClick = (data) => {
-    const selectedPage = data.selected;
-    setPage(selectedPage);
-  };
   const handleRowsPerPageChange = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0); // Reset to the first page
