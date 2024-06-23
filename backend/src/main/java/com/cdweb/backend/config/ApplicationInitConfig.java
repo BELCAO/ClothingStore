@@ -1,6 +1,5 @@
 package com.cdweb.backend.config;
 
-import java.util.HashSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,9 +25,7 @@ public class ApplicationInitConfig {
 		return args -> {
 			if(!accountService.existsAccountByEmail("admin@gmail.com")) {
 				User user = new User("Admin", "admin@gmail.com", "0000000000", passwordEncoder.encode("000000"));
-				HashSet<String> roles = new HashSet<String>();
-				roles.add(Role.ADMIN.name());
-				user.setRoles(roles);
+				user.setRole(Role.ADMIN.name());
 				user.setAvatarUrl(defaultAvatarUrl);
 				accountService.createAccount(user);
 			}
