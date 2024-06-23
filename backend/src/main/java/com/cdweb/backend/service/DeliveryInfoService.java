@@ -1,5 +1,6 @@
 package com.cdweb.backend.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,4 +32,8 @@ public class DeliveryInfoService {
 		return false;
 	}
 	
+	@Transactional 
+	public List<DeliveryInfo> getDeliveryInfoByUser(Long userId){
+		return deliveryInfoRepository.findAllByUserId(userId);
+	}
 }

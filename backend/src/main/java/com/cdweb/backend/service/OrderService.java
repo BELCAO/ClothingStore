@@ -46,6 +46,7 @@ public class OrderService {
 	}
 	@Transactional
 	public Long createOrder(OrderDTO orderDTO) {
+		System.out.println(orderDTO.toString());
 		Order order = new Order();
 		order = orderRepository.save(order);
 		
@@ -65,13 +66,24 @@ public class OrderService {
 		// Ngày tạo đơn hàng
 		order.setDate(new Date(System.currentTimeMillis()));
 		
-		// Thông tin vận chuyển
-		Optional<DeliveryInfo> deliveryInfo = deliveryInfoService.getDeliveryInfoById(orderDTO.getDeliveryInfoId());
-		if(deliveryInfo.isPresent()) {
-			order.setDeliveryInfo(deliveryInfo.get());			
-		}else {
-			return null;
-		}
+//		// Thông tin vận chuyển
+//		Optional<DeliveryInfo> deliveryInfo = deliveryInfoService.getDeliveryInfoById(orderDTO.getDeliveryInfoId());
+//		if(deliveryInfo.isPresent()) {
+//			order.setDeliveryInfo(deliveryInfo.get());			
+//		}else {
+//			return null;
+//		}
+		
+		DeliveryInfo deliveryInfo = new DeliveryInfo();
+		deliveryInfo.setRecipientName(orderDTO.getRecipientName());
+		deliveryInfo.setRecipientPhone(orderDTO.getRecipientPhone());
+		deliveryInfo.setProvince(orderDTO.getProvince());
+		deliveryInfo.setDistrict(orderDTO.getDistrict());
+		deliveryInfo.setWard(orderDTO.getWard());
+		deliveryInfo.setDescription(orderDTO.getDescription());
+		deliveryInfo.setUserId(orderDTO.getUserId());
+		deliveryInfo = deliveryInfoService.createDeliveryInfo(deliveryInfo);
+		order.setDeliveryInfo(deliveryInfo);
 		
 		// Vận chuyển
 		Transportation transportation = new Transportation();
