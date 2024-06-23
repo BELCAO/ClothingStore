@@ -1,16 +1,25 @@
 package com.cdweb.backend.service;
 
+import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.cdweb.backend.dto.DetailOrderDTO;
 import com.cdweb.backend.dto.OrderDTO;
-import com.cdweb.backend.entity.Address;
+import com.cdweb.backend.entity.DeliveryInfo;
 import com.cdweb.backend.entity.DetailOrder;
 import com.cdweb.backend.entity.Order;
 import com.cdweb.backend.entity.Payment;
@@ -34,44 +43,129 @@ public class OrderService {
 	@Autowired
 	private TransportationService transportationService;
 	@Autowired 
-	private AddressService addressService;
+	private DeliveryInfoService deliveryInfoService;
 	@Transactional
-	public List<Order> getAllOrders() {
-		return orderRepository.findAll();
+	public Page<OrderDTO> getAllOrders(Pageable pageable) {
+		Page<Order> orders = orderRepository.findAll(pageable);
+		List<OrderDTO> result = new ArrayList<>();
+		for (Order order : orders) {
+			OrderDTO orderDTO = new OrderDTO();
+			orderDTO.setId(order.getId());
+			orderDTO.setName(order.getUser().getName());
+			orderDTO.setDate(formatDate(order.getDate()));
+			orderDTO.setTotalAmout(order.getTotalAmout());
+			orderDTO.setStatus(order.getStatus());
+			result.add(orderDTO);
+		}
+        return new PageImpl<>(result, pageable, orders.getTotalElements());
 	}
 	@Transactional
-	public Optional<Order> getOrderById(Long id) {
-		return orderRepository.findById(id);
+	public Page<OrderDTO> getAllOrdersByStatus(Pageable pageable, String status) {
+		Page<Order> orders = orderRepository.findAllByStatus(pageable, status);
+		List<OrderDTO> result = new ArrayList<>();
+		for (Order order : orders) {
+			OrderDTO orderDTO = new OrderDTO();
+			orderDTO.setId(order.getId());
+			orderDTO.setName(order.getUser().getName());
+			orderDTO.setDate(formatDate(order.getDate()));
+			orderDTO.setTotalAmout(order.getTotalAmout());
+			orderDTO.setStatus(order.getStatus());
+			result.add(orderDTO);
+		}
+		return new PageImpl<>(result, pageable, orders.getTotalElements());
 	}
 	@Transactional
-	public Order createOrder(OrderDTO orderDTO) {
-		Order order = new Order();
+	public OrderDTO getOrderById(Long id) {
+		OrderDTO result = new OrderDTO();
+		Optional<Order> orderOptional = orderRepository.findById(id);
+		if (orderOptional.isPresent()) {
+		    Order order = orderOptional.get();
+		    result.setOnline(order.getPayment().isOnline());
+		    result.setPaymentAmout(order.getPayment().getPaymentAmout());
+		    result.setTransType(order.getTransportation().getTransType());
+		    result.setTransportFree(order.getTransportation().getTransportFree());
+		    result.setTotalAmout(order.getTotalAmout());
+		    
+		    result.setRecipientName(order.getDeliveryInfo().getRecipientName());
+		    result.setRecipientPhone(order.getDeliveryInfo().getRecipientPhone());
+		    result.setProvince(order.getDeliveryInfo().getProvince());
+		    result.setDistrict(order.getDeliveryInfo().getDistrict());
+		    result.setWard(order.getDeliveryInfo().getWard());
+		    result.setDescription(order.getDeliveryInfo().getDistrict());
+		    
+		    Set<DetailOrder> detailOrders = order.getDetailOrders();
+		    for (DetailOrder detailOrder : detailOrders) {
+				DetailOrderDTO detailOrderDTO = new DetailOrderDTO();
+				detailOrderDTO.setProductEntityId(detailOrder.getProductEntity().getProductId());
+				detailOrderDTO.setQuantity(detailOrder.getQuantity());
+				detailOrderDTO.setTotalPrice(detailOrder.getTotalPrice());
+				detailOrderDTO.setImageUrl(detailOrder.getProductEntity().getImageUrl());
+				detailOrderDTO.setProductName(detailOrder.getProductEntity().getName());
+				detailOrderDTO.setProductPrice(detailOrder.getProductEntity().getPrice());
+				result.addDetailOrderDTOs(detailOrderDTO);
+			}
+		    result.setStatus(order.getStatus());
+		    result.setDate(formatDate(order.getDate()));
+		}
+		return result;
+//		return orderRepository.findById(id);
+	}
+	@Transactional
+	public Long createOrder(OrderDTO orderDTO) {
 		System.out.println(orderDTO.toString());
-		order.setUser(userService.getAccountById(orderDTO.getUserId()));
-		order.setBuyerName(orderDTO.getBuyerName());
-		order.setBuyerPhone(orderDTO.getBuyerPhone());
+		Order order = new Order();
+		order = orderRepository.save(order);
 		
-		Payment payment = orderDTO.getPayment();
+		order.setUser(userService.getAccountById(orderDTO.getUserId()));
+		
+		// Phần liên quan đến thanh toán
+		Payment payment = new Payment();
+		payment.setOnline(orderDTO.isOnline());
+		payment.setPaymentAmout(orderDTO.getPaymentAmout());
+		payment.setDescription("text");
+		payment.setStatus("Chua chuyen tien");
 		payment.setOrder(order);
 		payment = paymentService.createPayment(payment);
 		order.setPayment(payment);
 		
-		order.setDate(orderDTO.getDate());
-		order.setAddress(orderDTO.getAddress());
-
-		Transportation transportation = orderDTO.getTransportation();
+		
+		// Ngày tạo đơn hàng
+		order.setDate(new Date(System.currentTimeMillis()));
+		
+//		// Thông tin vận chuyển
+//		Optional<DeliveryInfo> deliveryInfo = deliveryInfoService.getDeliveryInfoById(orderDTO.getDeliveryInfoId());
+//		if(deliveryInfo.isPresent()) {
+//			order.setDeliveryInfo(deliveryInfo.get());			
+//		}else {
+//			return null;
+//		}
+		
+		DeliveryInfo deliveryInfo = new DeliveryInfo();
+		deliveryInfo.setRecipientName(orderDTO.getRecipientName());
+		deliveryInfo.setRecipientPhone(orderDTO.getRecipientPhone());
+		deliveryInfo.setProvince(orderDTO.getProvince());
+		deliveryInfo.setDistrict(orderDTO.getDistrict());
+		deliveryInfo.setWard(orderDTO.getWard());
+		deliveryInfo.setDescription(orderDTO.getDescription());
+		deliveryInfo.setUserId(orderDTO.getUserId());
+		deliveryInfo = deliveryInfoService.createDeliveryInfo(deliveryInfo);
+		order.setDeliveryInfo(deliveryInfo);
+		
+		// Vận chuyển
+		Transportation transportation = new Transportation();
+		transportation.setTransType(orderDTO.getTransType());
+		transportation.setTransportFree(orderDTO.getTransportFree());
+		transportation.setStartDate(new Date(System.currentTimeMillis()));
+		transportation.setEndDate(new Date());
+		transportation.setStatus("xac nhan");
 		transportation.setOrder(order);
 		transportation = transportationService.createTransportation(transportation);
 		order.setTransportation(transportation);
 		
-		Address address = orderDTO.getAddress();
-		address = addressService.createAddress(address);
-		order.setAddress(address);
-		
+		// Tổng tiền
 		order.setTotalAmout(orderDTO.getTotalAmout());
-		order.setStatus("Check");
 		
-		order = orderRepository.save(order);
+		// Thêm chi tiết đơn hàng
 		Set<DetailOrder> detailOrders = new HashSet<>();
 		for (DetailOrderDTO detailOrderDTO : orderDTO.getDetailOrderDTOs()) {
 			DetailOrder detailOrder = new DetailOrder();
@@ -79,11 +173,14 @@ public class OrderService {
 			detailOrder.setProductEntity(productEntity);
 			detailOrder.setQuantity(detailOrderDTO.getQuantity());
 			detailOrder.setTotalPrice(detailOrderDTO.getTotalPrice());
-			detailOrder.setOrder(order);
 			detailOrders.add(detailOrder);
+			detailOrder.setOrder(order);
 		}
 		order.setDetailOrders(detailOrders);
-		return orderRepository.save(order);
+		order.setStatus("cho xac nhan");
+		
+		
+		return orderRepository.save(order).getId();
 	}
 	@Transactional
 	public boolean deleteOrderById(Long id) {
@@ -99,5 +196,17 @@ public class OrderService {
 			order.setStatus(status);
 			return orderRepository.save(order);
 		});
+	}
+	
+	private String formatDate(Date date) {
+        try {
+            // Định dạng đối tượng Date thành chuỗi ngày giờ
+            SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+            String formattedDate = outputFormat.format(date);
+            return formattedDate;
+        } catch (DateTimeParseException e) {
+            System.err.println("Invalid date format: ");
+        }
+        return null;
 	}
 }

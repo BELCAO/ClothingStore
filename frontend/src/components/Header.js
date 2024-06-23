@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { useCart } from './CartContext'; // Import CartContext
 
 // UserMenu component
 const UserMenu = () => {
@@ -55,11 +56,10 @@ const Header = () => {
   const token = useSelector((state) => state.token);
   const avatarUrl = useSelector((state) => state.avatarUrl);
   const userName = useSelector((state) => state.userName);
-  const userId = useSelector((state) => state.userId); // Lấy userId từ Redux store
+  const userId = useSelector((state) => state.userId); 
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  const [cartItems, setCartItems] = useState([]);
-  const [totalPrice, setTotalPrice] = useState(0);
+  const { cartItems, totalPrice } = useCart(); // Use CartContext
 
   const navigate = useNavigate();
 
@@ -71,12 +71,6 @@ const Header = () => {
     }
   }, [searchTerm]);
 
-  useEffect(() => {
-    if (userId) {
-      fetchCartItems(userId); // Chỉ fetch cart items nếu có userId
-    }
-  }, [userId]);
-
   const handleSearch = async () => {
     try {
       const response = await fetch(
@@ -87,19 +81,6 @@ const Header = () => {
     } catch (error) {
       console.error("Error fetching search results:", error);
       setSearchResults([]);
-    }
-  };
-
-  const fetchCartItems = async (userId) => {
-    try {
-      const response = await fetch(
-        `http://localhost:8080/api/cart/get?userId=${userId}`
-      );
-      const data = await response.json();
-      setCartItems(data.items);
-      setTotalPrice(data.totalPrice);
-    } catch (error) {
-      console.error("Error fetching cart items:", error);
     }
   };
 
@@ -300,19 +281,19 @@ const Header = () => {
                     </Link>
                   </li>
                   <li>
-                    <Link to="/Productlist?categoryId=1">Đồ nam</Link>
+                    <Link to="/Productlist?categoryId=1">Áo thun</Link>
                   </li>
                   <li>
-                    <Link to="/Productlist?categoryId=2">Đồ nữ</Link>
+                    <Link to="/Productlist?categoryId=2">Áo khoác</Link>
                   </li>
                   <li>
-                    <Link to="/Productlist?categoryId=7">Trẻ Em</Link>
+                    <Link to="/Productlist?categoryId=3">Áo Polo</Link>
                   </li>
                   <li>
-                    <Link to="/Productlist?categoryId=2">Áo Thun</Link>
+                    <Link to="/Productlist?categoryId=4">Áo sơ mi</Link>
                   </li>
                   <li>
-                    <Link to="/Productlist?categoryId=5">Công sở</Link>
+                    <Link to="/Productlist?categoryId=5">Quần</Link>
                   </li>
                   <li>
                     <Link to="/Contact">Liên hệ</Link>

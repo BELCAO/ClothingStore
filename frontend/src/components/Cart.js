@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { useCart } from "./CartContext"; // Import CartContext
+
 
 const Cart = () => {
-  const [cartItems, setCartItems] = useState([]);
-  const [totalPrice, setTotalPrice] = useState(0);
   const userId = useSelector((state) => state.userId); // Lấy userId từ Redux store
+  const { cartItems, setCartItems, totalPrice, setTotalPrice } = useCart(); // Sử dụng CartContext
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (userId) {
@@ -37,11 +40,10 @@ const Cart = () => {
       });
       if (response.ok) {
         // Remove the item from the state
-        setCartItems((prevItems) => prevItems.filter((item) => item.productId !== productId));
+        const updatedCartItems = cartItems.filter((item) => item.productId !== productId);
+        setCartItems(updatedCartItems);
         // Recalculate the total price
-        const updatedTotalPrice = cartItems
-          .filter((item) => item.productId !== productId)
-          .reduce((acc, item) => acc + item.productPrice * item.quantity, 0);
+        const updatedTotalPrice = updatedCartItems.reduce((acc, item) => acc + item.productPrice * item.quantity, 0);
         setTotalPrice(updatedTotalPrice);
         alert("Sản phẩm đã được xóa khỏi giỏ hàng");
       } else {
@@ -61,6 +63,18 @@ const Cart = () => {
       .replace(/\D00(?=\D*$)/, "");
   };
 
+  const handleCheckout = () => {
+    if (!userId) {
+      alert('Người dùng cần đăng nhập');
+    } else {
+      navigate("/checkout", { state: { cartItems, totalPrice } });
+    }
+  };
+
+  const handleContinueShopping = () => {
+    navigate("/");
+  };
+
   return (
     <>
       <div className="clearfix"></div>
@@ -68,17 +82,17 @@ const Cart = () => {
         <div className="container shopping-cart">
           <div className="row">
             <div className="col-md-12">
-              <h3 className="title">Shopping Cart</h3>
+              <h3 className="title">Giỏ hàng</h3>
               <div className="clearfix"></div>
               <table className="shop-table">
                 <thead>
                   <tr>
-                    <th>Image</th>
-                    <th>Details</th>
-                    <th>Price</th>
-                    <th>Quantity</th>
-                    <th>Total Price</th>
-                    <th>Delete</th>
+                    <th>Ảnh</th>
+                    <th>Chi tiết</th>
+                    <th>Giá</th>
+                    <th>Số lượng</th>
+                    <th>Tổng giá</th>
+                    <th>Xóa</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -96,31 +110,13 @@ const Cart = () => {
                               02 Review(s)
                             </a>
                           </p>
-                          <div className="color-choser">
-                            <span className="text">Product Color :</span>
-                            <ul>
-                              <li>
-                                <a className="black-bg " href="#">
-                                  black
-                                </a>
-                              </li>
-                            
-                            </ul>
-                          </div>
-                    
                         </div>
                       </td>
                       <td>
                         <h5>{formatPrice(item.productPrice)}</h5>
                       </td>
                       <td>
-                        <select value={item.quantity} name="">
-                          {[...Array(10).keys()].map((n) => (
-                            <option key={n + 1} value={n + 1}>
-                              {n + 1}
-                            </option>
-                          ))}
-                        </select>
+                        <span>{item.quantity}</span>
                       </td>
                       <td>
                         <h5>
@@ -135,314 +131,20 @@ const Cart = () => {
                     </tr>
                   ))}
                 </tbody>
-                <tfoot>
-                  <tr>
-                    <td colSpan="6">
-                      <button className="pull-left">Continue Shopping</button>
-                      <button className="pull-right">Update Shopping Cart</button>
-                    </td>
-                  </tr>
-                </tfoot>
               </table>
               <div className="clearfix"></div>
               <div className="row">
                 <div className="col-md-4 col-sm-6">
                   <div className="shippingbox">
-                    <h5>Estimate Shipping And Tax</h5>
-                    <form>
-                      <label>Select Country *</label>
-                      <select className="">
-                        <option value="AL">Alabama</option>
-                        <option value="AK">Alaska</option>
-                        <option value="AZ">Arizona</option>
-                        <option value="AR">Arkansas</option>
-                        <option value="CA">California</option>
-                        <option value="CO">Colorado</option>
-                        <option value="CT">Connecticut</option>
-                        <option value="DE">Delaware</option>
-                        <option value="DC">District Of Columbia</option>
-                        <option value="FL">Florida</option>
-                        <option value="GA">Georgia</option>
-                        <option value="HI">Hawaii</option>
-                        <option value="ID">Idaho</option>
-                        <option selected value="IL">
-                          Illinois
-                        </option>
-                        <option value="IN">Indiana</option>
-                        <option value="IA">Iowa</option>
-                        <option value="KS">Kansas</option>
-                        <option value="KY">Kentucky</option>
-                        <option value="LA">Louisiana</option>
-                        <option value="ME">Maine</option>
-                        <option value="MD">Maryland</option>
-                        <option value="MA">Massachusetts</option>
-                        <option value="MI">Michigan</option>
-                        <option value="MN">Minnesota</option>
-                        <option value="MS">Mississippi</option>
-                        <option value="MO">Missouri</option>
-                        <option value="MT">Montana</option>
-                        <option value="NE">Nebraska</option>
-                        <option value="NV">Nevada</option>
-                        <option value="NH">New Hampshire</option>
-                        <option value="NJ">New Jersey</option>
-                        <option value="NM">New Mexico</option>
-                        <option value="NY">New York</option>
-                        <option value="NC">North Carolina</option>
-                        <option value="ND">North Dakota</option>
-                        <option value="OH">Ohio</option>
-                        <option value="OK">Oklahoma</option>
-                        <option value="OR">Oregon</option>
-                        <option value="PA">Pennsylvania</option>
-                        <option value="RI">Rhode Island</option>
-                        <option value="SC">South Carolina</option>
-                        <option value="SD">South Dakota</option>
-                        <option value="TN">Tennessee</option>
-                        <option value="TX">Texas</option>
-                        <option value="UT">Utah</option>
-                        <option value="VT">Vermont</option>
-                        <option value="VA">Virginia</option>
-                        <option value="WA">Washington</option>
-                        <option value="WV">West Virginia</option>
-                        <option value="WI">Wisconsin</option>
-                        <option value="WY">Wyoming</option>
-                      </select>
-                      <label>State / Province *</label>
-                      <select className="">
-                        <option value="AL">Alabama</option>
-                        <option value="AK">Alaska</option>
-                        <option value="AZ">Arizona</option>
-                        <option value="AR">Arkansas</option>
-                        <option value="CA">California</option>
-                        <option value="CO">Colorado</option>
-                        <option value="CT">Connecticut</option>
-                        <option value="DE">Delaware</option>
-                        <option value="DC">District Of Columbia</option>
-                        <option value="FL">Florida</option>
-                        <option value="GA">Georgia</option>
-                        <option value="HI">Hawaii</option>
-                        <option value="ID">Idaho</option>
-                        <option selected value="IL">
-                          Illinois
-                        </option>
-                        <option value="IN">Indiana</option>
-                        <option value="IA">Iowa</option>
-                        <option value="KS">Kansas</option>
-                        <option value="KY">Kentucky</option>
-                        <option value="LA">Louisiana</option>
-                        <option value="ME">Maine</option>
-                        <option value="MD">Maryland</option>
-                        <option value="MA">Massachusetts</option>
-                        <option value="MI">Michigan</option>
-                        <option value="MN">Minnesota</option>
-                        <option value="MS">Mississippi</option>
-                        <option value="MO">Missouri</option>
-                        <option value="MT">Montana</option>
-                        <option value="NE">Nebraska</option>
-                        <option value="NV">Nevada</option>
-                        <option value="NH">New Hampshire</option>
-                        <option value="NJ">New Jersey</option>
-                        <option value="NM">New Mexico</option>
-                        <option value="NY">New York</option>
-                        <option value="NC">North Carolina</option>
-                        <option value="ND">North Dakota</option>
-                        <option value="OH">Ohio</option>
-                        <option value="OK">Oklahoma</option>
-                        <option value="OR">Oregon</option>
-                        <option value="PA">Pennsylvania</option>
-                        <option value="RI">Rhode Island</option>
-                        <option value="SC">South Carolina</option>
-                        <option value="SD">South Dakota</option>
-                        <option value="TN">Tennessee</option>
-                        <option value="TX">Texas</option>
-                        <option value="UT">Utah</option>
-                        <option value="VT">Vermont</option>
-                        <option value="VA">Virginia</option>
-                        <option value="WA">Washington</option>
-                        <option value="WV">West Virginia</option>
-                        <option value="WI">Wisconsin</option>
-                        <option value="WY">Wyoming</option>
-                      </select>
-                      <label>Zip / Post Code *</label>
-                      <select className="">
-                        <option value="AL">Alabama</option>
-                        <option value="AK">Alaska</option>
-                        <option value="AZ">Arizona</option>
-                        <option value="AR">Arkansas</option>
-                        <option value="CA">California</option>
-                        <option value="CO">Colorado</option>
-                        <option value="CT">Connecticut</option>
-                        <option value="DE">Delaware</option>
-                        <option value="DC">District Of Columbia</option>
-                        <option value="FL">Florida</option>
-                        <option value="GA">Georgia</option>
-                        <option value="HI">Hawaii</option>
-                        <option value="ID">Idaho</option>
-                        <option selected value="IL">
-                          Illinois
-                        </option>
-                        <option value="IN">Indiana</option>
-                        <option value="IA">Iowa</option>
-                        <option value="KS">Kansas</option>
-                        <option value="KY">Kentucky</option>
-                        <option value="LA">Louisiana</option>
-                        <option value="ME">Maine</option>
-                        <option value="MD">Maryland</option>
-                        <option value="MA">Massachusetts</option>
-                        <option value="MI">Michigan</option>
-                        <option value="MN">Minnesota</option>
-                        <option value="MS">Mississippi</option>
-                        <option value="MO">Missouri</option>
-                        <option value="MT">Montana</option>
-                        <option value="NE">Nebraska</option>
-                        <option value="NV">Nevada</option>
-                        <option value="NH">New Hampshire</option>
-                        <option value="NJ">New Jersey</option>
-                        <option value="NM">New Mexico</option>
-                        <option value="NY">New York</option>
-                        <option value="NC">North Carolina</option>
-                        <option value="ND">North Dakota</option>
-                        <option value="OH">Ohio</option>
-                        <option value="OK">Oklahoma</option>
-                        <option value="OR">Oregon</option>
-                        <option value="PA">Pennsylvania</option>
-                        <option value="RI">Rhode Island</option>
-                        <option value="SC">South Carolina</option>
-                        <option value="SD">South Dakota</option>
-                        <option value="TN">Tennessee</option>
-                        <option value="TX">Texas</option>
-                        <option value="UT">Utah</option>
-                        <option value="VT">Vermont</option>
-                        <option value="VA">Virginia</option>
-                        <option value="WA">Washington</option>
-                        <option value="WV">West Virginia</option>
-                        <option value="WI">Wisconsin</option>
-                        <option value="WY">Wyoming</option>
-                      </select>
-                      <div className="clearfix"></div>
-                      <button>Get A Qoute</button>
-                    </form>
-                  </div>
-                </div>
-                <div className="col-md-4 col-sm-6">
-                  <div className="shippingbox">
-                    <h5>Discount Codes</h5>
-                    <form>
-                      <label>Enter your coupon code if you have one</label>
-                      <input type="text" name="" />
-                      <div className="clearfix"></div>
-                      <button>Get A Qoute</button>
-                    </form>
-                  </div>
-                </div>
-                <div className="col-md-4 col-sm-6">
-                  <div className="shippingbox">
                     <div className="subtotal">
-                      <h5>Sub Total</h5>
+                      <h5>Tạm tính</h5>
                       <span>{formatPrice(totalPrice)}</span>
                     </div>
-                    <div className="grandtotal">
-                      <h5>GRAND TOTAL</h5>
-                      <span>{formatPrice(totalPrice)}</span>
-                    </div>
-                    <button>Process To Checkout</button>
+                    <button onClick={handleCheckout}>Đặt hàng</button>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div className="clearfix"></div>
-          <div className="our-brand">
-            <h3 className="title">
-              <strong>Our</strong> Brands
-            </h3>
-            <div className="control">
-              <a id="prev_brand" className="prev" href="#">
-                &lt;
-              </a>
-              <a id="next_brand" className="next" href="#">
-                &gt;
-              </a>
-            </div>
-            <ul id="braldLogo">
-              <li>
-                <ul className="brand_item">
-                  <li>
-                    <a href="#">
-                      <div className="brand-logo">
-                        <img src="images/envato.png" alt="" />
-                      </div>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <div className="brand-logo">
-                        <img src="images/themeforest.png" alt="" />
-                      </div>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <div className="brand-logo">
-                        <img src="images/photodune.png" alt="" />
-                      </div>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <div className="brand-logo">
-                        <img src="images/activeden.png" alt="" />
-                      </div>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <div className="brand-logo">
-                        <img src="images/envato.png" alt="" />
-                      </div>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-              <li>
-                <ul className="brand_item">
-                  <li>
-                    <a href="#">
-                      <div className="brand-logo">
-                        <img src="images/envato.png" alt="" />
-                      </div>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <div className="brand-logo">
-                        <img src="images/themeforest.png" alt="" />
-                      </div>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <div className="brand-logo">
-                        <img src="images/photodune.png" alt="" />
-                      </div>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <div className="brand-logo">
-                        <img src="images/activeden.png" alt="" />
-                      </div>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <div className="brand-logo">
-                        <img src="images/envato.png" alt="" />
-                      </div>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-            </ul>
           </div>
         </div>
       </div>

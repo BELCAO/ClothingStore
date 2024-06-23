@@ -3,6 +3,7 @@ import axios from "axios";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import ReactPaginate from 'react-paginate';
 import { useSelector } from "react-redux";
+import { useCart } from './CartContext'; // Import CartContext
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -11,6 +12,7 @@ const ProductList = () => {
   const [pageSize, setPageSize] = useState(10);
   const navigate = useNavigate();
   const location = useLocation();
+  const { cartItems, setCartItems, totalPrice, setTotalPrice } = useCart(); // Use CartContext
 
   const queryParams = new URLSearchParams(location.search);
   const categoryId = queryParams.get("categoryId") || 3;
@@ -59,15 +61,17 @@ const ProductList = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          userId: userId, // Sử dụng userId từ Redux store
+          userId: userId,
           productId: product.productId,
-          quantity: 1, // Mặc định số lượng là 1
+          quantity: 1,
         }),
       });
 
       if (response.ok) {
+        // Fetch the updated cart items and total price after adding the product
         const updatedCart = await response.json();
-        // Update cart items and total price in context or state here if needed
+        setCartItems(updatedCart.items);
+        setTotalPrice(updatedCart.totalPrice);
         alert("Sản phẩm đã được thêm vào giỏ hàng");
       } else {
         console.error("Failed to add product to cart");
@@ -98,23 +102,21 @@ const ProductList = () => {
                 <h3 className="title">Danh mục</h3>
                 <ul>
                   <li>
-                    <Link to="/Productlist?categoryId=3">Nam</Link>
+                    <Link to="/Productlist?categoryId=1">Áo thun</Link>
                   </li>
                   <li>
-                    <Link to="/Productlist?categoryId=2">Nữ</Link>
+                    <Link to="/Productlist?categoryId=2">Áo khoác</Link>
                   </li>
                   <li>
-                    <Link to="/Productlist?categoryId=1">Dạ hội</Link>
+                    <Link to="/Productlist?categoryId=3">Áo Polo</Link>
                   </li>
                   <li>
-                    <Link to="/Productlist?categoryId=4">Thời thượng</Link>
+                    <Link to="/Productlist?categoryId=4">Áo sơ mi</Link>
                   </li>
                   <li>
-                    <Link to="/Productlist?categoryId=5">Đồ ở nhà</Link>
+                    <Link to="/Productlist?categoryId=5">Quần</Link>
                   </li>
-                  <li>
-                    <Link to="/Productlist?categoryId=6">Đồ ngủ</Link>
-                  </li>
+                  
                 </ul>
               </div>
                <div className="clearfix"></div>
@@ -194,10 +196,10 @@ const ProductList = () => {
                     <div className="limiter">
                       Hiển thị :
                       <select name="" onChange={handlePageSizeChange} value={pageSize}>
-                        <option value="3">3</option>
-                        <option value="6">6</option>
-                        <option value="9">9</option>
+                        <option value="5">5</option>
                         <option value="10">10</option>
+                        <option value="15">15</option>
+                        
                       </select>
                     </div>
                   </div>
@@ -278,10 +280,10 @@ const ProductList = () => {
                     <div className="limiter">
                       Hiển thị :
                       <select name="" onChange={handlePageSizeChange} value={pageSize}>
-                        <option value="3">3</option>
-                        <option value="6">6</option>
-                        <option value="9">9</option>
+                        <option value="5">5</option>
                         <option value="10">10</option>
+                        <option value="15">15</option>
+                   
                       </select>
                     </div>
                   </div>

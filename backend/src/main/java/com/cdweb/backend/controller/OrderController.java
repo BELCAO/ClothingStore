@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,16 +29,28 @@ public class OrderController {
 	private OrderService orderService;
 	
 	@GetMapping
-	public ResponseEntity<List<Order>> getAllOrders(){
-		return ResponseEntity.ok().body(orderService.getAllOrders());
+	public ResponseEntity<Page<OrderDTO>> getAllOrders(
+				@RequestParam("status") String status,
+	            @RequestParam(defaultValue = "0") int page,
+	            @RequestParam(defaultValue = "10") int size) {
+	        Pageable pageable = PageRequest.of(page, size);
+	        if(status.equals("x")) {
+	        	Page<OrderDTO> orderDTOs = orderService.getAllOrders(pageable);	        	
+	        	return ResponseEntity.ok().body(orderDTOs);
+	        }else {
+	        	Page<OrderDTO> orderDTOs = orderService.getAllOrdersByStatus(pageable, status);	        		        	
+	        	return ResponseEntity.ok().body(orderDTOs);
+	        }
 	}
 	@GetMapping("/{id}")
-	public ResponseEntity<Order> getOrderById(@PathVariable Long id){
-		Optional<Order> order = orderService.getOrderById(id);
-		return order.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+	public ResponseEntity<OrderDTO> getOrderById(@PathVariable Long id){
+		return ResponseEntity.ok().body(orderService.getOrderById(id));
+//		OrderDTO orderDTO = new OrderDTO();
+//		return ResponseEntity.ok().body(orderDTO);
+//		return order.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
 	}
 	@PostMapping
-	public ResponseEntity<Order> createOrder(@RequestBody OrderDTO orderDTO){		
+	public ResponseEntity<Long> createOrder(@RequestBody OrderDTO orderDTO){		
 		return ResponseEntity.ok().body(orderService.createOrder(orderDTO));
 	}
 	
@@ -47,7 +62,7 @@ public class OrderController {
 		return ResponseEntity.badRequest().build();
 	}
 	
-	@PutMapping("/id")
+	@PutMapping("/{id}")
 	public ResponseEntity<Order> updateOrderStatus(@RequestParam("status") String status, @PathVariable Long id){
 		return orderService.updateOrderStatus(id, status).map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
 	}

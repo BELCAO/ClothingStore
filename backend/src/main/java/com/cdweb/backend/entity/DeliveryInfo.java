@@ -6,20 +6,23 @@ import java.util.Set;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name="addresses")
-public class Address {
+@Table(name="delivery_info")
+public class DeliveryInfo {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	@Column(length = 30,  nullable = false, name="recipient_name")
+    private String recipientName;
+	@Column(length = 30,  nullable = false, name="recipient_phone")
+    private String recipientPhone;
 	@Column(length = 30,  nullable = false)
 	private String province;
 	@Column(length = 30,  nullable = false)
@@ -28,21 +31,31 @@ public class Address {
 	private String ward;
 	@Column(nullable = false)
 	private String description;
-	@ManyToOne
-    @JoinColumn(name = "user_id")
-	private User user;
-	@OneToMany(mappedBy = "address", cascade = CascadeType.ALL)
+//	@ManyToOne(fetch = FetchType.LAZY)
+//    @Column(name = "user_id", nullable = false)
+//	private User user;
+	@Column(name="user_id")
+	private Long userId;
+	@OneToMany(mappedBy = "deliveryInfo", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<Order> orders;
 	
-	
-	public Address() {
-		super();
-	}
 	public Long getId() {
 		return id;
 	}
 	public void setId(Long id) {
 		this.id = id;
+	}
+	public String getRecipientName() {
+		return recipientName;
+	}
+	public void setRecipientName(String recipientName) {
+		this.recipientName = recipientName;
+	}
+	public String getRecipientPhone() {
+		return recipientPhone;
+	}
+	public void setRecipientPhone(String recipientPhone) {
+		this.recipientPhone = recipientPhone;
 	}
 	public String getProvince() {
 		return province;
@@ -68,20 +81,25 @@ public class Address {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public User getUser() {
-		return user;
-	}
-	public void setUser(User user) {
-		this.user = user;
-	}
-	public Set<Order> getOrder() {
+
+//	public User getUser() {
+//		return user;
+//	}
+//	public void setUser(User user) {
+//		this.user = user;
+//	}
+	public Set<Order> getOrders() {
 		return orders;
 	}
-	public void setOrder(Set<Order> orders) {
+	public void setOrders(Set<Order> orders) {
 		this.orders = orders;
 	}
-	
-	
+	public Long getUserId() {
+		return userId;
+	}
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
 	
 	
 }

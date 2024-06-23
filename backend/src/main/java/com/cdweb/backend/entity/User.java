@@ -7,10 +7,12 @@ import java.util.Set;
 
 import com.cdweb.backend.enums.Role;
 import com.cdweb.backend.enums.Status;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -36,12 +38,16 @@ public class User {
 	private String password;
 	private Date birthday;
 	private String avatarUrl;
-	private Set<String> roles;
+	@Column(nullable = false)
+	private String role;
 	@Column(length = 10, nullable = false)
 	private String status;
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-	private Set<Address> addresses;
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	
+	@OneToMany(mappedBy = "userId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JsonIgnore
+	private Set<DeliveryInfo> deliveryInfos;
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JsonIgnore
 	private Set<Order> orders;
 	
 	
@@ -55,9 +61,7 @@ public class User {
 		this.email = email;
 		this.phone = phone;
 		this.password = password;
-		HashSet<String> roles = new HashSet<String>();
-		roles.add(Role.USER.name());
-		this.roles = roles;
+		this.role = Role.USER.name();
 		this.status = Status.NORMAL.name();
 	}
 
@@ -125,12 +129,13 @@ public class User {
 		this.avatarUrl = avatarUrl;
 	}
 
-	public Set<String> getRoles() {
-		return roles;
+
+	public String getRole() {
+		return role;
 	}
 
-	public void setRoles(Set<String> roles) {
-		this.roles = roles;
+	public void setRole(String role) {
+		this.role = role;
 	}
 
 	public String getStatus() {
@@ -141,14 +146,28 @@ public class User {
 		this.status = status;
 	}
 
-	public Set<Address> getAddresses() {
-		return addresses;
+	public Set<DeliveryInfo> getDeliveryInfos() {
+		return deliveryInfos;
 	}
 
-	public void setAddresses(Set<Address> addresses) {
-		this.addresses = addresses;
+	public void setDeliveryInfos(Set<DeliveryInfo> deliveryInfos) {
+		this.deliveryInfos = deliveryInfos;
 	}
-	
+
+	public Set<Order> getOrders() {
+		return orders;
+	}
+
+	public void setOrders(Set<Order> orders) {
+		this.orders = orders;
+	}
+
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", name=" + name + ", email=" + email + ", phone=" + phone + ", gender=" + gender
+				+ ", password=" + password + ", birthday=" + birthday + ", avatarUrl=" + avatarUrl + ", role=" + role
+				+ ", status=" + status + ", deliveryInfos=" + deliveryInfos + ", orders=" + orders + "]";
+	}
 	
 
 	
