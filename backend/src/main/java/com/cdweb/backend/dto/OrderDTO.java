@@ -2,16 +2,25 @@ package com.cdweb.backend.dto;
 
 import java.util.Set;
 
+import jakarta.persistence.Column;
+
 
 public class OrderDTO {
 	private Long userId;
 	private boolean online;
 	private Long paymentAmout;
-	private Long deliveryInfoId;
 	private String transType;
 	private Long transportFree;
 	private Long totalAmout;
 	private Set<DetailOrderDTO> detailOrderDTOs;
+	
+	
+    private String recipientName;
+    private String recipientPhone;
+	private String province;
+	private String district;
+	private String ward;
+	private String description;
 	public Long getUserId() {
 		return userId;
 	}
@@ -30,12 +39,6 @@ public class OrderDTO {
 	}
 	public void setPaymentAmout(Long paymentAmout) {
 		this.paymentAmout = paymentAmout;
-	}
-	public Long getDeliveryInfoId() {
-		return deliveryInfoId;
-	}
-	public void setDeliveryInfoId(Long deliveryInfoId) {
-		this.deliveryInfoId = deliveryInfoId;
 	}
 	public String getTransType() {
 		return transType;
@@ -61,13 +64,56 @@ public class OrderDTO {
 	public void setDetailOrderDTOs(Set<DetailOrderDTO> detailOrderDTOs) {
 		this.detailOrderDTOs = detailOrderDTOs;
 	}
+	
+	
+	
+	public String getRecipientName() {
+		return recipientName;
+	}
+	public void setRecipientName(String recipientName) {
+		this.recipientName = recipientName;
+	}
+	public String getRecipientPhone() {
+		return recipientPhone;
+	}
+	public void setRecipientPhone(String recipientPhone) {
+		this.recipientPhone = recipientPhone;
+	}
+	public String getProvince() {
+		return province;
+	}
+	public void setProvince(String province) {
+		this.province = province;
+	}
+	public String getDistrict() {
+		return district;
+	}
+	public void setDistrict(String district) {
+		this.district = district;
+	}
+	public String getWard() {
+		return ward;
+	}
+	public void setWard(String ward) {
+		this.ward = ward;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
 	@Override
 	public String toString() {
 		return "OrderDTO [userId=" + userId + ", online=" + online + ", paymentAmout=" + paymentAmout
-				+ ", deliveryInfoId=" + deliveryInfoId + ", transType=" + transType + ", transportFree=" + transportFree
-				+ ", totalAmout=" + totalAmout + ", detailOrderDTOs=" + detailOrderDTOs + "]";
+				+ ", transType=" + transType + ", transportFree=" + transportFree
+				+ ", totalAmout=" + totalAmout + ", detailOrderDTOs=" + detailOrderDTOs + ", recipientName="
+				+ recipientName + ", recipientPhone=" + recipientPhone + ", province=" + province + ", district="
+				+ district + ", ward=" + ward + ", description=" + description + "]";
 	}
 
+	
+	
 
 	
 }
