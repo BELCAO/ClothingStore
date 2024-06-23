@@ -10,6 +10,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.cdweb.backend.dto.DetailOrderDTO;
@@ -26,8 +28,21 @@ public class UserService {
 	@Autowired
 	private UserRepository accountRepository;
 	@Transactional
-	public List<User> getAllAccount(){
-		return accountRepository.findAll();
+	public Page<User> getAllAccount(String role, Pageable pageable){
+		System.out.println(role);
+		if(role.equals("")) {
+			Page<User> ss = accountRepository.findAll(pageable);
+			for (User user : ss) {
+				user.toString();
+			}
+			return ss;
+		}else {
+			Page<User> ss = accountRepository.findAllByRole(role, pageable);
+			for (User user : ss) {
+				user.toString();
+			}
+			return ss;
+		}
 	}
 	@Transactional
 	public User createAccount(User account) {
@@ -110,6 +125,14 @@ public class UserService {
             System.err.println("Invalid date format: ");
         }
         return null;
+	}
+	
+	@Transactional
+	public Optional<User> updateUserStatus(Long id, String status){
+		return accountRepository.findById(id).map(user ->{
+			user.setStatus(status);
+			return accountRepository.save(user);
+		});
 	}
 
 

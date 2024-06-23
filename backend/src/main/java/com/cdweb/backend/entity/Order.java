@@ -3,6 +3,8 @@ package com.cdweb.backend.entity;
 import java.util.Date;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -24,24 +26,25 @@ public class Order {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+	@JsonIgnore
 	private User user;
 	
 	@OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "payment_id", referencedColumnName = "id")
+	@JsonIgnore
 	private Payment payment;
-//	@Column(nullable = false)
 	private Date date;
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "delivery_info_id", referencedColumnName = "id")
+	@JsonIgnore
 	private DeliveryInfo deliveryInfo;
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "transportation_id", referencedColumnName = "id")
 	private Transportation transportation;
-//	@Column(nullable = false)
 	private Long totalAmout;
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-	private Set<DetailOrder> detailOrders;
-//	@Column(nullable = false)
+	@JsonIgnore
+    private Set<DetailOrder> detailOrders;
 	private String status;
 	public Long getId() {
 		return id;

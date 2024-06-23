@@ -17,19 +17,19 @@ const Sidebar = () => {
     >
       <Toolbar />
       <List>
-        <ListItem button component={Link} to="/">
+        <ListItem button component={Link} to="/Admin">
           <ListItemIcon><Dashboard /></ListItemIcon>
           <ListItemText primary="Thống kê" />
         </ListItem>
-        <ListItem button component={Link} to="/products">
+        <ListItem button component={Link} to="/Admin/products">
           <ListItemIcon><ShoppingCart /></ListItemIcon>
           <ListItemText primary="Quản lý sản phẩm" />
         </ListItem>
-        <ListItem button component={Link} to="/users">
+        <ListItem button component={Link} to="/Admin/users">
           <ListItemIcon><People /></ListItemIcon>
           <ListItemText primary="Quản lý người dùng" />
         </ListItem>
-        <ListItem button component={Link} to="/orders">
+        <ListItem button component={Link} to="/Admin/orders">
           <ListItemIcon><BarChart /></ListItemIcon>
           <ListItemText primary="Quản lý đơn hàng" />
         </ListItem>

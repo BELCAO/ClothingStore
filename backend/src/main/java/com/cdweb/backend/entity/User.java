@@ -39,7 +39,7 @@ public class User {
 	private Date birthday;
 	private String avatarUrl;
 	@Column(nullable = false)
-	private Set<String> roles;
+	private String role;
 	@Column(length = 10, nullable = false)
 	private String status;
 	
@@ -61,9 +61,7 @@ public class User {
 		this.email = email;
 		this.phone = phone;
 		this.password = password;
-		HashSet<String> roles = new HashSet<String>();
-		roles.add(Role.USER.name());
-		this.roles = roles;
+		this.role = Role.USER.name();
 		this.status = Status.NORMAL.name();
 	}
 
@@ -131,12 +129,13 @@ public class User {
 		this.avatarUrl = avatarUrl;
 	}
 
-	public Set<String> getRoles() {
-		return roles;
+
+	public String getRole() {
+		return role;
 	}
 
-	public void setRoles(Set<String> roles) {
-		this.roles = roles;
+	public void setRole(String role) {
+		this.role = role;
 	}
 
 	public String getStatus() {
@@ -163,8 +162,12 @@ public class User {
 		this.orders = orders;
 	}
 
-
-	
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", name=" + name + ", email=" + email + ", phone=" + phone + ", gender=" + gender
+				+ ", password=" + password + ", birthday=" + birthday + ", avatarUrl=" + avatarUrl + ", role=" + role
+				+ ", status=" + status + ", deliveryInfos=" + deliveryInfos + ", orders=" + orders + "]";
+	}
 	
 
 	

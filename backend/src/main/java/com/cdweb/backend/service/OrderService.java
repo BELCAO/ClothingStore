@@ -3,13 +3,18 @@ package com.cdweb.backend.service;
 import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.cdweb.backend.dto.DetailOrderDTO;
@@ -40,8 +45,34 @@ public class OrderService {
 	@Autowired 
 	private DeliveryInfoService deliveryInfoService;
 	@Transactional
-	public List<Order> getAllOrders() {
-		return orderRepository.findAll();
+	public Page<OrderDTO> getAllOrders(Pageable pageable) {
+		Page<Order> orders = orderRepository.findAll(pageable);
+		List<OrderDTO> result = new ArrayList<>();
+		for (Order order : orders) {
+			OrderDTO orderDTO = new OrderDTO();
+			orderDTO.setId(order.getId());
+			orderDTO.setName(order.getUser().getName());
+			orderDTO.setDate(formatDate(order.getDate()));
+			orderDTO.setTotalAmout(order.getTotalAmout());
+			orderDTO.setStatus(order.getStatus());
+			result.add(orderDTO);
+		}
+        return new PageImpl<>(result, pageable, orders.getTotalElements());
+	}
+	@Transactional
+	public Page<OrderDTO> getAllOrdersByStatus(Pageable pageable, String status) {
+		Page<Order> orders = orderRepository.findAllByStatus(pageable, status);
+		List<OrderDTO> result = new ArrayList<>();
+		for (Order order : orders) {
+			OrderDTO orderDTO = new OrderDTO();
+			orderDTO.setId(order.getId());
+			orderDTO.setName(order.getUser().getName());
+			orderDTO.setDate(formatDate(order.getDate()));
+			orderDTO.setTotalAmout(order.getTotalAmout());
+			orderDTO.setStatus(order.getStatus());
+			result.add(orderDTO);
+		}
+		return new PageImpl<>(result, pageable, orders.getTotalElements());
 	}
 	@Transactional
 	public OrderDTO getOrderById(Long id) {
