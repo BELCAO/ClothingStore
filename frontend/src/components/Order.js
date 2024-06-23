@@ -4,7 +4,6 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 
 const Order = () => {
-  const navigate = useNavigate();
   const userId = useSelector((state) => state.userId); // Lấy userId từ Redux store
   const { id } = useParams();
   const [orderData, setOrderData] = useState(null);
